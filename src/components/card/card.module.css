@@ -65,18 +65,17 @@
     cursor: pointer;
     padding: 0;
     border: none;
-    transition: background 0.25s ease, transform 0.25s ease;
+    transition: background-color 0.18s ease, color 0.18s ease;
 }
 
 .button:hover {
-    background: var(--button-hover);
-    transform: translateY(-2px);
+    background: rgba(30, 58, 34, 0.9);
     color: var(--button-text);
-    box-shadow: inset 0 0 0 1px var(--surface-border), 0 0 18px rgba(42, 255, 124, 0.16);
+    box-shadow: inset 0 0 0 1px var(--surface-border);
 }
 
 .button:active {
-    transform: translateY(0) scale(0.98);
+    background: rgba(24, 48, 28, 0.9);
     box-shadow: inset 0 0 0 1px var(--surface-border);
 }
 
