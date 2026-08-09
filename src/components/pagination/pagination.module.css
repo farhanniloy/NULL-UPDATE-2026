@@ -32,10 +32,9 @@
 }
 
 .button:hover:not(:disabled) {
-    background-color: #a3222d;
-    border-color: #ed4652;
-    color: #fff;
-    box-shadow: 0 0 16px rgba(237, 70, 82, .22);
+    background-color: #4d1118;
+    border-color: #792027;
+    color: #e8c5c5;
 }
 
 .container{
@@ -71,10 +70,9 @@
 
 .pageButton:hover,
 .pageButton.active {
-    color: #fff;
-    background-color: #a3222d;
-    border-color: #ed4652;
-    box-shadow: 0 0 12px rgba(237, 70, 82, .2);
+    color: #e8c5c5;
+    background-color: #4d1118;
+    border-color: #792027;
 }
 
 .pagi {
