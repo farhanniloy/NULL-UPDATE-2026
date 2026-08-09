@@ -74,27 +74,24 @@
     color: #f7dada;
     text-transform: lowercase;
     box-shadow: 5px 5px 0 #2b0a10;
-    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-    will-change: transform, box-shadow;
+    transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
     scroll-snap-align: start;
 }
 
 .category:hover {
-    transform: translate(-3px, -3px);
-    border-color: #ed2935;
-    border-left-color: #ff4b54;
-    background: #8f131d;
-    box-shadow: 8px 8px 0 #4e1018, 0 0 26px rgba(237, 41, 53, .3);
+    border-color: #792027;
+    border-left-color: #9f2b35;
+    background: #4d1118;
+    color: #e8c5c5;
 }
 
 .category:focus-visible {
-    outline: 2px solid #ff6970;
+    outline: 2px solid #d85a62;
     outline-offset: 4px;
 }
 
 .category:active {
-    transform: translate(-1px, -1px) scale(0.98);
-    box-shadow: 3px 3px 0 #4e1018, 0 0 12px rgba(237, 41, 53, .2);
+    background: #421017;
 }
 
 .categories::-webkit-scrollbar {

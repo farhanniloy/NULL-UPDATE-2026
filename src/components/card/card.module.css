@@ -46,8 +46,8 @@
     font-size: 16px;
     line-height: 1.7;
     color: var(--newTextColor);
-    font-family: 'Fira Code', monospace;
-    letter-spacing: 0.005em;
+    font-family: 'Montserrat', Arial, sans-serif;
+    letter-spacing: 0;
     font-weight: 400;
 }
 
@@ -82,10 +82,10 @@
 
 .blogpostContent {
     color: var(--newTextColor);
-    font-family: 'Fira Code', 'Courier New', monospace;
+    font-family: 'Montserrat', Arial, sans-serif;
     font-size: 16px;
-    line-height: 1.7;
-    letter-spacing: 0.01em;
+    line-height: 1.75;
+    letter-spacing: 0;
     font-weight: 400;
 }
 

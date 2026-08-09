@@ -121,11 +121,11 @@
     overflow: visible;
     padding: 28px 0;
     color: var(--newTextColor);
-    font-family: 'IBM Plex Mono', 'Courier New', monospace;
-    font-size: 17px;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 18px;
     font-weight: 400;
-    line-height: 1.75;
-    letter-spacing: 0.005em;
+    line-height: 1.85;
+    letter-spacing: 0;
     text-align: left;
     white-space: pre-wrap;
     overflow-wrap: break-word;
