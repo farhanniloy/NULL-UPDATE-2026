@@ -21,10 +21,17 @@ const getData = async (page, cat) => {
         };
 
         const [posts, count] = await prisma.$transaction([
-            // include the author user so cards can show username and link to profile
             prisma.post.findMany({
                 ...query,
-                include: { user: { select: { name: true, username: true, email: true, image: true } } },
+                select: {
+                    id: true,
+                    slug: true,
+                    title: true,
+                    summary: true,
+                    desc: true,
+                    catSlug: true,
+                    createdAt: true,
+                },
             }),
             prisma.post.count({ where: query.where }),
         ]);
@@ -36,23 +43,24 @@ const getData = async (page, cat) => {
     }
 };
 
-const CardList = async ({ page, cat }) => {
+const CardList = async ({ page, cat, paginationPrefix = "" }) => {
     const { posts = [], count = 0 } = await getData(page, cat);
 
     const POST_PER_PAGE = 10;
+    const totalPages = Math.max(1, Math.ceil(count / POST_PER_PAGE));
 
     const hasPrev = POST_PER_PAGE * (page - 1) > 0;
     const hasNext = POST_PER_PAGE * (page - 1) + POST_PER_PAGE < count;
 
     return (
         <div className={styles.container}>
-            <h1 className={styles.title}>Posts</h1>
+            <h1 className={styles.title}>latest posts</h1>
             <div className={styles.posts}>
                 {(posts || []).map((item) => (
                     <Card item={item} key={item.id ?? item._id ?? item.slug} />
                 ))}
             </div>
-            <Pagination page={page} hasPrev={hasPrev} hasNext={hasNext} />
+            <Pagination page={page} totalPages={totalPages} hasPrev={hasPrev} hasNext={hasNext} hrefPrefix={paginationPrefix} />
         </div>
     );
 };

@@ -1,8 +1,14 @@
 import { NextResponse } from 'next/server';
 import { getAuthSession } from '@/utils/auth';
 import prisma from '@/utils/connect';
+import { ensureCsrf } from '@/utils/csrf';
 
 export const POST = async (req) => {
+  const csrfError = ensureCsrf(req);
+  if (csrfError) {
+    return csrfError;
+  }
+
   const session = await getAuthSession();
   if (!session?.user?.email) return new NextResponse(JSON.stringify({ message: 'Not authenticated' }), { status: 401 });
   const auth = await prisma.user.findUnique({ where: { email: session.user.email } });

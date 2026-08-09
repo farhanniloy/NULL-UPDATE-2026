@@ -3,6 +3,7 @@ import prisma from "@/utils/connect";
 import { NextResponse } from "next/server";
 import { sanitizePostHtml } from "@/utils/sanitizeHtml";
 import { getSafePostImageUrl } from "@/utils/imageUrl";
+import { ensureCsrf } from "@/utils/csrf";
 
 export const GET = async (req) => {
     const { searchParams } = new URL(req.url);
@@ -67,6 +68,11 @@ export const GET = async (req) => {
 
 // CREATE A POST
 export const POST = async (req) => {
+    const csrfError = ensureCsrf(req);
+    if (csrfError) {
+        return csrfError;
+    }
+
     const session = await getAuthSession();
 
     if (!session || !session.user?.email) {

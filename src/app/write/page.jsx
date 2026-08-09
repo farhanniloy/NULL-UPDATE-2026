@@ -17,6 +17,21 @@ const defaultCategories = [
     { slug: 'projects', title: 'Projects' },
 ];
 
+const getLocalDate = (date = new Date()) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
+const getLocalTime = (date = new Date()) =>
+    `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+
+const toLocalDateTimeIso = (date, time) => {
+    const localDate = new Date(`${date}T${time || '00:00'}:00`);
+    return Number.isNaN(localDate.valueOf()) ? undefined : localDate.toISOString();
+};
+
 const WritePageContent = () => {
     const { status } = useSession();
     const router = useRouter();
@@ -44,6 +59,118 @@ const WritePageContent = () => {
     const [mediaUrl, setMediaUrl] = useState("");
     const [youtubeId, setYoutubeId] = useState("");
     const editorRef = useRef(null);
+    const editorContainerRef = useRef(null);
+    const savedSelectionRef = useRef(null);
+    const selectedImageRef = useRef(null);
+    const resizeRef = useRef(null);
+    const [imageSelection, setImageSelection] = useState(null);
+    const [toolbarState, setToolbarState] = useState({});
+
+    const saveEditorSelection = () => {
+        const editor = editorRef.current;
+        const selection = window.getSelection();
+        if (!editor || !selection?.rangeCount) return;
+
+        const range = selection.getRangeAt(0);
+        if (editor.contains(range.commonAncestorContainer)) {
+            savedSelectionRef.current = range.cloneRange();
+        }
+    };
+
+    const updateToolbarState = () => {
+        const editor = editorRef.current;
+        const selection = window.getSelection();
+        if (!editor || !selection?.rangeCount || !editor.contains(selection.anchorNode)) return;
+
+        let block = selection.anchorNode.nodeType === Node.ELEMENT_NODE
+            ? selection.anchorNode
+            : selection.anchorNode.parentElement;
+        while (block && block !== editor && !/^(P|DIV|H1|H2|H3|BLOCKQUOTE|PRE|LI)$/.test(block.tagName)) {
+            block = block.parentElement;
+        }
+
+        setToolbarState({
+            bold: document.queryCommandState('bold'),
+            italic: document.queryCommandState('italic'),
+            underline: document.queryCommandState('underline'),
+            strikeThrough: document.queryCommandState('strikeThrough'),
+            unorderedList: Boolean(block?.closest('ul')),
+            orderedList: Boolean(block?.closest('ol')),
+            blockquote: block?.tagName === 'BLOCKQUOTE',
+            code: block?.tagName === 'PRE',
+            block: block?.tagName || 'DIV',
+        });
+    };
+
+    const restoreEditorSelection = () => {
+        const selection = window.getSelection();
+        const range = savedSelectionRef.current;
+        if (!selection || !range) return;
+
+        selection.removeAllRanges();
+        selection.addRange(range);
+        editorRef.current?.focus();
+    };
+
+    const handleEditorSelection = () => {
+        saveEditorSelection();
+        updateToolbarState();
+    };
+
+    const runEditorCommand = (command, value = undefined) => {
+        restoreEditorSelection();
+        document.execCommand(command, false, value);
+        saveEditorSelection();
+        updateToolbarState();
+        if (editorRef.current) {
+            setValue(editorRef.current.innerHTML);
+        }
+    };
+
+    const addEditorLink = () => {
+        const url = window.prompt('Link URL', 'https://');
+        if (url) runEditorCommand('createLink', url);
+    };
+
+    const handleEditorPaste = (event) => {
+        const text = event.clipboardData?.getData('text/plain');
+        const editor = editorRef.current;
+        const selection = window.getSelection();
+
+        if (!text || !editor || !selection?.rangeCount) return;
+
+        event.preventDefault();
+        const range = selection.getRangeAt(0);
+        if (!editor.contains(range.commonAncestorContainer)) return;
+
+        range.deleteContents();
+        const fragment = document.createDocumentFragment();
+        const lines = text.replace(/\r\n?/g, '\n').split('\n');
+
+        lines.forEach((line, index) => {
+            if (line) fragment.appendChild(document.createTextNode(line));
+            if (index < lines.length - 1) fragment.appendChild(document.createElement('br'));
+        });
+
+        const lastNode = fragment.lastChild;
+        range.insertNode(fragment);
+        range.collapse(false);
+        if (lastNode) {
+            range.setStartAfter(lastNode);
+            range.collapse(true);
+        }
+
+        selection.removeAllRanges();
+        selection.addRange(range);
+        saveEditorSelection();
+        updateToolbarState();
+        setValue(editor.innerHTML);
+    };
+
+    useEffect(() => {
+        document.addEventListener('selectionchange', updateToolbarState);
+        return () => document.removeEventListener('selectionchange', updateToolbarState);
+    }, []);
 
     useEffect(() => {
         const loadCategories = async () => {
@@ -73,10 +200,8 @@ const WritePageContent = () => {
 
     useEffect(() => {
         const now = new Date();
-        const today = now.toISOString().split('T')[0];
-        const time = now.toTimeString().slice(0, 5);
-        setPostDate(today);
-        setPostTime(time);
+        setPostDate(getLocalDate(now));
+        setPostTime(getLocalTime(now));
     }, []);
 
     // Additional server-side validation: confirm the session corresponds to a real user
@@ -95,7 +220,13 @@ const WritePageContent = () => {
             }
         })();
         return () => { mounted = false; };
-    }, []);
+    }, [router]);
+
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            router.replace("/");
+        }
+    }, [router, status]);
 
     useEffect(() => {
         if (!file) return;
@@ -140,8 +271,6 @@ const WritePageContent = () => {
                     setValue(post.desc || '');
                     setMedia(post.img || '');
                     setCatSlug(post.catSlug || '');
-                    setPostDate(post.createdAt ? new Date(post.createdAt).toISOString().split('T')[0] : '');
-                    setPostTime(post.createdAt ? new Date(post.createdAt).toTimeString().slice(0, 5) : '');
                     setIsEdit(true);
                 } else {
                     console.error('Failed to load post', await res.text());
@@ -158,9 +287,7 @@ const WritePageContent = () => {
         return <div className={styles.loading}>Loading...</div>;
     }
 
-    // if the basic next-auth status says unauthenticated, redirect immediately
     if (status === "unauthenticated") {
-        router.push("/");
         return <div className={styles.loading}>Redirecting...</div>;
     }
 
@@ -217,24 +344,95 @@ const WritePageContent = () => {
     };
 
     const getEditorContent = () => {
-        const editor = editorRef.current?.getEditor?.();
-        if (!editor?.root) return normalizeEditorHtml(value);
+        const editor = editorRef.current;
+        if (!editor) return normalizeEditorHtml(value);
 
-        const content = editor.root.cloneNode(true);
-        const sourceImages = [...editor.root.querySelectorAll('img')];
+        const content = editor.cloneNode(true);
+        const sourceImages = [...editor.querySelectorAll('img')];
         content.querySelectorAll('img').forEach((image, index) => {
             const inlineWidth = image.style.width || image.getAttribute('width');
             const renderedWidth = sourceImages[index]?.getBoundingClientRect().width || 0;
             const width = parseFloat(inlineWidth) || renderedWidth;
 
             if (width > 0) {
-                image.style.width = `${Math.round(width)}px`;
-                image.style.height = 'auto';
-                image.removeAttribute('width');
+                image.setAttribute('width', String(Math.round(width)));
+                image.style.removeProperty('width');
+                image.style.removeProperty('height');
             }
         });
 
         return normalizeEditorHtml(content.innerHTML);
+    };
+
+    const updateImageSelection = () => {
+        const image = selectedImageRef.current;
+        const container = editorContainerRef.current;
+        if (!image || !container || !image.isConnected) {
+            setImageSelection(null);
+            return;
+        }
+
+        const imageRect = image.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        setImageSelection({
+            left: imageRect.left - containerRect.left + container.scrollLeft,
+            top: imageRect.top - containerRect.top + container.scrollTop,
+            width: imageRect.width,
+            height: imageRect.height,
+        });
+    };
+
+    const handleEditorClick = (event) => {
+        const image = event.target.closest?.('img');
+        if (!image || !editorRef.current?.contains(image)) {
+            selectedImageRef.current = null;
+            setImageSelection(null);
+            return;
+        }
+
+        selectedImageRef.current = image;
+        updateImageSelection();
+    };
+
+    const handleResizeStart = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const image = selectedImageRef.current;
+        if (!image) return;
+
+        resizeRef.current = {
+            image,
+            startX: event.clientX,
+            startWidth: image.getBoundingClientRect().width,
+        };
+        document.addEventListener('pointermove', handleResizeMove);
+        document.addEventListener('pointerup', handleResizeEnd, { once: true });
+    };
+
+    const handleResizeMove = (event) => {
+        const resize = resizeRef.current;
+        const container = editorContainerRef.current;
+        if (!resize || !container) return;
+
+        const maxWidth = Math.max(40, container.clientWidth - 32);
+        const nextWidth = Math.min(
+            maxWidth,
+            Math.max(40, resize.startWidth + event.clientX - resize.startX),
+        );
+        resize.image.style.width = `${Math.round(nextWidth)}px`;
+        resize.image.style.height = 'auto';
+        updateImageSelection();
+    };
+
+    const handleResizeEnd = () => {
+        const resize = resizeRef.current;
+        resizeRef.current = null;
+        document.removeEventListener('pointermove', handleResizeMove);
+
+        if (resize?.image) {
+            resize.image.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText' }));
+        }
     };
 
     const normalizeEditorHtml = (html) => {
@@ -244,9 +442,12 @@ const WritePageContent = () => {
         parsed.querySelectorAll('img').forEach((image) => {
             const width = image.style.width || image.getAttribute('width');
             if (width) {
-                image.style.width = /^\d+(\.\d+)?$/.test(width) ? `${width}px` : width;
-                image.style.height = 'auto';
-                image.removeAttribute('width');
+                const numericWidth = parseFloat(width);
+                if (Number.isFinite(numericWidth) && numericWidth > 0) {
+                    image.setAttribute('width', String(Math.round(numericWidth)));
+                    image.style.removeProperty('width');
+                    image.style.removeProperty('height');
+                }
             }
         });
 
@@ -269,7 +470,7 @@ const WritePageContent = () => {
 
         setSaving(true);
         try {
-            const publishedAt = postDate ? `${postDate}T${postTime || '00:00'}:00` : undefined;
+            const publishedAt = postDate ? toLocalDateTimeIso(postDate, postTime) : undefined;
             const editorContent = getEditorContent();
             if (isEdit && slugParam) {
                 const res = await fetch(`/api/posts/${encodeURIComponent(slugParam)}`, {
@@ -312,7 +513,7 @@ const WritePageContent = () => {
 
                 if (res.ok) {
                     const data = await res.json();
-                    window.location.href = `/posts/${data.slug}`;
+                    router.push(`/posts/${data.slug}`);
                     return;
                 }
                 const errText = await res.text();
@@ -422,7 +623,12 @@ const WritePageContent = () => {
             </div>
 
 
-            <div className={styles.editor}>
+            <div
+                ref={editorContainerRef}
+                className={styles.editor}
+                onClick={handleEditorClick}
+                onScroll={updateImageSelection}
+            >
                 <div className={styles.toolBar}>
                     <button className={styles.button} onClick={() => setOpen(!open)} type="button">
                         <Image src="/plus.png" alt="Add" width={16} height={16} />
@@ -537,8 +743,71 @@ const WritePageContent = () => {
                     className={styles.textArea}
                     value={value}
                     onChange={(event) => setValue(event.target.value)}
+                    onSelect={handleEditorSelection}
+                    onKeyUp={handleEditorSelection}
+                    onMouseUp={handleEditorSelection}
+                    onInput={updateToolbarState}
+                    onPaste={handleEditorPaste}
                     placeholder="Tell your story..."
-                />
+                >
+                    <div
+                        className={styles.editorToolbar}
+                        onMouseDown={(event) => {
+                            if (event.target.closest('button')) {
+                                event.preventDefault();
+                            } else {
+                                saveEditorSelection();
+                            }
+                        }}
+                    >
+                        <button className={toolbarState.bold ? styles.activeEditorButton : ''} type="button" title="Bold" onClick={() => runEditorCommand('bold')}><strong>B</strong></button>
+                        <button className={toolbarState.italic ? styles.activeEditorButton : ''} type="button" title="Italic" onClick={() => runEditorCommand('italic')}><em>I</em></button>
+                        <button className={toolbarState.underline ? styles.activeEditorButton : ''} type="button" title="Underline" onClick={() => runEditorCommand('underline')}><u>U</u></button>
+                        <button className={toolbarState.strikeThrough ? styles.activeEditorButton : ''} type="button" title="Strikethrough" onClick={() => runEditorCommand('strikeThrough')}><s>S</s></button>
+                        <button className={toolbarState.unorderedList ? styles.activeEditorButton : ''} type="button" title="Bulleted list" onClick={() => runEditorCommand('insertUnorderedList')}>• list</button>
+                        <button className={toolbarState.orderedList ? styles.activeEditorButton : ''} type="button" title="Numbered list" onClick={() => runEditorCommand('insertOrderedList')}>1. list</button>
+                        <button className={toolbarState.blockquote ? styles.activeEditorButton : ''} type="button" title="Blockquote" onClick={() => runEditorCommand('formatBlock', 'BLOCKQUOTE')}>quote</button>
+                        <button className={toolbarState.code ? styles.activeEditorButton : ''} type="button" title="Code block" onClick={() => runEditorCommand('formatBlock', 'PRE')}>code</button>
+                        <button type="button" title="Add link" onClick={addEditorLink}>link</button>
+                        <button type="button" title="Clear formatting" onClick={() => runEditorCommand('removeFormat')}>clear</button>
+                        <button type="button" title="Undo" onClick={() => runEditorCommand('undo')}>undo</button>
+                        <button type="button" title="Redo" onClick={() => runEditorCommand('redo')}>redo</button>
+                        <select
+                            title="Text style"
+                            value={['DIV', 'H1', 'H2', 'H3'].includes(toolbarState.block) ? toolbarState.block : ''}
+                            onChange={(event) => {
+                                if (event.target.value) {
+                                    runEditorCommand('formatBlock', event.target.value);
+                                }
+                            }}
+                        >
+                            <option value="" disabled>style</option>
+                            <option value="DIV">Normal</option>
+                            <option value="H1">Heading 1</option>
+                            <option value="H2">Heading 2</option>
+                            <option value="H3">Heading 3</option>
+                        </select>
+                    </div>
+                </RichTextEditor>
+                {imageSelection && (
+                    <div
+                        className={styles.imageSelection}
+                        style={{
+                            left: imageSelection.left,
+                            top: imageSelection.top,
+                            width: imageSelection.width,
+                            height: imageSelection.height,
+                        }}
+                        aria-hidden="true"
+                    >
+                        <button
+                            type="button"
+                            className={styles.imageResizeHandle}
+                            onPointerDown={handleResizeStart}
+                            aria-label="Resize selected image"
+                        />
+                    </div>
+                )}
             </div>
 
             <div style={{ marginTop: 12 }}>

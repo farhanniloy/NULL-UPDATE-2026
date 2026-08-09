@@ -19,19 +19,62 @@
 }
 
 .button {
-    color: var(--textColor);
-    background-color: var(--button-surface);
+    color: #ffdfe1;
+    background-color: #5f1119;
     padding: 8px 16px;
     text-decoration: none;
     transition: background-color .3s;
-    border: 1px solid var(--surface-border);
-    margin: 0 5px 70px;
+    border: 1px solid #a3222d;
+    margin: 0;
     cursor: pointer;
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+.button:hover:not(:disabled) {
+    background-color: #a3222d;
+    border-color: #ed4652;
+    color: #fff;
+    box-shadow: 0 0 16px rgba(237, 70, 82, .22);
 }
 
 .container{
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+    margin: 40px 0 80px;
+}
+
+.pages {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-width: 0;
+}
+
+.mobilePages,
+.mobileLabel {
+    display: none;
+}
+
+.pageButton {
+    color: #ffdfe1;
+    background-color: #260b0f;
+    border: 1px solid #6f1a24;
+    padding: 8px 12px;
+    cursor: pointer;
+    flex: 0 0 auto;
+}
+
+.pageButton:hover,
+.pageButton.active {
+    color: #fff;
+    background-color: #a3222d;
+    border-color: #ed4652;
+    box-shadow: 0 0 12px rgba(237, 70, 82, .2);
 }
 
 .pagi {
@@ -45,7 +88,55 @@
 
 .button:disabled {
     cursor: not-allowed;
+    opacity: .42;
+    background-color: #260b0f;
+    border-color: #4d171e;
 }
 
+.ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    color: var(--textColor);
+}
 
+@media screen and (max-width: 640px) {
+    .container {
+        gap: 4px;
+        margin: 32px 0 56px;
+    }
 
+    .desktopPages,
+    .desktopLabel {
+        display: none;
+    }
+
+    .mobilePages,
+    .mobileLabel {
+        display: flex;
+    }
+
+    .mobilePages {
+        flex: 1 1 auto;
+        gap: 3px;
+        flex-wrap: nowrap;
+        justify-content: center;
+    }
+
+    .button {
+        padding: 7px 6px;
+        font-size: 12px;
+    }
+
+    .pageButton {
+        width: 26px;
+        padding: 7px 0;
+        font-size: 12px;
+    }
+
+    .ellipsis {
+        min-width: 10px;
+        font-size: 12px;
+    }
+}

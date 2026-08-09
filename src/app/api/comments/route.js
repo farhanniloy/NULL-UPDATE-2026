@@ -1,6 +1,7 @@
 import { getAuthSession } from "@/utils/auth";
 import prisma from "@/utils/connect";
 import { NextResponse } from "next/server";
+import { ensureCsrf } from "@/utils/csrf";
 
 // GET ALL COMMENTS OF A POST
 export const GET = async (req) => {
@@ -32,6 +33,11 @@ export const GET = async (req) => {
 
 // CREATE A COMMENT
 export const POST = async (req) => {
+    const csrfError = ensureCsrf(req);
+    if (csrfError) {
+        return csrfError;
+    }
+
     const session = await getAuthSession();
 
     try {

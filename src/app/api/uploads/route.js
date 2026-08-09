@@ -3,6 +3,7 @@ import path from 'path';
 import crypto from 'crypto';
 import { getAuthSession } from '@/utils/auth';
 import prisma from '@/utils/connect';
+import { ensureCsrf } from '@/utils/csrf';
 
 const MAX_UPLOAD_SIZE = 5 * 1024 * 1024;
 const allowedTypes = {
@@ -15,6 +16,11 @@ const allowedTypes = {
 
 export async function POST(req) {
   try {
+    const csrfError = ensureCsrf(req);
+    if (csrfError) {
+      return csrfError;
+    }
+
     const session = await getAuthSession();
     if (!session?.user?.email) {
       return new Response(JSON.stringify({ message: 'Not authenticated' }), { status: 401 });

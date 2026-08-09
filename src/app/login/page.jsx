@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import styles from "./loginPage.module.css";
 import { signIn } from "next-auth/react";

@@ -25,8 +25,45 @@ const getData = async (slug) => {
     }
 };
 
+export async function generateMetadata({ params }) {
+    const { slug } = await params;
+    const post = await getData(slug);
+
+    if (!post || !post.approved) {
+        return {
+            title: 'Post not found',
+            robots: { index: false, follow: false },
+        };
+    }
+
+    const description = (post.summary || post.desc || '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 160);
+
+    return {
+        title: post.title,
+        description,
+        alternates: { canonical: `/posts/${encodeURIComponent(post.slug)}` },
+        openGraph: {
+            type: 'article',
+            title: post.title,
+            description,
+            publishedTime: post.createdAt.toISOString(),
+            images: post.img ? [{ url: post.img, alt: post.title }] : undefined,
+        },
+        twitter: {
+            card: post.img ? 'summary_large_image' : 'summary',
+            title: post.title,
+            description,
+            images: post.img ? [post.img] : undefined,
+        },
+    };
+}
+
 const SinglePage = async ({ params }) => {
-    const { slug } = params;
+    const { slug } = await params;
 
     const data = await getData(slug);
     const session = await getAuthSession();

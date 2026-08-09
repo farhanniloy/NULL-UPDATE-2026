@@ -59,8 +59,9 @@ const Featured = () => {
         if (typedCount >= TOTAL_CHARACTERS) return undefined;
 
         const progress = typedCount / TOTAL_CHARACTERS;
-        const baseSpeed = 44 - Math.round(progress * 26); // faster as it types
-        const delay = Math.max(10, baseSpeed + Math.floor(Math.random() * 18));
+        const acceleration = Math.pow(progress, 3);
+        const baseSpeed = 36 - Math.round(acceleration * 32); // accelerate exponentially as it types
+        const delay = Math.max(4, baseSpeed + Math.floor(Math.random() * 6));
         const timeout = window.setTimeout(() => {
             setTypedCount((value) => Math.min(value + 1, TOTAL_CHARACTERS));
         }, delay);
@@ -79,7 +80,7 @@ const Featured = () => {
         if (trimmed === 'yes' || trimmed === 'y') {
             router.push('/about');
         } else if (trimmed.length > 0) {
-            setResponse('unknown command — type yes to continue');
+            setResponse('unknown command — type yes / y to continue');
         }
     };
 
@@ -90,7 +91,7 @@ const Featured = () => {
                     <span className={styles.terminalDot} />
                     <span className={styles.terminalDot} />
                     <span className={styles.terminalDot} />
-                    <span className={styles.terminalTitle}>~/philosophy</span>
+                    <span className={styles.terminalTitle}>~/null</span>
                 </div>
                 <div className={styles.terminalBody}>
                     <div className={styles.terminalCommandRow}>
@@ -109,13 +110,12 @@ const Featured = () => {
                     </div>
                     {typingComplete && (
                         <div className={styles.terminalPromptBlock}>
-                            <span className={styles.terminalPrompt}>root@null:~$</span>
-                            <span className={styles.terminalInstruction}>learn more about me?</span>
+                            <span className={styles.terminalInstruction}>more about me?</span>
                         </div>
                     )}
                     {typingComplete && (
                         <div className={styles.terminalInputBlock}>
-                            <span className={styles.terminalPrompt}>→</span>
+                            <span className={styles.terminalArrow}>→</span>
                             <input
                                 ref={inputRef}
                                 className={styles.terminalInput}
@@ -126,8 +126,8 @@ const Featured = () => {
                                         handlePromptSubmit();
                                     }
                                 }}
-                                placeholder="yes"
-                                aria-label="Type yes to learn more about me"
+                                placeholder="yes / y"
+                                aria-label="Type yes or y to learn more about me"
                             />
                         </div>
                     )}

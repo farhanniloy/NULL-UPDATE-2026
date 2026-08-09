@@ -26,10 +26,10 @@ const Footer = () => {
             <div className={styles.links}>
                 <div className={styles.list}>
                     <span className={styles.listTitle}>tags</span>
-                    <Link className={styles.linkItem} href="/blog?cat=article"><GiThink /> article</Link>
-                    <Link className={styles.linkItem} href="/blog?cat=science"><GiAtom /> science</Link>
-                    <Link className={styles.linkItem} href="/blog?cat=infiltration"><SiHackaday /> infiltration</Link>
-                    <Link className={styles.linkItem} href="/blog?cat=projects"><SiCodeproject /> projects</Link>
+                    <Link className={styles.linkItem} href="/category/article"><GiThink /> article</Link>
+                    <Link className={styles.linkItem} href="/category/science"><GiAtom /> science</Link>
+                    <Link className={styles.linkItem} href="/category/infiltration"><SiHackaday /> infiltration</Link>
+                    <Link className={styles.linkItem} href="/category/projects"><SiCodeproject /> projects</Link>
 
                 </div>
                 <div className={styles.list}>

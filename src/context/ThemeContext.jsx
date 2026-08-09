@@ -2,27 +2,31 @@
 
 import { createContext, useEffect, useState } from "react";
 
-const getFromLocalStorage = () => {
-    if (typeof window !== "undefined") {
-        const value = localStorage.getItem("theme");
-        return value || "light";
-    }
-};
-
 export const ThemeContext = createContext(); // Corrected context name
 
 export const ThemeContextProvider = ({ children }) => {
-    const [theme, setTheme] = useState(() => {
-        return getFromLocalStorage();
-    });
+    // Keep the first render identical on the server and client, then restore
+    // the saved preference once the browser is available.
+    const [theme, setTheme] = useState("light");
+    const [hydrated, setHydrated] = useState(false);
 
     const toggle = () => {
-        setTheme(theme === "light" ? "dark" : "light");
+        setTheme((currentTheme) => currentTheme === "light" ? "dark" : "light");
     };
 
     useEffect(() => {
-        localStorage.setItem("theme", theme);
-    }, [theme]);
+        const storedTheme = localStorage.getItem("theme");
+        if (storedTheme === "light" || storedTheme === "dark") {
+            setTheme(storedTheme);
+        }
+        setHydrated(true);
+    }, []);
+
+    useEffect(() => {
+        if (hydrated) {
+            localStorage.setItem("theme", theme);
+        }
+    }, [hydrated, theme]);
 
     return (
         <ThemeContext.Provider value={{ theme, toggle }}> {/* Corrected the context provider */}

@@ -13,8 +13,31 @@ import React from "react";
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Null',
-  description: 'Mind Place',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  title: {
+    default: 'Null | Mind Place',
+    template: '%s | Null',
+  },
+  description: 'Null is a personal space for philosophy, technology, security, science, and curious ideas.',
+  applicationName: 'Null',
+  keywords: ['philosophy', 'technology', 'security research', 'science', 'artificial intelligence', 'Null'],
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    siteName: 'Null',
+    title: 'Null | Mind Place',
+    description: 'A personal space for philosophy, technology, security, science, and curious ideas.',
+    url: '/',
+    images: [{ url: '/logo.png', alt: 'Null' }],
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Null | Mind Place',
+    description: 'A personal space for philosophy, technology, security, science, and curious ideas.',
+    images: ['/logo.png'],
+  },
 }
 
 export default function RootLayout({ children }) {

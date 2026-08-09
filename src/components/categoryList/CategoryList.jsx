@@ -19,11 +19,7 @@ const getData = async () => {
         const categories = await prisma.category.findMany();
 
         if (!categories || categories.length === 0) {
-            await prisma.category.createMany({
-                data: defaultCategories,
-                skipDuplicates: true,
-            });
-            return await prisma.category.findMany();
+            return defaultCategories;
         }
 
         return categories;
@@ -48,11 +44,11 @@ const CategoryList = async () => {
 
     return (
         <div className={styles.container}>
-            <h1 className={styles.title}>Categories</h1>
+            <h1 className={styles.title}>categories</h1>
             <div className={styles.categories}>
                 {(ordered || []).map((item) => (
                     <Link
-                        href={`/blog?cat=${item.slug}`}
+                        href={`/category/${encodeURIComponent(item.slug)}`}
                         className={`${styles.category} ${styles[item.slug]}`}
                         key={item.id ?? item._id ?? item.slug}
                     >

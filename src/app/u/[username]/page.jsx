@@ -7,7 +7,7 @@ import UsernameEditor from '@/components/profile/UsernameEditor';
 import styles from '../../profile/profile.module.css';
 
 const Page = async ({ params }) => {
-  const { username } = params;
+  const { username } = await params;
   // normalize param: accept 'nil', '@nil', or even 'areyouokaynil@gmail.com'
   const withoutAt = username.startsWith('@') ? username.slice(1) : username;
   const withAt = username.startsWith('@') ? username : `@${username}`;

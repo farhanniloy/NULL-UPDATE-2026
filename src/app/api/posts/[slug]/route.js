@@ -3,10 +3,12 @@ import { NextResponse } from "next/server";
 import { getAuthSession } from "@/utils/auth";
 import { sanitizePostHtml } from "@/utils/sanitizeHtml";
 import { getSafePostImageUrl } from "@/utils/imageUrl";
+import { ensureCsrf } from "@/utils/csrf";
+import { revalidatePath } from "next/cache";
 
 // GET SINGLE POST (increments views)
 export const GET = async (req, { params }) => {
-    const { slug } = params;
+    const { slug } = await params;
 
     try {
         const post = await prisma.post.findUnique({
@@ -41,6 +43,11 @@ export const GET = async (req, { params }) => {
 
 // UPDATE POST (only post owner)
 export const PUT = async (req, { params }) => {
+    const csrfError = ensureCsrf(req);
+    if (csrfError) {
+        return csrfError;
+    }
+
     const session = await getAuthSession();
     if (!session || !session.user?.email) {
         return new NextResponse(JSON.stringify({ message: 'Not authenticated' }), { status: 401 });
@@ -50,7 +57,7 @@ export const PUT = async (req, { params }) => {
         return new NextResponse(JSON.stringify({ message: 'Not authenticated: user not found' }), { status: 401 });
     }
 
-    const { slug } = params;
+    const { slug } = await params;
 
     try {
         const body = await req.json();
@@ -108,10 +115,9 @@ export const PUT = async (req, { params }) => {
 
         // Allow updating createdAt if provided
         if (body.createdAt) {
-            try {
-                updateData.createdAt = new Date(body.createdAt);
-            } catch (e) {
-                console.warn('Invalid createdAt provided, ignoring', body.createdAt);
+            const parsedCreatedAt = new Date(body.createdAt);
+            if (!Number.isNaN(parsedCreatedAt.valueOf())) {
+                updateData.createdAt = parsedCreatedAt;
             }
         }
 
@@ -119,6 +125,8 @@ export const PUT = async (req, { params }) => {
             where: { slug },
             data: updateData,
         });
+        revalidatePath(`/posts/${updated.slug}`);
+        revalidatePath("/");
 
         return new NextResponse(JSON.stringify(updated), { status: 200 });
     } catch (err) {
@@ -128,6 +136,11 @@ export const PUT = async (req, { params }) => {
 };
 
 export const DELETE = async (req, { params }) => {
+    const csrfError = ensureCsrf(req);
+    if (csrfError) {
+        return csrfError;
+    }
+
     const session = await getAuthSession();
     if (!session || !session.user?.email) {
         return new NextResponse(JSON.stringify({ message: 'Not authenticated' }), { status: 401 });
@@ -137,7 +150,7 @@ export const DELETE = async (req, { params }) => {
         return new NextResponse(JSON.stringify({ message: 'Not authenticated: user not found' }), { status: 401 });
     }
 
-    const { slug } = params;
+    const { slug } = await params;
     try {
         const post = await prisma.post.findUnique({ where: { slug } });
         if (!post) {
