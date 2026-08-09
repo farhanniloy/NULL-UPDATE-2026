@@ -1,0 +1,68 @@
+.container {
+  padding: 40px 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.container h1 {
+  margin: 0 0 12px 0;
+  font-size: 36px;
+  line-height: 1.1;
+}
+
+.container p {
+  margin: 0 0 18px 0;
+  color: var(--textColor2);
+}
+
+/* section headings */
+.container h2,
+.container h3 {
+  margin-top: 28px;
+  margin-bottom: 12px;
+  font-size: 20px;
+}
+
+/* make the admin/profile sections have breathing room */
+.container > div {
+  margin-bottom: 18px;
+  padding: 12px 0;
+}
+
+.container ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+
+.container li {
+  margin-bottom: 10px;
+}
+
+/* moderation history block spacing */
+.container .history {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.03);
+}
+
+/* make form controls breathe (scoped to this module) */
+.container :global(input),
+.container :global(select),
+.container :global(textarea),
+.container :global(button) {
+  margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+  .container { padding: 24px 16px; }
+  .container h1 { font-size: 28px; }
+}
+
+/* welcome greeting style */
+.welcome {
+  font-size: 18px;
+  color: var(--textColor);
+  margin: 0 0 12px 0;
+  font-weight: 600;
+}

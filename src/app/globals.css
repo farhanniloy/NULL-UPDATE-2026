@@ -1,0 +1,273 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap');
+
+:root {
+    --bg: #020904;
+    --textColor: #b8ffc8;
+    --newTextColor: #d8ffbd;
+    --textColor2: #7dff9c;
+    --strtextColor: #8bffb5;
+    --softBg: rgba(3, 12, 8, 0.74);
+    --hbrtextColor: rgba(20, 100, 55, 0.6);
+    --softTextColor: #9eedb9;
+    --grid-line: 54, 255, 116;
+    --grid-strong-line: 104, 255, 154;
+    --surface: rgba(2, 14, 10, 0.72);
+    --surface-hover: rgba(47, 255, 133, 0.08);
+    --surface-border: rgba(40, 255, 132, 0.18);
+    --surface-shadow: rgba(2, 255, 146, 0.04);
+    --post-surface: rgba(4, 16, 12, 0.75);
+    --mobile-menu-bg: rgba(0, 0, 0, 0.92);
+    --button-surface: rgba(26, 48, 26, 0.8);
+    --button-hover: rgba(24, 242, 112, 0.16);
+    --button-text: #d8ffbe;
+    --featured-button-bg: rgba(3, 12, 8, 0.64);
+    --featured-button-text: #d0ffb8;
+    --featured-button-border: rgba(61, 255, 153, 0.3);
+    --featured-button-hover-bg: rgba(35, 255, 132, 0.12);
+    --featured-button-hover-text: #ffffff;
+}
+
+.light {
+    --bg: #061209;
+    --textColor: #d6ffca;
+    --newTextColor: #e5ffd7;
+    --textColor2: #a4ffbd;
+    --strtextColor: #c4ffd8;
+    --softBg: rgba(6, 18, 11, 0.78);
+    --hbrtextColor: rgba(20, 110, 60, 0.6);
+    --softTextColor: #bef4b7;
+    --grid-line: 92, 255, 134;
+    --grid-strong-line: 150, 255, 183;
+    --surface: rgba(4, 24, 16, 0.85);
+    --surface-hover: rgba(57, 255, 149, 0.1);
+    --surface-border: rgba(45, 255, 132, 0.2);
+    --surface-shadow: rgba(4, 255, 126, 0.05);
+    --post-surface: rgba(6, 20, 14, 0.85);
+    --mobile-menu-bg: rgba(4, 8, 8, 0.96);
+    --button-surface: rgba(30, 50, 30, 0.85);
+    --button-hover: rgba(42, 255, 120, 0.14);
+    --button-text: #e3ffdc;
+    --featured-button-bg: rgba(4, 14, 10, 0.76);
+    --featured-button-text: #efffe4;
+    --featured-button-border: rgba(94, 255, 160, 0.32);
+    --featured-button-hover-bg: rgba(40, 255, 142, 0.1);
+    --featured-button-hover-text: #ffffff;
+}
+
+.dark {
+    --bg: #010702;
+    --textColor: #b4ffb2;
+    --newTextColor: #ddffd6;
+    --textColor2: #84ff9a;
+    --strtextColor: #93ffb0;
+    --softBg: #08140a;
+    --hbrtextColor: rgba(13, 56, 23, 0.68);
+    --softTextColor: #9bf4b9;
+    --grid-line: 46, 255, 118;
+    --grid-strong-line: 132, 255, 156;
+    --surface: rgba(1, 7, 5, 0.82);
+    --surface-hover: rgba(55, 255, 142, 0.06);
+    --surface-border: rgba(55, 255, 142, 0.14);
+    --surface-shadow: rgba(0, 255, 130, 0.05);
+    --post-surface: rgba(5, 14, 9, 0.78);
+    --mobile-menu-bg: rgba(0, 0, 0, 0.96);
+    --button-surface: rgba(9, 25, 15, 0.9);
+    --button-hover: rgba(46, 255, 126, 0.16);
+    --button-text: #d7ffd8;
+    --featured-button-bg: rgba(4, 10, 7, 0.72);
+    --featured-button-text: #e1ffda;
+    --featured-button-border: rgba(60, 255, 150, 0.3);
+    --featured-button-hover-bg: rgba(50, 255, 137, 0.1);
+    --featured-button-hover-text: #ffffff;
+}
+
+* {
+    text-transform: lowercase;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Fira Code', 'Source Code Pro', monospace;
+    max-width: 100vw;
+    overflow-x: hidden;
+    background-color: var(--bg);
+    color: var(--textColor);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+.container {
+    position: relative;
+    min-height: 100vh;
+    background-color: var(--bg);
+    color: var(--textColor);
+    background-image:
+        linear-gradient(rgba(var(--grid-line), 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--grid-line), 0.08) 1px, transparent 1px),
+        linear-gradient(45deg, rgba(var(--grid-strong-line), 0.12) 1px, transparent 1px),
+        linear-gradient(135deg, rgba(var(--grid-strong-line), 0.12) 1px, transparent 1px),
+        linear-gradient(rgba(var(--grid-strong-line), 0.20) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--grid-strong-line), 0.20) 1px, transparent 1px);
+    background-size:
+        20px 20px,
+        20px 20px,
+        80px 80px,
+        80px 80px,
+        160px 160px,
+        160px 160px;
+    background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+    background-blend-mode: screen;
+    animation: gridFlow 18s linear infinite;
+}
+
+.complexBackground {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* When nav is open, make sure animated background doesn't intercept touches */
+body.nav-open .complexBackground {
+    pointer-events: none !important;
+    opacity: 0.35; /* dim background slightly when menu open */
+}
+
+.wrapper,
+.contentWrapper {
+    position: relative;
+}
+
+@keyframes gridFlow {
+    0% {
+        background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+    }
+    20% {
+        background-position: 8px 2px, -6px 12px, 12px -16px, -10px 8px, 16px -24px, -20px 18px;
+    }
+    40% {
+        background-position: -16px 12px, 14px -8px, -24px 20px, 20px -14px, -32px 28px, 30px -26px;
+    }
+    60% {
+        background-position: 10px -18px, -12px 24px, 18px 16px, -22px -20px, 28px 34px, -36px 30px;
+    }
+    80% {
+        background-position: -8px 10px, 16px -14px, -12px 26px, 24px -28px, -20px 22px, 32px -34px;
+    }
+    100% {
+        background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+    }
+}
+
+.wrapper {
+    max-width: 1536px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 80px;
+    padding-right: 80px;
+}
+
+.contentWrapper {
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+@media screen and (max-width:1536px) {
+    .wrapper {
+        max-width: 1366px;
+    }
+}
+
+@media screen and (max-width:1280px) {
+    .wrapper {
+        max-width: 1024px;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+    .contentWrapper {
+        max-width: 960px;
+        padding-left: 32px;
+        padding-right: 32px;
+    }
+}
+
+@media screen and (max-width:1024px) {
+    .wrapper {
+        max-width: 768px;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+    .contentWrapper {
+        max-width: 720px;
+        padding-left: 28px;
+        padding-right: 28px;
+    }
+}
+
+@media screen and (max-width:768px) {
+    .contentWrapper {
+        max-width: 640px;
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+@media screen and (max-width:640px) {
+    .wrapper {
+        max-width: 475px;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+    .contentWrapper {
+        max-width: 100%;
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+@media screen and (max-width:768px) {
+    .wrapper {
+        max-width: 640px;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+}
+
+
+
+
+
+@media screen and (max-width:640px) {
+    .wrapper {
+        max-width: 475px;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+}
+
+.ql-container {
+    font-size: 20px !important;
+    color: var(--textColor2);
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+.ql-editor .ql-placeholder {
+    color: var(--textColor2);
+}
+
+.quill > .ql-container > .qul-editor.ql-blank::before {
+    color: var(--newTextColor)
+}

@@ -1,0 +1,124 @@
+
+
+.post {
+    border-radius: 18px;
+    margin-bottom: 56px;
+    padding: 62px;
+    border: 1px solid var(--surface-border);
+    background: var(--post-surface);
+    background-clip: padding-box;
+    backdrop-filter: blur(20px);
+    box-shadow: inset 0 0 0 1px rgba(80, 255, 160, 0.05), 0 0 28px rgba(33, 255, 122, 0.05);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.post:hover {
+    cursor: pointer;
+    position: relative;
+    transform: translateY(-2px);
+    box-shadow: inset 0 0 0 1px rgba(120, 255, 170, 0.1), 0 0 32px rgba(42, 255, 124, 0.12);
+}
+
+.title {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: var(--textColor);
+    font-family: 'Fira Code', monospace;
+}
+
+.date {
+    font-family: 'Fira Code', monospace;
+    font-size: 18px;
+    color: var(--textColor2);
+    /* Remove bottom margin so date aligns with other meta items */
+    margin: 0;
+}
+
+.meta {
+    display: flex;
+    align-items: center; /* vertical align center so category, date, username line up */
+    gap: 12px;
+    margin-bottom: 20px; /* keep spacing below meta */
+}
+
+.content {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--newTextColor);
+}
+
+.button {
+    align-items: center;
+    font-size: 15px;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 12px;
+    text-align: center;
+    height: 40px;
+    color: var(--button-text);
+    background: var(--button-surface);
+    box-shadow: inset 0 0 0 1px var(--surface-border);
+    cursor: pointer;
+    padding: 0;
+    border: none;
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.button:hover {
+    background: var(--button-hover);
+    transform: translateY(-1px);
+    color: var(--button-text);
+}
+
+.blogpostContent {
+    color: var(--newTextColor);
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.5em;
+    font-weight: 300;
+}
+
+.category {
+    font-family: 'Fira Code', monospace;
+    font-size: 18px;
+    color: var(--textColor2);
+    text-transform: none; /* show category exactly as provided */
+}
+
+.authorLink { text-decoration: none; }
+
+.username {
+    font-family: 'Fira Code', monospace;
+    font-size: 18px;
+    color: var(--textColor2);
+}
+
+@media screen and (max-width: 1536px) {
+    .post {
+        padding: 56px;
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    .post {
+        padding: 50px;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .post {
+        padding: 44px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .post {
+        padding: 36px;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .post {
+        padding: 28px;
+    }
+}
+

@@ -1,0 +1,51 @@
+.pagination a{
+    color: var(--textColor);
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 1px solid var(--surface-border);
+    margin: 0 5px 70px;
+
+}
+
+.pagination{
+    margin: 40px 0 80px;
+}
+
+.pagination a.active {
+    background-color: var(--strtextColor);
+    color: var(--bg);
+    border: 1px solid rgba(76, 255, 118, 0.35);
+}
+
+.button {
+    color: var(--textColor);
+    background-color: var(--button-surface);
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 1px solid var(--surface-border);
+    margin: 0 5px 70px;
+    cursor: pointer;
+}
+
+.container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.pagi {
+    cursor: pointer;
+
+}
+.pagi1 {
+    cursor: pointer;
+}
+
+
+.button:disabled {
+    cursor: not-allowed;
+}
+
+
+

@@ -1,0 +1,32 @@
+{
+  "name": "null",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "npx prisma generate && next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^1.1.0",
+    "@prisma/client": "^5.8.1",
+    "auth": "^1.0.2",
+    "bcryptjs": "^3.0.3",
+    "eslint": "8.48.0",
+    "firebase": "^10.8.0",
+    "next": "^14.1.0",
+    "next-auth": "^4.24.5",
+    "quill-image-resize-module": "^3.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-icons": "^5.0.1",
+    "react-quill": "^2.0.0",
+    "swr": "^2.2.4",
+    "xss": "^1.0.15"
+  },
+  "devDependencies": {
+    "eslint-config-next": "^14.2.35",
+    "prisma": "^5.8.1"
+  }
+}

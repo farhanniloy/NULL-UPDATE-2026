@@ -1,0 +1,111 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid()) @map("_id")
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid()) @map("_id")
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid()) @map("_id")
+  name          String?
+  username      String?   @unique
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("USER")
+  accounts      Account[]
+  sessions      Session[]
+  Post          Post[]
+  Comment       Comment[]
+}
+
+model VerificationToken {
+  identifier String   @id @map("_id")
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Category {
+  id    String  @id @default(cuid()) @map("_id")
+  slug  String  @unique
+  title String
+  img   String?
+  Posts Post[]
+}
+
+model Post {
+  id        String    @id @default(cuid()) @map("_id")
+  createdAt DateTime  @default(now())
+  slug      String    @unique
+  title     String
+  summary   String?
+  desc      String
+  img       String?
+  views     Int       @default(0)
+  catSlug   String
+  cat       Category  @relation(fields: [catSlug], references: [slug])
+  userEmail String
+  user      User      @relation(fields: [userEmail], references: [email])
+  approved  Boolean   @default(true)
+  comments  Comment[]
+}
+
+model Comment {
+  id        String   @id @default(cuid()) @map("_id")
+  createdAt DateTime @default(now())
+  desc      String
+  // optional user linkage for anonymous comments
+  userEmail String?
+  user      User?    @relation(fields: [userEmail], references: [email])
+  name      String?  // name provided by anonymous commenter
+  avatar    String?  // avatar URL for anonymous commenter
+  ipAddr    String?  // store remote IP for rate-limiting
+  postSlug  String
+  post      Post     @relation(fields: [postSlug], references: [slug])
+}
+
+// Tracks moderation actions (approvals, rejections, role changes, etc.) for audit
+model ModerationHistory {
+  id              String   @id @default(cuid()) @map("_id")
+  createdAt       DateTime @default(now())
+  actorEmail      String   // the moderator/admin who performed the action
+  targetUserEmail String?  // optional: user who was affected (e.g., role change)
+  postSlug        String?  // optional: post affected by the action
+  action          String   // e.g., "APPROVE_POST", "REJECT_POST", "CHANGE_ROLE"
+  details         String?  // optional freeform details or reason
+}

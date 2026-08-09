@@ -1,0 +1,57 @@
+.login{
+    cursor: pointer;
+}
+
+.link{
+    cursor: pointer;
+    padding: 10px 14px;
+    border-radius: 12px;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.link:hover {
+    background: var(--surface-hover);
+    transform: translateY(-1px);
+}
+
+.buttn {
+    width: 50px;
+    height: 16px;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    background-color: var(--textColor);
+}
+
+/* Hide the auth component's full-screen responsive menu to avoid conflict with navbar mobile menu */
+.responsiveMenu{
+    display: none !important;
+}
+
+.item {
+    margin-left: 0;
+    cursor: pointer;
+}
+
+.item:hover {
+    color: var(--newTextColor);
+    text-decoration: underline;
+}
+
+/* Keep the simple login link visible on mobile; don't show the auth button */
+@media screen and (max-width:640px) {
+    .buttn {
+        display: none;
+    }
+
+    .link{
+        display: inline-block;
+    }
+}
+

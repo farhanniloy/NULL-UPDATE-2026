@@ -1,0 +1,353 @@
+.container {
+    width: min(100% - 32px, 1180px);
+    margin: 0 auto;
+}
+
+.infoContainer {
+    align-items: center;
+    gap: 50px;
+}
+
+.textContainer {
+    margin-top: 50px;
+}
+
+.avatar {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.userImageContainer {
+    width: 30px;
+    height: 30px;
+    position: relative;
+}
+
+.userTextContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.title {
+    margin: 20px 0 50px;
+    font-size: 45px;
+}
+
+.back {
+    cursor: pointer;
+    display: flex;
+    color: var(--textColor2);
+    font-size: 13px;
+    letter-spacing: initial;
+    font-weight: 400;
+}
+
+.baack {
+    cursor: pointer;
+    margin-top: 4px;
+    font-size: 15px;
+}
+
+.back:hover {
+    color: var(--textColor);
+}
+
+.top {
+    margin: 10px;
+}
+
+.lin {
+    color: var(--textColor2);
+    font-size: 12px;
+}
+
+.date {
+    margin-top: 50px;
+    color: var(--textColor2);
+    font-size: 14px;
+    letter-spacing: initial;
+    font-weight: 400;
+}
+
+.imageContainer {
+    width: min(100%, 760px);
+    height: min(52vw, 460px);
+    min-height: 260px;
+    display: flex;
+    position: relative;
+    margin: 50px 0 0;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.image {
+    object-fit: contain;
+    object-position: center;
+    background: rgba(0, 0, 0, .18);
+}
+
+.content {
+    width: 100%;
+    margin: 0;
+}
+
+.post {
+    margin: 40px 0 0;
+}
+
+.solid {
+    border-top: .1px dotted grey;
+    margin: 65px 0 70px;
+}
+
+/*
+ * The editor stores Quill's HTML, including its ql-* classes and inline
+ * image dimensions. Keep this element a Quill document so the browser uses
+ * the same whitespace, alignment, typography, and list behavior as the
+ * editor rather than applying article-specific approximations.
+ */
+.description {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    overflow: visible;
+    padding: 28px 0;
+    color: var(--newTextColor);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.6;
+    text-align: left;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
+.description > * {
+    cursor: text;
+}
+
+.description p,
+.description ol,
+.description ul,
+.description pre,
+.description blockquote,
+.description h1,
+.description h2,
+.description h3,
+.description h4,
+.description h5,
+.description h6 {
+    margin: 0 0 1em;
+    padding: 0;
+}
+
+.description h1,
+.description h2,
+.description h3,
+.description h4,
+.description h5,
+.description h6 {
+    color: var(--textColor);
+    font-family: 'Fira Code', monospace;
+    line-height: 1.25;
+}
+
+.description h1 { font-size: 2em; }
+.description h2 { font-size: 1.6em; }
+.description h3 { font-size: 1.3em; }
+
+.description ol,
+.description ul {
+    padding-left: 1.5em;
+}
+
+.description ol > li,
+.description ul > li {
+    list-style-type: none;
+}
+
+.description ul > li::before {
+    content: '\2022';
+}
+
+.description li::before {
+    display: inline-block;
+    width: 1.2em;
+    white-space: nowrap;
+}
+
+.description li:not(.ql-direction-rtl)::before {
+    margin-left: -1.5em;
+    margin-right: .3em;
+    text-align: right;
+}
+
+.description ol li:not(.ql-direction-rtl),
+.description ul li:not(.ql-direction-rtl) {
+    padding-left: 1.5em;
+}
+
+.description ol li {
+    counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+    counter-increment: list-0;
+}
+
+.description ol li::before {
+    content: counter(list-0) '. ';
+}
+
+.description ol li.ql-indent-1 {
+    counter-increment: list-1;
+}
+
+.description ol li.ql-indent-1::before {
+    content: counter(list-1, lower-alpha) '. ';
+}
+
+.description ol li.ql-indent-2 {
+    counter-increment: list-2;
+}
+
+.description ol li.ql-indent-2::before {
+    content: counter(list-2, lower-roman) '. ';
+}
+
+.description ol li.ql-indent-3 {
+    counter-increment: list-3;
+}
+
+.description ol li.ql-indent-3::before {
+    content: counter(list-3) '. ';
+}
+
+.description blockquote {
+    margin: 1em 0;
+    padding-left: 1em;
+    border-left: 3px solid var(--strtextColor);
+    color: var(--textColor2);
+}
+
+.description pre,
+.description code {
+    font-family: 'Fira Code', monospace;
+}
+
+.description pre {
+    overflow-x: auto;
+    padding: 16px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, .35);
+}
+
+.description .ql-syntax {
+    color: var(--textColor);
+}
+
+.description a {
+    color: var(--strtextColor);
+    text-decoration: underline;
+}
+
+/* Do not replace inline image widths with a block layout or auto width. */
+.description img {
+    display: inline-block;
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+    vertical-align: middle;
+    object-fit: contain;
+}
+
+.description .ql-video,
+.description iframe,
+.description video {
+    display: block;
+    max-width: 100%;
+    margin: 0 auto 1em;
+}
+
+.description audio {
+    display: block;
+    width: 100%;
+    margin: 0 0 1em;
+}
+
+.description .ql-font-serif {
+    font-family: Georgia, 'Times New Roman', serif;
+}
+
+.description .ql-font-monospace {
+    font-family: Monaco, 'Courier New', monospace;
+}
+
+.description .ql-size-small { font-size: .75em; }
+.description .ql-size-large { font-size: 1.5em; }
+.description .ql-size-huge { font-size: 2.5em; }
+
+.description .ql-color-white { color: #fff; }
+.description .ql-color-red { color: #e60000; }
+.description .ql-color-orange { color: #f90; }
+.description .ql-color-yellow { color: #ff0; }
+.description .ql-color-green { color: #008a00; }
+.description .ql-color-blue { color: #06c; }
+.description .ql-color-purple { color: #93f; }
+
+.description .ql-bg-black { background-color: #000; }
+.description .ql-bg-red { background-color: #e60000; }
+.description .ql-bg-orange { background-color: #f90; }
+.description .ql-bg-yellow { background-color: #ff0; }
+.description .ql-bg-green { background-color: #008a00; }
+.description .ql-bg-blue { background-color: #06c; }
+.description .ql-bg-purple { background-color: #93f; }
+
+.description .ql-direction-rtl {
+    direction: rtl;
+    text-align: inherit;
+}
+
+.description .ql-align-center { text-align: center; }
+.description .ql-align-justify { text-align: justify; }
+.description .ql-align-right { text-align: right; }
+
+.description .ql-indent-1:not(.ql-direction-rtl) { padding-left: 3em; }
+.description .ql-indent-2:not(.ql-direction-rtl) { padding-left: 6em; }
+.description .ql-indent-3:not(.ql-direction-rtl) { padding-left: 9em; }
+.description .ql-indent-4:not(.ql-direction-rtl) { padding-left: 12em; }
+.description .ql-indent-5:not(.ql-direction-rtl) { padding-left: 15em; }
+.description .ql-indent-6:not(.ql-direction-rtl) { padding-left: 18em; }
+.description .ql-indent-7:not(.ql-direction-rtl) { padding-left: 21em; }
+.description .ql-indent-8:not(.ql-direction-rtl) { padding-left: 24em; }
+.description .ql-indent-9:not(.ql-direction-rtl) { padding-left: 27em; }
+
+@media screen and (max-width: 768px) {
+    .description {
+        padding: 20px 16px;
+    }
+
+    .title {
+        font-size: 37px;
+    }
+}
+
+@media screen and (max-width: 640px) {
+    .container {
+        width: min(100% - 24px, 1180px);
+    }
+
+    .description {
+        padding: 20px 0;
+    }
+
+    .title {
+        font-size: 35px;
+    }
+}

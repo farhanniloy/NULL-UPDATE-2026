@@ -1,0 +1,132 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    height: 100px;
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    overflow: visible;
+    z-index: 20;
+}
+
+.logo{
+    font-size: 35px;
+    text-transform: lowercase;
+    font-weight: bold;
+    letter-spacing: -0.04em;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    position: relative;
+    margin-left: auto;
+    height: 100%;
+}
+
+.navLinks {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.links {
+    color: inherit;
+    text-decoration: none;
+    padding: 8px 10px;
+    border-radius: 12px;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.links:hover {
+    background: var(--surface-hover);
+    transform: translateY(-1px);
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+}
+
+.toggle { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+.toggleButton { display: none; cursor: pointer; padding: 12px; border-radius: 12px; transition: background 0.2s ease; }
+.toggleButton:hover { background: var(--surface-hover); }
+.toggleButton .bar { display: block; width: 20px; height: 2px; margin: 4px 0; background: var(--textColor); border-radius: 2px; }
+
+.mobileMenu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: min(280px, calc(100vw - 36px));
+    z-index: 9999;
+    border-radius: 18px;
+    background: var(--mobile-menu-bg);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+}
+
+.authWrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mobileAuth {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+@media screen and (max-width: 1280px) {
+    .logo {
+        font-size: 30px;
+    }
+    .navLinks {
+        font-size: 15px;
+        gap: 16px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 0 18px;
+    }
+
+    .navLinks { display: none; }
+    .authWrapper { display: none; }
+    .toggleButton { display: block; }
+    .right { gap: 16px; justify-content: flex-end; }
+
+    .toggle:checked + .toggleButton ~ .mobileMenu {
+        display: flex;
+        position: absolute;
+        top: calc(100% + 12px);
+        right: 0;
+        background: var(--mobile-menu-bg);
+        border: 1px solid var(--surface-border);
+        box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px;
+        width: min(280px, calc(100vw - 36px));
+        z-index: 9999;
+    }
+ 
+    .toggleButton { display: block; }
+    .actions { margin-left: auto; }
+    .right { width: 100%; }
+ 
+    .mobileLink { padding: 12px 16px; border-radius: 14px; text-decoration: none; color: inherit; }
+    .mobileLink:hover { background: var(--surface-hover); }
+}

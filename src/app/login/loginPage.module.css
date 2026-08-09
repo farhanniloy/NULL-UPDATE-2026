@@ -1,0 +1,63 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 60px;
+    margin-bottom: 160px;
+}
+
+.wrapper {
+    background-color: rgba(3, 10, 6, 0.92);
+    border: 1px solid var(--surface-border);
+    padding: 100px 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    border-radius: 18px;
+}
+
+.socialButton {
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid var(--surface-border);
+    font-size: 16px;
+    color: var(--textColor);
+    font-weight: bold;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--button-surface);
+}
+
+.socialButton:first-child {
+    background-color: rgba(255, 85, 85, 0.16);
+}
+
+.socialButton:nth-child(2) {
+    background-color: rgba(20, 20, 20, 0.9);
+}
+
+.socialButton:nth-child(3) {
+    background-color: rgba(8, 123, 234, 0.18);
+}
+
+
+@media screen and (max-width: 768px) {
+    .wrapper {
+        padding: 50px 100px;
+    }
+}
+
+
+@media screen and (max-width: 640px) {
+    .wrapper {
+        padding: 30px;
+    }
+
+    .socialButton {
+
+        font-size: 13px;
+    }
+}
+
+

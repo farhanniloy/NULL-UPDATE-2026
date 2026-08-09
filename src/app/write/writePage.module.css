@@ -1,0 +1,383 @@
+/* New write page design — rebuilt from scratch (Polished Transparent) */
+
+
+/* Page container centered */
+.container{
+  max-width: 1180px;
+  margin: 28px auto 64px;
+  padding: 36px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'Fira Code', monospace;
+}
+
+/* Header with title and publish */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.header h1{
+  margin:0;
+  font-size:28px;
+  color:var(--textColor);
+  font-weight:700;
+  font-family: 'Fira Code', monospace;
+  letter-spacing: 0.6px;
+}
+
+.header::after{
+  content:"Draft your next idea";
+  display:block;
+  margin-top:6px;
+  color:var(--softTextColor);
+  font-family:'Montserrat', sans-serif;
+  font-size:13px;
+  letter-spacing:.2px;
+}
+
+.headerRight{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.publishInline{
+  background:var(--strtextColor);
+  color:var(--bg);
+  padding:8px 14px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+}
+
+/* Top input area */
+.titleRow{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.titleWrap{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.input{
+  flex:1;
+  width:100%;
+  font-size:30px;
+  padding:17px 20px;
+  border-radius:12px;
+  border:1px solid var(--surface-border);
+  background:rgba(2, 16, 10, .55);
+  color:var(--textColor);
+  font-family: 'Fira Code', monospace;
+  outline:none;
+  transition:border-color .2s, box-shadow .2s;
+}
+
+.input:focus, .textAreaSummary:focus, .select:focus, .dateInput:focus{
+  border-color:var(--strtextColor);
+  box-shadow:0 0 0 3px rgba(166, 255, 170, .1);
+}
+
+.textAreaSummary{
+  width:100%;
+  resize:vertical;
+  font-size:14px;
+  padding:10px 12px;
+  border-radius:8px;
+  border:1px solid var(--surface-border);
+  background:rgba(2, 16, 10, .55);
+  color:var(--textColor);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.slugField{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  margin-top:-10px;
+}
+
+.slugField label{
+  color:var(--softTextColor);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+.slugInput{
+  width:100%;
+  min-height:42px;
+  padding:10px 13px;
+  border:1px solid var(--surface-border);
+  border-radius:9px;
+  background:rgba(2, 16, 10, .55);
+  color:var(--textColor);
+  font-family:'Fira Code', monospace;
+  font-size:14px;
+  outline:none;
+}
+
+.slugInput:focus{
+  border-color:var(--strtextColor);
+  box-shadow:0 0 0 3px rgba(166, 255, 170, .1);
+}
+
+.slugField span{
+  color:var(--softTextColor);
+  font-family:'Montserrat', sans-serif;
+  font-size:12px;
+}
+
+.categorySection{
+  display:grid;
+  grid-template-columns:minmax(240px, 1fr) minmax(300px, 1.25fr);
+  gap:18px;
+  align-items:end;
+  padding:20px;
+  border:1px solid var(--surface-border);
+  border-radius:14px;
+  background:linear-gradient(135deg, rgba(4,24,15,.72), rgba(2,12,8,.45));
+}
+
+.categorySelector, .dateSelector{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+
+.categorySelector label, .dateSelector label{
+  color:var(--softTextColor);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+.select, .dateInput{
+  width:100%;
+  min-height:46px;
+  padding:10px 13px;
+  border:1px solid var(--surface-border);
+  border-radius:9px;
+  background:rgba(0,0,0,.3);
+  color:var(--textColor);
+  font-family:'Fira Code', monospace;
+  font-size:14px;
+  outline:none;
+}
+
+.dateSelector{
+  display:grid;
+  grid-template-columns:auto 1fr auto 1fr;
+  align-items:center;
+  gap:10px;
+}
+
+.dateSelector label{
+  white-space:nowrap;
+}
+
+.categorySection > input{
+  grid-column:1 / -1;
+  font-size:15px;
+}
+
+/* Layout for editor + side controls */
+.mainRow{
+  display:grid;
+  grid-template-columns: 64px 1fr; /* left controls + editor */
+  gap:18px;
+  align-items:start;
+}
+
+/* left vertical controls */
+.sideControls{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  align-items:center;
+}
+
+.sideControls .controlButton{
+  width:44px; height:44px; border-radius:50%; border:1px solid rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; background:transparent; cursor:pointer;
+}
+
+/* Editor panel */
+.editorPanel{
+  border-radius:12px;
+  overflow:hidden;
+  border:1px solid var(--surface-border);
+  background: linear-gradient(180deg, rgba(3,12,8,0.60), rgba(3,12,8,0.45));
+  backdrop-filter: blur(6px);
+}
+
+.editor{
+  overflow:hidden;
+  border:1px solid var(--surface-border);
+  border-radius:14px;
+  background:rgba(2, 13, 9, .65);
+  box-shadow:0 16px 45px rgba(0,0,0,.18);
+}
+
+.toolBar{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  padding:12px 16px;
+  border-bottom:1px solid var(--surface-border);
+  background: rgba(2,14,10,0.55);
+}
+
+.button, .addButton{
+  width:42px;
+  height:42px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--surface-border);
+  border-radius:9px;
+  background:rgba(5, 25, 16, .8);
+  cursor:pointer;
+  transition:transform .2s, border-color .2s, background .2s;
+}
+
+.button:hover, .addButton:hover{
+  transform:translateY(-1px);
+  border-color:var(--strtextColor);
+  background:rgba(166,255,170,.1);
+}
+
+.add{
+  display:flex;
+  gap:10px;
+  padding:12px 16px;
+  border-bottom:1px solid var(--surface-border);
+  background:rgba(0,0,0,.14);
+}
+
+.toolButton{ width:36px; height:36px; border-radius:6px; display:flex; align-items:center; justify-content:center; border:1px solid var(--surface-border); background:transparent; cursor:pointer; }
+
+/* Quill container inside panel */
+.textArea{
+  padding:0 0 12px 0;
+  background: transparent;
+}
+
+.textArea .ql-toolbar, .textArea .ql-container{ background: transparent !important; border: none !important; }
+.textArea .ql-container{ border-top:1px solid rgba(255,255,255,0.04); }
+
+.textArea .ql-editor{
+  min-height: 400px;
+  padding:28px;
+  color:var(--textColor);
+  background: transparent !important;
+  line-height:1.6;
+  font-family: 'Montserrat', sans-serif;
+  font-size:18px;
+}
+
+.modalBackdrop{
+  position:fixed;
+  inset:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(5px);
+}
+
+.modal{
+  width:min(560px, 100%);
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  padding:26px;
+  border:1px solid var(--surface-border);
+  border-radius:16px;
+  background:#06150e;
+  box-shadow:0 24px 80px rgba(0,0,0,.45);
+}
+
+.modal h3{
+  margin:0;
+  color:var(--textColor);
+  font-size:20px;
+}
+
+.mediaTypes{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.typeButton, .primary, .secondary{
+  padding:10px 14px;
+  border:1px solid var(--surface-border);
+  border-radius:8px;
+  background:transparent;
+  color:var(--textColor);
+  cursor:pointer;
+  font-family:'Fira Code', monospace;
+}
+
+.typeButton.active, .primary{
+  background:var(--strtextColor);
+  color:var(--bg);
+}
+
+.modalActions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+}
+
+.textArea .ql-editor p{ margin:0 0 1em 0; }
+
+.footerRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding-top:6px;
+}
+
+.publish{
+  background:var(--strtextColor);
+  color:var(--bg);
+  padding:10px 16px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* Responsive */
+@media (max-width: 900px){
+  .mainRow{ grid-template-columns:48px 1fr; gap:12px; }
+  .input{ font-size:22px; }
+  .textArea .ql-editor{ min-height:260px; padding:16px; }
+}
+
+@media (max-width:640px){
+  .container{ padding:22px 14px 44px; margin-top:10px; }
+  .header{ align-items:flex-start; flex-direction:column; }
+  .header h1{ font-size:24px; }
+  .input{ font-size:22px; }
+  .categorySection{ grid-template-columns:1fr; padding:15px; }
+  .dateSelector{ grid-template-columns:1fr 1fr; }
+  .dateSelector label{ margin-top:4px; }
+  .mainRow{ grid-template-columns: 1fr; }
+  .sideControls{ flex-direction:row; justify-content:flex-start; }
+  .titleWrap{ flex-direction:column; align-items:flex-start; gap:8px; }
+  .textArea .ql-editor{ min-height:300px; padding:20px 16px; }
+}
