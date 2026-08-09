@@ -3,24 +3,11 @@
 import Image from "next/image";
 import styles from "./writePage.module.css";
 import { useEffect, useRef, useState } from "react";
-import "react-quill/dist/quill.snow.css";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 
-const ReactQuill = dynamic(async () => {
-    const quillEditorModule = await import('react-quill');
-    const QuillEditor = quillEditorModule.default;
-    // Use the exact Quill instance bundled by react-quill. A second Quill
-    // import causes quill-image-resize-module to lose its internal registry.
-    const Quill = QuillEditor.Quill;
-    // The resize package reads window.Quill while it is being imported.
-    window.Quill = Quill;
-    const resizeModule = await import('quill-image-resize-module');
-    const ImageResize = resizeModule.default || resizeModule;
-    Quill.register('modules/imageResize', ImageResize);
-    return QuillEditor;
-}, { ssr: false });
+const RichTextEditor = dynamic(() => import('react-simple-wysiwyg'), { ssr: false });
 
 const defaultCategories = [
     { slug: 'philosophy', title: 'Philosophy' },
@@ -189,13 +176,6 @@ const WritePage = () => {
             .replace(/^-+|-+$/g, "");
 
     const editorModules = {
-        imageResize: {
-            modules: ['Resize', 'DisplaySize', 'Toolbar'],
-            handleStyles: {
-                backgroundColor: '#a6ffaA',
-                border: '2px solid #06150e',
-            },
-        },
         toolbar: [
             [{ header: [1, 2, 3, false] }],
             ['bold', 'italic', 'underline', 'strike'],
@@ -552,14 +532,12 @@ const WritePage = () => {
                     </div>
                 )}
 
-                <ReactQuill
+                <RichTextEditor
                     ref={editorRef}
                     className={styles.textArea}
-                    theme="snow"
                     value={value}
-                    onChange={setValue}
+                    onChange={(event) => setValue(event.target.value)}
                     placeholder="Tell your story..."
-                    modules={editorModules}
                 />
             </div>
 
