@@ -21,7 +21,7 @@
 
 .title::before {
     content: "root@null:~$";
-    color: #8f2932;
+    color: #a82f39;
     font-size: 12px;
     letter-spacing: .08em;
 }
