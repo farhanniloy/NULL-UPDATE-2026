@@ -1,12 +1,13 @@
 import styles from "./copyright.module.css"
 import {FaCopyright} from "react-icons/fa6";
 import {FaGithub, FaGithubSquare} from "react-icons/fa";
+import Link from "next/link";
 
 const Copyright = () => {
     return(
         <div className={styles.copyright}>
             <p className={styles.text}>
-                <FaCopyright /> All rights reserved by <a href="/u/nil"><strong>@nil</strong></a>
+                <FaCopyright /> All rights reserved by <Link href="/u/nil"><strong>@nil</strong></Link>
                 <span> | </span>
                 <a href="https://github.com/niloy-farhan/fullstack-blog-for-null"
                    target="_blank"

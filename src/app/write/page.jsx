@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import styles from "./writePage.module.css";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
@@ -17,7 +17,7 @@ const defaultCategories = [
     { slug: 'projects', title: 'Projects' },
 ];
 
-const WritePage = () => {
+const WritePageContent = () => {
     const { status } = useSession();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -554,5 +554,11 @@ const WritePage = () => {
         </div>
     );
 };
+
+const WritePage = () => (
+    <Suspense fallback={<div className={styles.loading}>Loading editor...</div>}>
+        <WritePageContent />
+    </Suspense>
+);
 
 export default WritePage;

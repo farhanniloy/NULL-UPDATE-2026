@@ -35,11 +35,11 @@ const SinglePage = async ({ params }) => {
         return (
             <div className={styles.container}>
                 <div className={styles.infoContainer}>
-                    <a href="/" className={styles.top}>
+                    <Link href="/" className={styles.top}>
                         <div className={styles.back}>
                             <p><span className={styles.baack}>&#8617;</span> back to home</p>
                         </div>
-                    </a>
+                    </Link>
                     <div className={styles.textContainer}>
                         <h2 className={styles.title}>Post not found</h2>
                         <p>Could not load this post. Please try again later.</p>
@@ -56,11 +56,11 @@ const SinglePage = async ({ params }) => {
         return (
             <div className={styles.container}>
                 <div className={styles.infoContainer}>
-                    <a href="/" className={styles.top}>
+                    <Link href="/" className={styles.top}>
                         <div className={styles.back}>
                             <p><span className={styles.baack}>&#8617;</span> back to home</p>
                         </div>
-                    </a>
+                    </Link>
                     <div className={styles.textContainer}>
                         <h2 className={styles.title}>Post not found</h2>
                         <p>This post is pending moderation.</p>
@@ -78,11 +78,11 @@ const SinglePage = async ({ params }) => {
     return (
         <div className={styles.container}>
             <div className={styles.infoContainer}>
-                <a href="/" className={styles.top}>
+                <Link href="/" className={styles.top}>
                     <div className={styles.back}>
                         <p><span className={styles.baack}>&#8617;</span> back to home</p>
                     </div>
-                </a>
+                </Link>
                 <div className={styles.textContainer}>
                     <span className={styles.date}>
                         ∅∅∅

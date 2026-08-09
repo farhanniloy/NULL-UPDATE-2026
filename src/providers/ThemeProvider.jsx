@@ -12,9 +12,7 @@ const ThemeProvider = ({ children }) => {
         setMounted(true);
     }, []);
 
-    if (mounted) {
-        return <div className={theme}>{children}</div>;
-    }
+    return mounted ? <div className={theme}>{children}</div> : children;
 };
 
 export default ThemeProvider;

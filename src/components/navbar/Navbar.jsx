@@ -7,9 +7,9 @@ import ThemeToggle from "@/components/themeToggle/ThemeToggle";
 const Navbar = () =>  {
     return (
         <div className={styles.container}>
-            <a href="/">
+            <Link href="/">
                 <div className={styles.logo}>null</div>
-            </a>
+            </Link>
 
             <div className={styles.right}>
                 <div className={styles.navLinks}>
