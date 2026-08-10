@@ -327,6 +327,32 @@
   font-family:inherit;
 }
 
+.colorControl{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  min-height:30px;
+  padding:2px 5px;
+  border:1px solid var(--surface-border);
+  border-radius:5px;
+  color:var(--textColor);
+  cursor:pointer;
+}
+
+.colorControl span{
+  font-weight:700;
+  line-height:1;
+}
+
+.colorControl input{
+  width:22px;
+  height:22px;
+  padding:0;
+  border:0;
+  background:transparent;
+  cursor:pointer;
+}
+
 .textArea.rsw-ce{
   min-height:400px;
   padding:28px;
@@ -376,6 +402,55 @@
   font-size:.85em;
   line-height:1.5;
   white-space:pre-wrap;
+}
+
+.textArea.rsw-ce h1,
+.textArea.rsw-ce h2,
+.textArea.rsw-ce h3,
+.textArea.rsw-ce h4,
+.textArea.rsw-ce h5,
+.textArea.rsw-ce h6{
+  margin:0 0 .7em;
+  color:var(--textColor);
+  font-family:'Fira Code', monospace;
+  line-height:1.25;
+}
+
+.textArea.rsw-ce h1{ font-size:2em; }
+.textArea.rsw-ce h2{ font-size:1.6em; }
+.textArea.rsw-ce h3{ font-size:1.3em; }
+.textArea.rsw-ce h4{ font-size:1.15em; }
+.textArea.rsw-ce h5{ font-size:1em; }
+.textArea.rsw-ce h6{ font-size:.9em; }
+
+.textArea.rsw-ce hr{
+  margin:1.5em 0;
+  border:0;
+  border-top:1px solid var(--surface-border);
+}
+
+.textArea.rsw-ce table{
+  width:100%;
+  margin:1em 0;
+  border-collapse:collapse;
+}
+
+.editorStatus{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:8px 16px 12px;
+  border-top:1px solid rgba(255,255,255,.04);
+  color:var(--softTextColor);
+  font-family:'Fira Code', monospace;
+  font-size:11px;
+}
+
+.textArea.rsw-ce th,
+.textArea.rsw-ce td{
+  padding:8px;
+  border:1px solid var(--surface-border);
+  text-align:left;
 }
 
 .textArea .ql-editor{

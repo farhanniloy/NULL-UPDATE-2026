@@ -21,6 +21,8 @@ const ComplexBackground = () => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let isPageVisible = document.visibilityState === "visible";
     let isInViewport = true;
+    let isScrolling = false;
+    let scrollTimeout;
 
     const setSize = () => {
       if (!canvas.isConnected || !parent.isConnected) return;
@@ -144,27 +146,42 @@ const ComplexBackground = () => {
         ctx.stroke();
       }
 
-      if (!reducedMotion.matches && isPageVisible && isInViewport) {
+      if (!reducedMotion.matches && isPageVisible && isInViewport && !isScrolling) {
         requestRef.current = window.requestAnimationFrame(draw);
       }
     };
 
+    const resumeAfterScroll = () => {
+      isScrolling = false;
+      if (isPageVisible && isInViewport && !reducedMotion.matches) {
+        requestRef.current = window.requestAnimationFrame(draw);
+      }
+    };
+
+    const handleScroll = () => {
+      isScrolling = true;
+      window.cancelAnimationFrame(requestRef.current);
+      window.clearTimeout(scrollTimeout);
+      scrollTimeout = window.setTimeout(resumeAfterScroll, 120);
+    };
+
     const handleVisibilityChange = () => {
       isPageVisible = document.visibilityState === "visible";
-      if (isPageVisible && isInViewport && !reducedMotion.matches) {
+      if (isPageVisible && isInViewport && !reducedMotion.matches && !isScrolling) {
         window.cancelAnimationFrame(requestRef.current);
         requestRef.current = window.requestAnimationFrame(draw);
       }
     };
     const intersectionObserver = new IntersectionObserver(([entry]) => {
       isInViewport = entry.isIntersecting;
-      if (isInViewport && isPageVisible && !reducedMotion.matches) {
+      if (isInViewport && isPageVisible && !reducedMotion.matches && !isScrolling) {
         window.cancelAnimationFrame(requestRef.current);
         requestRef.current = window.requestAnimationFrame(draw);
       }
     });
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     intersectionObserver.observe(canvas);
     requestRef.current = window.requestAnimationFrame(draw);
     resizeObserver.current = new ResizeObserver(setSize);
@@ -172,9 +189,11 @@ const ComplexBackground = () => {
 
     return () => {
       window.cancelAnimationFrame(requestRef.current);
+      window.clearTimeout(scrollTimeout);
       resizeObserver.current?.disconnect();
       intersectionObserver.disconnect();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
