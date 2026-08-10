@@ -121,7 +121,7 @@
     overflow: visible;
     padding: 28px 0;
     color: var(--newTextColor);
-    font-family: 'Source Sans 3', Arial, sans-serif;
+    font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
     font-size: 18px;
     font-weight: 400;
     line-height: 1.85;
@@ -136,17 +136,12 @@
     cursor: text;
 }
 
-.description p,
-.description ol,
-.description ul,
-.description pre,
-.description blockquote,
-.description h1,
-.description h2,
-.description h3,
-.description h4,
-.description h5,
-.description h6 {
+.description :where(p, ol, ul, blockquote, a, strong, em) {
+    font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+    font-weight: 400;
+}
+
+.description :where(p, ol, ul, pre, blockquote, h1, h2, h3, h4, h5, h6) {
     margin: 0 0 1em;
     padding: 0;
 }
