@@ -85,7 +85,7 @@ const WritePageContent = () => {
         let block = selection.anchorNode.nodeType === Node.ELEMENT_NODE
             ? selection.anchorNode
             : selection.anchorNode.parentElement;
-        while (block && block !== editor && !/^(P|DIV|H1|H2|H3|BLOCKQUOTE|PRE|LI)$/.test(block.tagName)) {
+        while (block && block !== editor && !/^(P|DIV|H1|H2|H3|H4|H5|H6|BLOCKQUOTE|PRE|LI)$/.test(block.tagName)) {
             block = block.parentElement;
         }
 
@@ -117,14 +117,45 @@ const WritePageContent = () => {
         updateToolbarState();
     };
 
+    const handleEditorChange = (event) => {
+        const nextValue = event.target.value ?? event.target.innerHTML ?? "";
+        setValue(nextValue);
+        saveEditorSelection();
+    };
+
+    const handleEditorKeyDown = (event) => {
+        if (!(event.ctrlKey || event.metaKey)) return;
+
+        const shortcuts = {
+            b: 'bold',
+            i: 'italic',
+            u: 'underline',
+        };
+        const command = shortcuts[event.key.toLowerCase()];
+        if (command) {
+            event.preventDefault();
+            runEditorCommand(command);
+        } else if (event.key.toLowerCase() === 'k') {
+            event.preventDefault();
+            addEditorLink();
+        }
+    };
+
     const runEditorCommand = (command, value = undefined) => {
         restoreEditorSelection();
+        if (command === 'foreColor' || command === 'hiliteColor') {
+            document.execCommand('styleWithCSS', false, true);
+        }
         document.execCommand(command, false, value);
         saveEditorSelection();
         updateToolbarState();
         if (editorRef.current) {
-            setValue(editorRef.current.innerHTML);
+            handleEditorChange({ target: { value: editorRef.current.innerHTML } });
         }
+    };
+
+    const runEditorCommandWithValue = (command, event) => {
+        runEditorCommand(command, event.target.value);
     };
 
     const addEditorLink = () => {
@@ -164,7 +195,7 @@ const WritePageContent = () => {
         selection.addRange(range);
         saveEditorSelection();
         updateToolbarState();
-        setValue(editor.innerHTML);
+        handleEditorChange({ target: { value: editor.innerHTML } });
     };
 
     useEffect(() => {
@@ -313,27 +344,94 @@ const WritePageContent = () => {
         ],
     };
 
+    const getYouTubeEmbedUrl = (input) => {
+        const value = input.trim();
+        if (/^[a-zA-Z0-9_-]{11}$/.test(value)) {
+            return `https://www.youtube.com/embed/${value}`;
+        }
+
+        try {
+            const url = new URL(value);
+            if (!['youtube.com', 'www.youtube.com', 'youtu.be', 'www.youtube-nocookie.com', 'youtube-nocookie.com'].includes(url.hostname)) {
+                return '';
+            }
+            let id = '';
+            if (['youtu.be', 'www.youtu.be'].includes(url.hostname)) {
+                id = url.pathname.slice(1);
+            } else if (['youtube.com', 'www.youtube.com', 'www.youtube-nocookie.com', 'youtube-nocookie.com'].includes(url.hostname)) {
+                id = url.searchParams.get('v') || url.pathname.split('/').pop();
+            }
+            return /^[a-zA-Z0-9_-]{11}$/.test(id || '') ? `https://www.youtube.com/embed/${id}` : '';
+        } catch {
+            return '';
+        }
+    };
+
+    const insertEditorHtml = (html) => {
+        const editor = editorRef.current;
+        restoreEditorSelection();
+        const selection = window.getSelection();
+        if (!editor || !selection?.rangeCount) {
+            setValue((current) => `${current}\n${html}`);
+            return;
+        }
+
+        const range = selection.getRangeAt(0);
+        if (!editor.contains(range.commonAncestorContainer)) {
+            setValue((current) => `${current}\n${html}`);
+            return;
+        }
+
+        range.deleteContents();
+        const container = document.createElement('div');
+        container.innerHTML = html;
+        const fragment = document.createDocumentFragment();
+        let lastNode = null;
+        while (container.firstChild) {
+            lastNode = fragment.appendChild(container.firstChild);
+        }
+        range.insertNode(fragment);
+        range.setStartAfter(lastNode);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        saveEditorSelection();
+        handleEditorChange({ target: { value: editor.innerHTML } });
+    };
+
+    const insertTable = () => {
+        insertEditorHtml(
+            '<table><tbody><tr><td> </td><td> </td><td> </td></tr><tr><td> </td><td> </td><td> </td></tr><tr><td> </td><td> </td><td> </td></tr></tbody></table><p><br></p>',
+        );
+    };
+
     const handleAddMedia = () => {
         try {
             let htmlToAdd = '';
             if (mediaType === 'image' && mediaUrl) {
                 htmlToAdd = `<img src="${mediaUrl}" style="max-width:100%; height:auto;" alt="Image" />`;
             } else if (mediaType === 'youtube' && youtubeId) {
-                const input = youtubeId.trim();
-                const embeddedId = input.includes('youtube.com/embed/')
-                    ? input.split('youtube.com/embed/')[1]?.split('?')[0]
-                    : input.includes('youtu.be/')
-                        ? input.split('youtu.be/')[1]?.split('?')[0]
-                        : input;
-                htmlToAdd = `<iframe width="100%" height="400" src="https://www.youtube.com/embed/${embeddedId}" frameborder="0" allowfullscreen></iframe>`;
+                const embedUrl = getYouTubeEmbedUrl(youtubeId);
+                if (!embedUrl) {
+                    alert('Please provide a valid YouTube URL or 11-character video ID');
+                    return;
+                }
+                htmlToAdd = `<iframe width="100%" height="400" src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen title="YouTube video"></iframe>`;
             } else if (mediaType === 'audio' && mediaUrl) {
-                htmlToAdd = `<audio controls style="width:100%;"><source src="${mediaUrl}" type="audio/mpeg">Your browser does not support the audio element.</audio>`;
+                try {
+                    const audioUrl = new URL(mediaUrl.trim());
+                    if (!['http:', 'https:'].includes(audioUrl.protocol)) throw new Error('unsupported protocol');
+                    htmlToAdd = `<audio controls><source src="${audioUrl.href}" type="audio/mpeg">Your browser does not support the audio element.</audio>`;
+                } catch {
+                    alert('Please provide a valid audio URL');
+                    return;
+                }
             }
             if (!htmlToAdd) {
                 alert('Please provide valid media information');
                 return;
             }
-            setValue((current) => current + '\n' + htmlToAdd);
+            insertEditorHtml(htmlToAdd);
             setMediaUrl('');
             setYoutubeId('');
             setShowMediaModal(false);
@@ -363,6 +461,13 @@ const WritePageContent = () => {
 
         return normalizeEditorHtml(content.innerHTML);
     };
+
+    const wordCount = String(value ?? "")
+        .replace(/<[^>]*>/g, ' ')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .length;
 
     const updateImageSelection = () => {
         const image = selectedImageRef.current;
@@ -455,11 +560,12 @@ const WritePageContent = () => {
     };
 
     const handleSubmit = async () => {
+        const editorContent = getEditorContent();
         if (!title.trim()) {
             alert('Please enter a title');
             return;
         }
-        if (!value.trim()) {
+        if (!editorContent.trim()) {
             alert('Please write some content');
             return;
         }
@@ -471,10 +577,10 @@ const WritePageContent = () => {
         setSaving(true);
         try {
             const publishedAt = postDate ? toLocalDateTimeIso(postDate, postTime) : undefined;
-            const editorContent = getEditorContent();
             if (isEdit && slugParam) {
                 const res = await fetch(`/api/posts/${encodeURIComponent(slugParam)}`, {
                     method: 'PUT',
+                    cache: 'no-store',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         title,
@@ -489,7 +595,9 @@ const WritePageContent = () => {
                 });
                 if (res.ok) {
                     const updated = await res.json();
-                    router.push(`/posts/${updated.slug || slugParam}`);
+                    const destination = `/posts/${updated.slug || slugParam}`;
+                    router.replace(destination);
+                    router.refresh();
                     return;
                 }
                 const errText = await res.text();
@@ -498,6 +606,7 @@ const WritePageContent = () => {
             } else {
                 const res = await fetch('/api/posts', {
                     method: 'POST',
+                    cache: 'no-store',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         title,
@@ -742,9 +851,11 @@ const WritePageContent = () => {
                     ref={editorRef}
                     className={styles.textArea}
                     value={value}
-                    onChange={(event) => setValue(event.target.value)}
+                    onChange={handleEditorChange}
+                    onBlur={handleEditorChange}
                     onSelect={handleEditorSelection}
                     onKeyUp={handleEditorSelection}
+                    onKeyDown={handleEditorKeyDown}
                     onMouseUp={handleEditorSelection}
                     onInput={updateToolbarState}
                     onPaste={handleEditorPaste}
@@ -764,10 +875,19 @@ const WritePageContent = () => {
                         <button className={toolbarState.italic ? styles.activeEditorButton : ''} type="button" title="Italic" onClick={() => runEditorCommand('italic')}><em>I</em></button>
                         <button className={toolbarState.underline ? styles.activeEditorButton : ''} type="button" title="Underline" onClick={() => runEditorCommand('underline')}><u>U</u></button>
                         <button className={toolbarState.strikeThrough ? styles.activeEditorButton : ''} type="button" title="Strikethrough" onClick={() => runEditorCommand('strikeThrough')}><s>S</s></button>
+                        <button type="button" title="Subscript" onClick={() => runEditorCommand('subscript')}>x<sub>2</sub></button>
+                        <button type="button" title="Superscript" onClick={() => runEditorCommand('superscript')}>x<sup>2</sup></button>
                         <button className={toolbarState.unorderedList ? styles.activeEditorButton : ''} type="button" title="Bulleted list" onClick={() => runEditorCommand('insertUnorderedList')}>• list</button>
                         <button className={toolbarState.orderedList ? styles.activeEditorButton : ''} type="button" title="Numbered list" onClick={() => runEditorCommand('insertOrderedList')}>1. list</button>
                         <button className={toolbarState.blockquote ? styles.activeEditorButton : ''} type="button" title="Blockquote" onClick={() => runEditorCommand('formatBlock', 'BLOCKQUOTE')}>quote</button>
                         <button className={toolbarState.code ? styles.activeEditorButton : ''} type="button" title="Code block" onClick={() => runEditorCommand('formatBlock', 'PRE')}>code</button>
+                        <button type="button" title="Horizontal rule" onClick={() => runEditorCommand('insertHorizontalRule')}>—</button>
+                        <button type="button" title="Align left" onClick={() => runEditorCommand('justifyLeft')}>←</button>
+                        <button type="button" title="Align center" onClick={() => runEditorCommand('justifyCenter')}>↔</button>
+                        <button type="button" title="Align right" onClick={() => runEditorCommand('justifyRight')}>→</button>
+                        <button type="button" title="Increase indent" onClick={() => runEditorCommand('indent')}>»</button>
+                        <button type="button" title="Decrease indent" onClick={() => runEditorCommand('outdent')}>«</button>
+                        <button type="button" title="Insert 3 by 3 table" onClick={insertTable}>table</button>
                         <button type="button" title="Add link" onClick={addEditorLink}>link</button>
                         <button type="button" title="Clear formatting" onClick={() => runEditorCommand('removeFormat')}>clear</button>
                         <button type="button" title="Undo" onClick={() => runEditorCommand('undo')}>undo</button>
@@ -786,9 +906,36 @@ const WritePageContent = () => {
                             <option value="H1">Heading 1</option>
                             <option value="H2">Heading 2</option>
                             <option value="H3">Heading 3</option>
+                            <option value="H4">Heading 4</option>
+                            <option value="H5">Heading 5</option>
+                            <option value="H6">Heading 6</option>
                         </select>
+                        <label className={styles.colorControl} title="Text color">
+                            <span aria-hidden="true">A</span>
+                            <input
+                                type="color"
+                                aria-label="Text color"
+                                defaultValue="#a6ffaA"
+                                onMouseDown={saveEditorSelection}
+                                onChange={(event) => runEditorCommandWithValue('foreColor', event)}
+                            />
+                        </label>
+                        <label className={styles.colorControl} title="Highlight color">
+                            <span aria-hidden="true">▰</span>
+                            <input
+                                type="color"
+                                aria-label="Highlight color"
+                                defaultValue="#173d2a"
+                                onMouseDown={saveEditorSelection}
+                                onChange={(event) => runEditorCommandWithValue('hiliteColor', event)}
+                            />
+                        </label>
                     </div>
                 </RichTextEditor>
+                <div className={styles.editorStatus} aria-live="polite">
+                    <span>{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
+                    <span>Shortcuts: Ctrl/Cmd+B, I, U, K</span>
+                </div>
                 {imageSelection && (
                     <div
                         className={styles.imageSelection}

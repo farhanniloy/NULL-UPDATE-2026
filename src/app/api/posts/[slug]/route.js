@@ -125,13 +125,14 @@ export const PUT = async (req, { params }) => {
             where: { slug },
             data: updateData,
         });
+        revalidatePath(`/posts/${slug}`);
         revalidatePath(`/posts/${updated.slug}`);
         revalidatePath("/");
 
         return new NextResponse(JSON.stringify(updated), { status: 200 });
     } catch (err) {
         console.log(err);
-        return new NextResponse(JSON.stringify({ message: 'Something went wrong' }), { status: 500 });
+        return new NextResponse(JSON.stringify({ message: 'Something went wrong', error: err.message }), { status: 500 });
     }
 };
 
