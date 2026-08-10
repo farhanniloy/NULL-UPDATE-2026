@@ -103,7 +103,6 @@
     font-display: swap;
     src: url('/fonts/source-sans-3-500.ttf') format('truetype');
 }
-
 :root {
     --bg: #020904;
     --textColor: #b8ffc8;
