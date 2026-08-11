@@ -60,38 +60,30 @@ const Featured = () => {
     const typingComplete = typedCount >= TOTAL_CHARACTERS;
 
     useEffect(() => {
-    // Prevent running the effect multiple times if the component remounts quickly
-    if (animationInitialized.current) return;
-    animationInitialized.current = true;
+        // Only run client-side
+        if (typeof window === 'undefined') return;
+        if (animationInitialized.current) return;
+        animationInitialized.current = true;
 
-    const navigationEntry = performance.getEntriesByType("navigation")[0];
-    const navType = navigationEntry?.type;
-    const isReload = navType === "reload";
-    const isNavigate = navType === "navigate";
-    const hasVisited = sessionStorage.getItem(TERMINAL_VISITED_KEY) === 'true';
+        const navEntries = performance.getEntriesByType('navigation') || [];
+        const navType = navEntries[0] && navEntries[0].type;
+        const isFullLoad = navType === 'reload' || navType === 'navigate';
+        const hasVisited = sessionStorage.getItem(TERMINAL_VISITED_KEY) === 'true';
 
-    // If this is a full page load (typed URL / navigate) or a reload, play the animation from start
-    if (isReload || isNavigate) {
-        setTypedCount(0);
-        setAnimationReady(true);
-        sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
-        return;
-    }
-
-    // For client-side navigations, if the user has already seen the animation this session,
-    // show the completed text immediately instead of replaying. Otherwise, play it.
-    if (hasVisited) {
-        setTypedCount(TOTAL_CHARACTERS);
-        setAnimationReady(true);
-    } else {
-        sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
-        setAnimationReady(true);
-    }
+        if (isFullLoad) {
+            setTypedCount(0);
+        } else if (hasVisited) {
+            setTypedCount(TOTAL_CHARACTERS);
         }
 
-        sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
+        try {
+            sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
+        } catch (e) {
+            // ignore storage errors
+        }
+
         setAnimationReady(true);
-    }, []);
+    }, [pathname]);
 
     useEffect(() => {
         if (!animationReady) return undefined;
