@@ -18,11 +18,11 @@ const Footer = () => {
         <footer className={styles.container} aria-label="footer">
             <div className={styles.info}>
                 <Link href="/" className={styles.logo}>null</Link>
-                <p className={styles.text}>
-                    what’s good about love is, it’s a very strong desire that realigns the entire tensor of human mind toward a singular madness. the most fundamental incentive (fear) being completely hijacked by its total opposite force, that threshold, among all these mechanistic forces that arise in a human mind, this is the only true madness worth living for! even the gods be envy of...
-                </p>
-                <div className={styles.signature}>
-                    <span className={styles.signatureLabel}>~ nil</span>
+                <div className={styles.quoteRow}>
+                    <span className={styles.signature}>~ nil</span>
+                    <p className={styles.text}>
+                        what’s good about love is, it’s a very strong desire that realigns the entire tensor of human mind toward a singular madness. the most fundamental incentive (fear) being completely hijacked by its total opposite force, that threshold, among all these mechanistic forces that arise in a human mind, this is the only true madness worth living for! even the gods be envy of...
+                    </p>
                 </div>
             </div>
 

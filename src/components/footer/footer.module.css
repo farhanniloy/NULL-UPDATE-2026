@@ -18,7 +18,25 @@
 .logo{
     margin: 20px 0px 20px 0px;
     font-family: Arial, Helvetica, sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1;
 }
+
+.quoteRow {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.signature {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    color: var(--strtextColor);
+    white-space: nowrap;
+    margin-top: 4px;
+}
+
 
 .text, .text2 {
     font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
