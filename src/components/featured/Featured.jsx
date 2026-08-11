@@ -39,6 +39,7 @@ const Featured = () => {
     const [promptValue, setPromptValue] = useState('');
     const [response, setResponse] = useState('');
     const inputRef = useRef(null);
+    const animationInitialized = useRef(false);
 
     const typedOutput = useMemo(() => {
         const output = [];
@@ -59,26 +60,33 @@ const Featured = () => {
     const typingComplete = typedCount >= TOTAL_CHARACTERS;
 
     useEffect(() => {
-        const navigationEntry = performance.getEntriesByType('navigation')[0];
-        const navType = navigationEntry?.type;
-        const isReload = navType === 'reload';
-        const isNavigate = navType === 'navigate';
-        const hasVisited = sessionStorage.getItem(TERMINAL_VISITED_KEY) === 'true';
+    // Prevent running the effect multiple times if the component remounts quickly
+    if (animationInitialized.current) return;
+    animationInitialized.current = true;
 
-        // If this is a full page load (typed URL / navigate or refresh), play the animation
-        if (isReload || isNavigate) {
-            setTypedCount(0);
-            setAnimationReady(true);
-            sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
-            return;
-        }
+    const navigationEntry = performance.getEntriesByType("navigation")[0];
+    const navType = navigationEntry?.type;
+    const isReload = navType === "reload";
+    const isNavigate = navType === "navigate";
+    const hasVisited = sessionStorage.getItem(TERMINAL_VISITED_KEY) === 'true';
 
-        // For client-side navigations, if the user has already seen the animation this session,
-        // show the completed text immediately instead of replaying
-        if (hasVisited) {
-            setTypedCount(TOTAL_CHARACTERS);
-            setAnimationReady(true);
-            return;
+    // If this is a full page load (typed URL / navigate) or a reload, play the animation from start
+    if (isReload || isNavigate) {
+        setTypedCount(0);
+        setAnimationReady(true);
+        sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
+        return;
+    }
+
+    // For client-side navigations, if the user has already seen the animation this session,
+    // show the completed text immediately instead of replaying. Otherwise, play it.
+    if (hasVisited) {
+        setTypedCount(TOTAL_CHARACTERS);
+        setAnimationReady(true);
+    } else {
+        sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
+        setAnimationReady(true);
+    }
         }
 
         sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
