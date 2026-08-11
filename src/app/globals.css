@@ -337,6 +337,10 @@ body.nav-open .complexBackground {
         padding-left: 24px;
         padding-right: 24px;
     }
+
+    .contentWrapper > :last-child {
+        margin-bottom: 20px;
+    }
 }
 
 @media screen and (max-width:768px) {
