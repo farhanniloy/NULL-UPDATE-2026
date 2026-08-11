@@ -382,6 +382,24 @@ const WritePageContent = () => {
         }
     };
 
+    const getFacebookVideoEmbedUrl = (input) => {
+        const value = input.trim();
+        if (!value) return '';
+
+        try {
+            const url = new URL(value);
+            const allowedHosts = ['facebook.com', 'www.facebook.com', 'm.facebook.com'];
+            if (!allowedHosts.includes(url.hostname)) {
+                return '';
+            }
+
+            const videoHref = url.href;
+            return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(videoHref)}&show_text=false&width=560`;
+        } catch {
+            return '';
+        }
+    };
+
     const insertEditorHtml = (html) => {
         const editor = editorRef.current;
         restoreEditorSelection();
@@ -424,7 +442,16 @@ const WritePageContent = () => {
         try {
             let htmlToAdd = '';
             if (mediaType === 'image' && mediaUrl) {
-                htmlToAdd = `<img src="${mediaUrl}" style="max-width:100%; height:auto;" alt="Image" />`;
+                try {
+                    const imageUrl = new URL(mediaUrl.trim());
+                    if (!['http:', 'https:'].includes(imageUrl.protocol)) {
+                        throw new Error('unsupported protocol');
+                    }
+                    htmlToAdd = `<img src="${imageUrl.href}" style="max-width:100%; height:auto;" alt="Image" />`;
+                } catch {
+                    alert('Please provide a valid remote image URL (http/https)');
+                    return;
+                }
             } else if (mediaType === 'youtube' && youtubeId) {
                 const embedUrl = getYouTubeEmbedUrl(youtubeId);
                 if (!embedUrl) {
@@ -432,6 +459,13 @@ const WritePageContent = () => {
                     return;
                 }
                 htmlToAdd = `<iframe width="100%" height="400" src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen title="YouTube video"></iframe>`;
+            } else if (mediaType === 'facebook' && mediaUrl) {
+                const embedUrl = getFacebookVideoEmbedUrl(mediaUrl);
+                if (!embedUrl) {
+                    alert('Please provide a valid Facebook video URL');
+                    return;
+                }
+                htmlToAdd = `<iframe src="${embedUrl}" width="100%" height="400" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" title="Facebook video"></iframe>`;
             } else if (mediaType === 'audio' && mediaUrl) {
                 try {
                     const audioUrl = new URL(mediaUrl.trim());
@@ -756,7 +790,7 @@ const WritePageContent = () => {
                         className={styles.button}
                         onClick={() => setShowMediaModal(true)}
                         type="button"
-                        title="Add media (YouTube, image URLs, audio)"
+                        title="Add media (remote image, YouTube, Facebook, audio)"
                     >
                         <Image src="/video.png" alt="Media" width={16} height={16} />
                     </button>
@@ -799,6 +833,13 @@ const WritePageContent = () => {
                                     YouTube
                                 </button>
                                 <button
+                                    className={`${styles.typeButton} ${mediaType === 'facebook' ? styles.active : ''}`}
+                                    onClick={() => setMediaType('facebook')}
+                                    type="button"
+                                >
+                                    Facebook Video
+                                </button>
+                                <button
                                     className={`${styles.typeButton} ${mediaType === 'audio' ? styles.active : ''}`}
                                     onClick={() => setMediaType('audio')}
                                     type="button"
@@ -810,7 +851,7 @@ const WritePageContent = () => {
                             {mediaType === 'image' && (
                                 <input
                                     type="text"
-                                    placeholder="Image URL (e.g., https://...)"
+                                    placeholder="Remote image URL (CDN / online image, e.g. https://...)"
                                     value={mediaUrl}
                                     onChange={(e) => setMediaUrl(e.target.value)}
                                     className={styles.input}
@@ -823,6 +864,16 @@ const WritePageContent = () => {
                                     placeholder="YouTube URL or Video ID"
                                     value={youtubeId}
                                     onChange={(e) => setYoutubeId(e.target.value)}
+                                    className={styles.input}
+                                />
+                            )}
+
+                            {mediaType === 'facebook' && (
+                                <input
+                                    type="text"
+                                    placeholder="Facebook video URL (https://facebook.com/.../videos/...)"
+                                    value={mediaUrl}
+                                    onChange={(e) => setMediaUrl(e.target.value)}
                                     className={styles.input}
                                 />
                             )}
