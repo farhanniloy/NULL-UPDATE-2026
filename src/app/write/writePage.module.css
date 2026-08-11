@@ -173,6 +173,14 @@
   font-family:'Fira Code', monospace;
   font-size:14px;
   outline:none;
+  box-sizing: border-box; /* ensure padding included in width */
+}
+
+/* Ensure date inputs keep a usable width so year field isn't hidden on narrower layouts */
+.dateInput{
+  min-width:180px;
+  width:100%;
+  box-sizing: border-box;
 }
 
 .select[multiple]{
@@ -192,7 +200,10 @@
 
 .dateSelector{
   display:grid;
-  grid-template-columns:auto 1fr auto 1fr;
+  /* Give the label + input pairs more predictable widths so the year is visible
+     even when the overall container is narrower. The inputs are min-sized while
+     still being allowed to grow proportionally. */
+  grid-template-columns: auto minmax(180px, 1fr) auto minmax(180px, 1fr);
   align-items:center;
   gap:10px;
 }
@@ -587,6 +598,16 @@
   .mainRow{ grid-template-columns:48px 1fr; gap:12px; }
   .input{ font-size:22px; }
   .textArea .rsw-ce{ min-height:260px; padding:16px; }
+
+  /* At narrower desktop/tablet widths, stack the date label+input pairs into two columns
+     to avoid overly compressed date inputs (year dropdown getting clipped). */
+  .dateSelector{
+    grid-template-columns: 1fr 1fr;
+  }
+  .dateSelector .dateInput{
+    min-width:0;
+    width:100%;
+  }
 }
 
 @media (max-width:640px){
@@ -597,6 +618,19 @@
   .categorySection{ grid-template-columns:1fr; padding:15px; }
   .dateSelector{ grid-template-columns:1fr 1fr; }
   .dateSelector label{ margin-top:4px; }
+
+  /* Allow labels to wrap and sit above inputs on small screens so date parts are not clipped */
+  .dateSelector label{
+    white-space:normal;
+    display:block;
+  }
+
+  /* Make sure inputs take full column width on mobile */
+  .dateSelector .dateInput{
+    width:100%;
+    min-width:0; /* allow the grid to size columns on small screens */
+  }
+
   .mainRow{ grid-template-columns: 1fr; }
   .sideControls{ flex-direction:row; justify-content:flex-start; }
   .titleWrap{ flex-direction:column; align-items:flex-start; gap:8px; }
