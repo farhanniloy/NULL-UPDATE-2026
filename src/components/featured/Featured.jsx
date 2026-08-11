@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styles from "./featured.module.css";
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 const typingSegments = [
     { text: "hey, it's Nil. ", bold: false },
@@ -33,6 +33,7 @@ const TERMINAL_VISITED_KEY = 'null-terminal-visited-v2';
 
 const Featured = () => {
     const router = useRouter();
+    const pathname = usePathname();
     const [typedCount, setTypedCount] = useState(0);
     const [animationReady, setAnimationReady] = useState(false);
     const [promptValue, setPromptValue] = useState('');
@@ -59,15 +60,33 @@ const Featured = () => {
     const typingComplete = typedCount >= TOTAL_CHARACTERS;
 
     useEffect(() => {
-        if (animationInitialized.current) return;
-        animationInitialized.current = true;
+    // Prevent running the effect multiple times if the component remounts quickly
+    if (animationInitialized.current) return;
+    animationInitialized.current = true;
 
-        const navigationEntry = performance.getEntriesByType('navigation')[0];
-        const isReload = navigationEntry?.type === 'reload';
-        const hasVisited = sessionStorage.getItem(TERMINAL_VISITED_KEY) === 'true';
+    const navigationEntry = performance.getEntriesByType("navigation")[0];
+    const navType = navigationEntry?.type;
+    const isReload = navType === "reload";
+    const isNavigate = navType === "navigate";
+    const hasVisited = sessionStorage.getItem(TERMINAL_VISITED_KEY) === 'true';
 
-        if (hasVisited && !isReload) {
-            setTypedCount(TOTAL_CHARACTERS);
+    // If this is a full page load (typed URL / navigate) or a reload, play the animation from start
+    if (isReload || isNavigate) {
+        setTypedCount(0);
+        setAnimationReady(true);
+        sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
+        return;
+    }
+
+    // For client-side navigations, if the user has already seen the animation this session,
+    // show the completed text immediately instead of replaying. Otherwise, play it.
+    if (hasVisited) {
+        setTypedCount(TOTAL_CHARACTERS);
+        setAnimationReady(true);
+    } else {
+        sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
+        setAnimationReady(true);
+    }
         }
 
         sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
