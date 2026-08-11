@@ -305,6 +305,18 @@ const WritePageContent = () => {
                         post.categories?.map((category) => category.categorySlug) ||
                         (post.catSlug ? [post.catSlug] : []),
                     );
+                    // Preserve original publish date/time when editing so updates don't overwrite it
+                    if (post.createdAt) {
+                        try {
+                            const original = new Date(post.createdAt);
+                            if (!Number.isNaN(original.valueOf())) {
+                                setPostDate(getLocalDate(original));
+                                setPostTime(getLocalTime(original));
+                            }
+                        } catch (e) {
+                            // ignore parse errors and leave current date/time
+                        }
+                    }
                     setIsEdit(true);
                 } else {
                     console.error('Failed to load post', await res.text());
