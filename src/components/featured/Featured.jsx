@@ -29,13 +29,16 @@ const typingSegments = [
 ];
 
 const TOTAL_CHARACTERS = typingSegments.reduce((sum, segment) => sum + segment.text.length, 0);
+const TERMINAL_VISITED_KEY = 'null-terminal-visited-v2';
 
 const Featured = () => {
     const router = useRouter();
     const [typedCount, setTypedCount] = useState(0);
+    const [animationReady, setAnimationReady] = useState(false);
     const [promptValue, setPromptValue] = useState('');
     const [response, setResponse] = useState('');
     const inputRef = useRef(null);
+    const animationInitialized = useRef(false);
 
     const typedOutput = useMemo(() => {
         const output = [];
@@ -56,6 +59,23 @@ const Featured = () => {
     const typingComplete = typedCount >= TOTAL_CHARACTERS;
 
     useEffect(() => {
+        if (animationInitialized.current) return;
+        animationInitialized.current = true;
+
+        const navigationEntry = performance.getEntriesByType('navigation')[0];
+        const isReload = navigationEntry?.type === 'reload';
+        const hasVisited = sessionStorage.getItem(TERMINAL_VISITED_KEY) === 'true';
+
+        if (hasVisited && !isReload) {
+            setTypedCount(TOTAL_CHARACTERS);
+        }
+
+        sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
+        setAnimationReady(true);
+    }, []);
+
+    useEffect(() => {
+        if (!animationReady) return undefined;
         if (typedCount >= TOTAL_CHARACTERS) return undefined;
 
         const progress = typedCount / TOTAL_CHARACTERS;
@@ -67,7 +87,7 @@ const Featured = () => {
         }, delay);
 
         return () => window.clearTimeout(timeout);
-    }, [typedCount]);
+    }, [animationReady, typedCount]);
 
     useEffect(() => {
         if (typingComplete && inputRef.current) {

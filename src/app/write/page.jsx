@@ -44,7 +44,7 @@ const WritePageContent = () => {
     const [value, setValue] = useState("");
     const [title, setTitle] = useState("");
     const [postSlug, setPostSlug] = useState("");
-    const [catSlug, setCatSlug] = useState("");
+    const [catSlugs, setCatSlugs] = useState([]);
     const [summary, setSummary] = useState("");
     const [uploading, setUploading] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -211,23 +211,23 @@ const WritePageContent = () => {
                     const cats = await res.json();
                     const categoryData = Array.isArray(cats) && cats.length > 0 ? cats : defaultCategories;
                     setCategories(categoryData);
-                    if (!catSlug) {
-                        setCatSlug(categoryData[0]?.slug || 'philosophy');
-                    }
+                    setCatSlugs((current) => current.length > 0
+                        ? current
+                        : [categoryData[0]?.slug || 'philosophy']);
                 } else {
                     throw new Error('Categories fetch failed');
                 }
             } catch (err) {
                 console.error('Failed to fetch categories', err);
                 setCategories(defaultCategories);
-                if (!catSlug) {
-                    setCatSlug(defaultCategories[0].slug);
-                }
+                setCatSlugs((current) => current.length > 0
+                    ? current
+                    : [defaultCategories[0].slug]);
             }
         };
 
         loadCategories();
-    }, [catSlug]);
+    }, []);
 
     useEffect(() => {
         const now = new Date();
@@ -301,7 +301,10 @@ const WritePageContent = () => {
                     setSummary(post.summary || '');
                     setValue(post.desc || '');
                     setMedia(post.img || '');
-                    setCatSlug(post.catSlug || '');
+                    setCatSlugs(
+                        post.categories?.map((category) => category.categorySlug) ||
+                        (post.catSlug ? [post.catSlug] : []),
+                    );
                     setIsEdit(true);
                 } else {
                     console.error('Failed to load post', await res.text());
@@ -588,8 +591,8 @@ const WritePageContent = () => {
                         summary,
                         desc: editorContent,
                         img: media,
-                        catSlug: showNewCategory ? undefined : catSlug || 'philosophy',
-                        newCategory: showNewCategory ? newCategoryName.trim() : undefined,
+                        catSlugs,
+                        newCategory: newCategoryName.trim() || undefined,
                         createdAt: publishedAt,
                     }),
                 });
@@ -614,9 +617,9 @@ const WritePageContent = () => {
                         desc: editorContent,
                         img: media,
                         slug: postSlug || slugify(title),
-                        catSlug: showNewCategory ? undefined : catSlug || 'philosophy',
+                        catSlugs,
                         createdAt: publishedAt,
-                        newCategory: showNewCategory ? newCategoryName.trim() : undefined,
+                        newCategory: newCategoryName.trim() || undefined,
                     }),
                 });
 
@@ -675,43 +678,38 @@ const WritePageContent = () => {
 
             <div className={styles.categorySection}>
                 <div className={styles.categorySelector}>
-                    <label>Category</label>
+                    <label htmlFor="post-categories">Categories</label>
                     <select
+                        id="post-categories"
                         className={styles.select}
-                        value={showNewCategory ? 'new' : catSlug}
+                        multiple
+                        value={catSlugs}
                         onChange={(e) => {
-                            if (e.target.value === 'new') {
-                                setShowNewCategory(true);
-                                setCatSlug('');
-                            } else {
-                                setShowNewCategory(false);
-                                setCatSlug(e.target.value);
-                            }
+                            setCatSlugs(Array.from(e.target.selectedOptions, (option) => option.value));
                         }}
                     >
-                        <option value="">Select category...</option>
                         {categories.map((cat) => (
                             <option key={cat.slug} value={cat.slug}>
                                 {cat.title || cat.slug}
                             </option>
                         ))}
-                        <option value="new">+ Create new category</option>
                     </select>
+                    <span>Select one or more categories (use Ctrl/Cmd-click).</span>
                 </div>
 
-                {showNewCategory && (
+                <div className={styles.newCategoryField}>
                     <input
                         type="text"
-                        placeholder="New category name"
+                        placeholder="Add a new category (optional)"
                         className={styles.input}
                         value={newCategoryName}
                         onChange={(e) => {
                             const nextName = e.target.value;
                             setNewCategoryName(nextName);
-                            setCatSlug(nextName.trim().toLowerCase().replace(/\s+/g, '-'));
+                            setShowNewCategory(Boolean(nextName.trim()));
                         }}
                     />
-                )}
+                </div>
 
                 <div className={styles.dateSelector}>
                     <label>Publish Date</label>

@@ -13,7 +13,10 @@ export const GET = async (req, { params }) => {
     try {
         const post = await prisma.post.findUnique({
             where: { slug },
-            include: { user: { select: { id: true, name: true, username: true, email: true, image: true } } },
+            include: {
+                user: { select: { id: true, name: true, username: true, email: true, image: true } },
+                categories: { select: { categorySlug: true } },
+            },
         });
         if (!post) return new NextResponse(JSON.stringify({ message: 'Not found' }), { status: 404 });
 
@@ -71,26 +74,23 @@ export const PUT = async (req, { params }) => {
             return new NextResponse(JSON.stringify({ message: 'Forbidden' }), { status: 403 });
         }
 
-        // If a new category is provided, create it and use it.
-        let finalCat = post.catSlug;
-        if (body.newCategory && body.newCategory.trim()) {
-            const newCatSlug = slugify(body.newCategory);
-            await prisma.category.upsert({
-                where: { slug: newCatSlug },
-                update: {},
-                create: {
-                    slug: newCatSlug,
-                    title: body.newCategory.trim(),
-                },
-            });
-            finalCat = newCatSlug;
-        } else if (body.catSlug && body.catSlug !== post.catSlug) {
-            const existingCat = await prisma.category.findUnique({ where: { slug: body.catSlug } });
-            if (!existingCat) {
-                await prisma.category.create({ data: { slug: body.catSlug, title: body.catSlug } });
-            }
-            finalCat = body.catSlug;
-        }
+        const selectedCategories = Array.isArray(body.catSlugs)
+            ? body.catSlugs.map((category) => slugify(category)).filter(Boolean)
+            : (body.catSlug ? [slugify(body.catSlug)] : [post.catSlug]);
+        if (body.newCategory?.trim()) selectedCategories.push(slugify(body.newCategory));
+        const finalCategorySlugs = [...new Set(selectedCategories)].filter(Boolean);
+        const finalCat = finalCategorySlugs[0] || post.catSlug;
+
+        await Promise.all(finalCategorySlugs.map((categorySlug) => prisma.category.upsert({
+            where: { slug: categorySlug },
+            update: {},
+            create: {
+                slug: categorySlug,
+                title: categorySlug === slugify(body.newCategory || '')
+                    ? body.newCategory.trim()
+                    : categorySlug,
+            },
+        })));
 
         let finalSlug = post.slug;
         if (body.slug !== undefined) {
@@ -124,6 +124,10 @@ export const PUT = async (req, { params }) => {
         const updated = await prisma.post.update({
             where: { slug },
             data: updateData,
+        });
+        await prisma.postCategory.deleteMany({ where: { postId: post.id } });
+        await prisma.postCategory.createMany({
+            data: finalCategorySlugs.map((categorySlug) => ({ postId: post.id, categorySlug })),
         });
         revalidatePath(`/posts/${slug}`);
         revalidatePath(`/posts/${updated.slug}`);

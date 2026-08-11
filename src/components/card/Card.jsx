@@ -19,7 +19,12 @@ const Card = ({ item }) => {
             </Link>
 
             <div className={styles.meta}>
-                <span className={styles.category}>{String(item.catSlug || '').toLowerCase()}</span>
+                <span className={styles.category}>
+                    {(item.categories?.map((category) => category.categorySlug) || [item.catSlug])
+                        .filter(Boolean)
+                        .join(', ')
+                        .toLowerCase()}
+                </span>
                 <span className={styles.date}>{createdAt}</span>
             </div>
             <p className={styles.blogpostContent}>{desc}</p>

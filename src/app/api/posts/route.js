@@ -26,7 +26,12 @@ export const GET = async (req) => {
         take: POST_PER_PAGE,
         skip: POST_PER_PAGE * (page - 1),
         where: {
-            ...(cat && { catSlug: cat }),
+            ...(cat && {
+                OR: [
+                    { catSlug: cat },
+                    { categories: { some: { categorySlug: cat } } },
+                ],
+            }),
             // show only approved posts to non-admin users
             ...(authUser?.role !== 'ADMIN' && { approved: true }),
         },
@@ -44,7 +49,7 @@ export const GET = async (req) => {
 
     try {
         const [posts, count] = await prisma.$transaction([
-            prisma.post.findMany(query),
+            prisma.post.findMany({ ...query, include: { categories: true } }),
             prisma.post.count({ where: query.where }),
         ]);
         return new NextResponse(JSON.stringify({ posts, count }), { status: 200 });
@@ -91,7 +96,7 @@ export const POST = async (req) => {
 
     try {
         const body = await req.json();
-        const { title, summary, desc, img, slug, catSlug, createdAt, newCategory } = body;
+        const { title, summary, desc, img, slug, catSlug, catSlugs, createdAt, newCategory } = body;
 
         if (!title || !desc) {
             return new NextResponse(
@@ -108,27 +113,27 @@ export const POST = async (req) => {
             existingPost = await prisma.post.findUnique({ where: { slug: finalSlug } });
         }
 
-        let finalCatSlug = catSlug?.trim() ? slugify(catSlug) : '';
-        let categoryTitle = finalCatSlug;
-
-        if (newCategory && newCategory.trim()) {
-            finalCatSlug = slugify(newCategory);
-            categoryTitle = newCategory.trim();
+        const selectedCategories = Array.isArray(catSlugs)
+            ? catSlugs.map((category) => slugify(category)).filter(Boolean)
+            : (catSlug?.trim() ? [slugify(catSlug)] : []);
+        const categorySlugs = [...new Set(selectedCategories)];
+        if (newCategory?.trim()) {
+            categorySlugs.push(slugify(newCategory));
         }
+        const finalCategorySlugs = [...new Set(categorySlugs)].filter(Boolean);
+        const finalCatSlug = finalCategorySlugs[0] || 'philosophy';
+        if (!finalCategorySlugs.length) finalCategorySlugs.push(finalCatSlug);
 
-        if (!finalCatSlug) {
-            finalCatSlug = 'philosophy';
-            categoryTitle = 'Philosophy';
-        }
-
-        await prisma.category.upsert({
-            where: { slug: finalCatSlug },
+        await Promise.all(finalCategorySlugs.map((categorySlug) => prisma.category.upsert({
+            where: { slug: categorySlug },
             update: {},
             create: {
-                slug: finalCatSlug,
-                title: categoryTitle || finalCatSlug.charAt(0).toUpperCase() + finalCatSlug.slice(1),
+                slug: categorySlug,
+                title: categorySlug === slugify(newCategory || '')
+                    ? newCategory.trim()
+                    : categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1),
             },
-        });
+        })));
 
         let publishedAt = new Date();
         if (createdAt) {
@@ -167,6 +172,9 @@ export const POST = async (req) => {
                 createdAt: publishedAt,
                 approved,
             }
+        });
+        await prisma.postCategory.createMany({
+            data: finalCategorySlugs.map((categorySlug) => ({ postId: post.id, categorySlug })),
         });
 
         return new NextResponse(JSON.stringify(post), { status: 200 });
