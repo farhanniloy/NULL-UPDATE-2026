@@ -1,5 +1,6 @@
 .copyright {
-    padding-bottom: 24px;
+    padding-top: 10px;
+    padding-bottom: 16px;
 }
 
 .text {
@@ -7,6 +8,7 @@
     font-size: 12px;
     color: var(--textColor2);
     font-weight: 700;
+    letter-spacing: 0.04em;
 }
 
 .text a {
