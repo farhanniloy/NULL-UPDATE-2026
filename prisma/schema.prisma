@@ -66,6 +66,7 @@ model Category {
   title String
   img   String?
   Posts Post[]
+  postCategories PostCategory[]
 }
 
 model Post {
@@ -83,6 +84,17 @@ model Post {
   user      User      @relation(fields: [userEmail], references: [email])
   approved  Boolean   @default(true)
   comments  Comment[]
+  categories PostCategory[]
+}
+
+model PostCategory {
+  postId       String
+  categorySlug String
+  post         Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  category     Category @relation(fields: [categorySlug], references: [slug], onDelete: Cascade)
+
+  @@id([postId, categorySlug])
+  @@index([categorySlug])
 }
 
 model Comment {
