@@ -14,14 +14,45 @@ const defaultCategories = [
     { slug: 'projects', title: 'Projects' },
 ];
 
+// Simple in-memory cache for categories to reduce DB load. TTL in ms.
+const CACHE_TTL = 1000 * 60 * 5; // 5 minutes
+let categoriesCache = null;
+let categoriesCacheAt = 0;
+
 const getData = async () => {
     try {
-        const categories = await prisma.category.findMany();
+        const now = Date.now();
+        if (categoriesCache && (now - categoriesCacheAt) < CACHE_TTL) {
+            return categoriesCache;
+        }
+
+        // Query only the fields needed and include a count of linked posts via PostCategory
+        // Try to let the DB order by the relation count. If the Prisma client or DB doesn't
+        // support ordering by relation count in this environment, gracefully fall back to
+        // fetching the counts and sorting in JS.
+        let categories;
+        try {
+            categories = await prisma.category.findMany({
+                select: { id: true, slug: true, title: true, img: true, _count: { select: { postCategories: true } } },
+                orderBy: { _count: { postCategories: 'desc' } },
+            });
+        } catch (dbOrderErr) {
+            // Fallback: fetch without DB ordering and sort in JS
+            console.warn('DB ordering by _count failed, falling back to client-side sort:', dbOrderErr.message || dbOrderErr);
+            categories = await prisma.category.findMany({
+                select: { id: true, slug: true, title: true, img: true, _count: { select: { postCategories: true } } },
+            });
+            categories.sort((a, b) => (b._count?.postCategories || 0) - (a._count?.postCategories || 0));
+        }
 
         if (!categories || categories.length === 0) {
+            categoriesCache = defaultCategories;
+            categoriesCacheAt = now;
             return defaultCategories;
         }
 
+        categoriesCache = categories;
+        categoriesCacheAt = now;
         return categories;
     } catch (err) {
         console.error('Failed to fetch categories', err);
