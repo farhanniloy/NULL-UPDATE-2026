@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styles from "./featured.module.css";
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 const typingSegments = [
     { text: "hey, it's Nil. ", bold: false },
@@ -33,12 +33,12 @@ const TERMINAL_VISITED_KEY = 'null-terminal-visited-v2';
 
 const Featured = () => {
     const router = useRouter();
+    const pathname = usePathname();
     const [typedCount, setTypedCount] = useState(0);
     const [animationReady, setAnimationReady] = useState(false);
     const [promptValue, setPromptValue] = useState('');
     const [response, setResponse] = useState('');
     const inputRef = useRef(null);
-    const animationInitialized = useRef(false);
 
     const typedOutput = useMemo(() => {
         const output = [];
@@ -59,15 +59,26 @@ const Featured = () => {
     const typingComplete = typedCount >= TOTAL_CHARACTERS;
 
     useEffect(() => {
-        if (animationInitialized.current) return;
-        animationInitialized.current = true;
-
         const navigationEntry = performance.getEntriesByType('navigation')[0];
-        const isReload = navigationEntry?.type === 'reload';
+        const navType = navigationEntry?.type;
+        const isReload = navType === 'reload';
+        const isNavigate = navType === 'navigate';
         const hasVisited = sessionStorage.getItem(TERMINAL_VISITED_KEY) === 'true';
 
-        if (hasVisited && !isReload) {
+        // If this is a full page load (typed URL / navigate or refresh), play the animation
+        if (isReload || isNavigate) {
+            setTypedCount(0);
+            setAnimationReady(true);
+            sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
+            return;
+        }
+
+        // For client-side navigations, if the user has already seen the animation this session,
+        // show the completed text immediately instead of replaying
+        if (hasVisited) {
             setTypedCount(TOTAL_CHARACTERS);
+            setAnimationReady(true);
+            return;
         }
 
         sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
