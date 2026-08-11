@@ -32,6 +32,7 @@
 
 .quoteBlock {
     flex: 1 1 auto;
+    max-width: 460px; /* limit quote width to former size */
 }
 
 /* Ensure quote text behaves as a block inside the block */
@@ -39,6 +40,7 @@
     display: block;
     margin: 0;
     padding-right: 0;
+    max-width: 460px; /* prevent the quote from stretching full width */
 }
 
 .signature {
