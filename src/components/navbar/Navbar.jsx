@@ -1,13 +1,25 @@
-import React from 'react'
+'use client'
+
+import React, { useEffect, useState } from 'react'
 import styles from "./navbar.module.css";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import AuthLinks from "@/components/authLinks/AuthLinks";
 import ThemeToggle from "@/components/themeToggle/ThemeToggle";
 
 const Navbar = () =>  {
+    const pathname = usePathname();
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    useEffect(() => {
+        setMenuOpen(false);
+    }, [pathname]);
+
+    const closeMenu = () => setMenuOpen(false);
+
     return (
         <div className={styles.container}>
-            <Link href="/">
+            <Link href="/" onClick={closeMenu}>
                 <div className={styles.logo}>null</div>
             </Link>
 
@@ -23,17 +35,24 @@ const Navbar = () =>  {
                 </div>
 
                 <div className={styles.actions}>
-                    <input id="nav-toggle" className={styles.toggle} type="checkbox" aria-hidden="true" />
-                    <label htmlFor="nav-toggle" className={styles.toggleButton} aria-hidden="true">
+                    <input
+                        id="nav-toggle"
+                        className={styles.toggle}
+                        type="checkbox"
+                        checked={menuOpen}
+                        onChange={(event) => setMenuOpen(event.target.checked)}
+                        aria-label="Toggle navigation menu"
+                    />
+                    <label htmlFor="nav-toggle" className={styles.toggleButton}>
                         <span className={styles.bar} />
                         <span className={styles.bar} />
                         <span className={styles.bar} />
                     </label>
                     <ThemeToggle className={styles.togg}/>
                     <nav className={styles.mobileMenu} role="menu">
-                        <Link href="/" className={styles.mobileLink}>Home.()</Link>
-                        <Link href="/about" className={styles.mobileLink}>About.()</Link>
-                        <Link href="/contact" className={styles.mobileLink}>Contact.()</Link>
+                        <Link href="/" className={styles.mobileLink} onClick={closeMenu}>Home.()</Link>
+                        <Link href="/about" className={styles.mobileLink} onClick={closeMenu}>About.()</Link>
+                        <Link href="/contact" className={styles.mobileLink} onClick={closeMenu}>Contact.()</Link>
                         <div className={styles.mobileAuth}>
                             <AuthLinks />
                         </div>

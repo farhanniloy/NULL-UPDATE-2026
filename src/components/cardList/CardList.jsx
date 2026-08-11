@@ -14,7 +14,12 @@ const getData = async (page, cat) => {
             take: POST_PER_PAGE,
             skip: POST_PER_PAGE * (page - 1),
             where: {
-                ...(cat && { catSlug: cat }),
+                ...(cat && {
+                    OR: [
+                        { catSlug: cat },
+                        { categories: { some: { categorySlug: cat } } },
+                    ],
+                }),
                 approved: true,
             },
             orderBy: { createdAt: "desc" },
@@ -31,6 +36,7 @@ const getData = async (page, cat) => {
                     desc: true,
                     catSlug: true,
                     createdAt: true,
+                    categories: { select: { categorySlug: true } },
                 },
             }),
             prisma.post.count({ where: query.where }),
