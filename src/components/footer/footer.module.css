@@ -44,42 +44,32 @@
     max-width: 460px; /* prevent the quote from stretching full width */
 }
 
-/* Place signature absolutely aligned to the right below the quote on wide screens */
+/* Position the signature absolutely at the right edge below the quote for all devices */
+.quoteBlock {
+    flex: 1 1 auto;
+    max-width: 460px; /* restored width */
+    position: relative; /* containing block for absolute signature */
+}
+
 .signature {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 15px;
     color: var(--strtextColor);
     white-space: nowrap;
     display: block;
-    text-align: left; /* align with quote text */
+    text-align: right; /* align text to the right edge */
 
-    /* Flow naturally beneath the quote with no extra top spacing */
-    position: static;
-    margin-top: 0;
-    padding-left: 0;
+    position: absolute;
+    right: 0;            /* align to right edge of quoteBlock */
+    top: 100%;          /* place directly below the quote */
+    margin-top: 4px;    /* small spacing */
+    transform: translateY(0);
 }
 
-/* Small screens: signature flows normally below the quote and aligns left */
-@media screen and (max-width: 768px) {
-    .quoteBlock {
-        max-width: 100%;
-    }
-
-    .signature {
-        position: static;
-        text-align: left;
-        margin-top: 12px;
-    }
-}
-
-.signature {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 16px;
-    color: var(--strtextColor);
-    white-space: nowrap;
-    margin-top: 12px; /* space below the quote */
-    display: block;
-    text-align: left; /* align with quote text */
+/* On very narrow screens, keep signature right-aligned but allow wrapping if needed */
+@media screen and (max-width: 420px) {
+    .quoteBlock { max-width: 100%; }
+    .signature { position: absolute; right: 0; top: 100%; }
 }
 
 /* Smaller screens: ensure stacked layout */
