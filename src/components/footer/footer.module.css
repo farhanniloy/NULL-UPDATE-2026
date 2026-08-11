@@ -47,16 +47,16 @@
 /* Place signature absolutely aligned to the right below the quote on wide screens */
 .signature {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     color: var(--strtextColor);
     white-space: nowrap;
     display: block;
     text-align: right;
 
     position: absolute;
-    right: 0;
+    right: 12px; /* bring slightly left from the extreme right */
     top: 100%; /* place below the quote */
-    margin-top: 8px;
+    margin-top: 4px; /* reduce vertical gap between quote and signature */
 }
 
 /* Small screens: signature flows normally below the quote and aligns left */
