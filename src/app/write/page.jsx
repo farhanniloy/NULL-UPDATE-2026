@@ -805,10 +805,73 @@ const WritePageContent = () => {
                             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                             style={{ display: 'none' }}
                         />
-                        <button className={styles.addButton} type="button" title="Upload featured image from device">
-                            <label htmlFor="image">
-                                <Image src="/image.png" alt="Upload" width={16} height={16} />
-                            </label>
+                        <button
+                            className={styles.addButton}
+                            type="button"
+                            title="Upload featured image from device"
+                            onClick={() => document.getElementById('image')?.click()}
+                        >
+                            <Image src="/image.png" alt="Upload" width={16} height={16} />
+                        </button>
+
+                        <button
+                            className={styles.addButton}
+                            type="button"
+                            title="Add remote image URL"
+                            onClick={() => {
+                                setMediaType('image');
+                                setMediaUrl('');
+                                setYoutubeId('');
+                                setOpen(false);
+                                setShowMediaModal(true);
+                            }}
+                        >
+                            <Image src="/image.png" alt="Remote image" width={16} height={16} />
+                        </button>
+
+                        <button
+                            className={styles.addButton}
+                            type="button"
+                            title="Add YouTube video"
+                            onClick={() => {
+                                setMediaType('youtube');
+                                setYoutubeId('');
+                                setMediaUrl('');
+                                setOpen(false);
+                                setShowMediaModal(true);
+                            }}
+                        >
+                            <Image src="/video.png" alt="YouTube" width={16} height={16} />
+                        </button>
+
+                        <button
+                            className={styles.addButton}
+                            type="button"
+                            title="Add Facebook video"
+                            onClick={() => {
+                                setMediaType('facebook');
+                                setMediaUrl('');
+                                setYoutubeId('');
+                                setOpen(false);
+                                setShowMediaModal(true);
+                            }}
+                        >
+                            <Image src="/video.png" alt="Facebook video" width={16} height={16} />
+                        </button>
+
+                        <button
+                            className={styles.addButton}
+                            type="button"
+                            title="Add audio"
+                            onClick={() => {
+                                setMediaType('audio');
+                                setMediaUrl('');
+                                setYoutubeId('');
+                                setOpen(false);
+                                setShowMediaModal(true);
+                            }}
+                        >
+                            <Image src="/video.png" alt="Audio" width={16} height={16} />
                         </button>
                     </div>
                 )}
