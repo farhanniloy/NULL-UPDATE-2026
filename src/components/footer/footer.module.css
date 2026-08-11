@@ -51,12 +51,12 @@
     color: var(--strtextColor);
     white-space: nowrap;
     display: block;
-    text-align: right;
+    text-align: left; /* align with quote text */
 
-    position: absolute;
-    right: 12px; /* bring slightly left from the extreme right */
-    top: 100%; /* place below the quote */
-    margin-top: 4px; /* reduce vertical gap between quote and signature */
+    /* Flow naturally beneath the quote with no extra top spacing */
+    position: static;
+    margin-top: 0;
+    padding-left: 0;
 }
 
 /* Small screens: signature flows normally below the quote and aligns left */
