@@ -28,15 +28,17 @@
     align-items: flex-start;
     gap: 16px;
     justify-content: flex-start; /* keep content flow */
-    position: relative; /* allow absolute placement of signature */
 }
 
-/* Ensure quote text behaves as a block inside the row and avoid overlap with the absolute signature */
-.quoteRow .text {
-    display: block;
+.quoteBlock {
     flex: 1 1 auto;
-    justify-content: initial;
-    padding-right: 160px; /* reserve space for the absolute signature on wide screens */
+}
+
+/* Ensure quote text behaves as a block inside the block */
+.quoteBlock .text {
+    display: block;
+    margin: 0;
+    padding-right: 0;
 }
 
 .signature {
@@ -44,31 +46,24 @@
     font-size: 16px;
     color: var(--strtextColor);
     white-space: nowrap;
-    margin-top: 0;
-    margin-left: 0;
-    align-self: flex-start;
-
-    /* position absolutely to the right edge of the quoteRow */
-    position: absolute;
-    right: 0;
-    top: 0;
+    margin-top: 12px; /* space below the quote */
+    display: block;
+    text-align: left; /* align with quote text */
 }
 
-/* Smaller screens: place signature below the quote with spacing and revert to normal flow */
+/* Smaller screens: ensure stacked layout */
 @media screen and (max-width: 768px) {
     .quoteRow {
         flex-direction: column;
         gap: 8px;
-        position: static;
     }
 
-    .quoteRow .text {
+    .quoteBlock .text {
         padding-right: 0;
     }
 
     .signature {
-        position: static;
-        margin-top: 12px; /* space below the quote */
+        margin-top: 12px;
         align-self: flex-start;
     }
 }
