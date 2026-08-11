@@ -63,15 +63,8 @@ const getData = async () => {
 const CategoryList = async () => {
     const data = await getData();
 
-    // Desired display order for categories
-    const desiredOrder = ['philosophy', 'infiltration', 'science', 'programs', 'projects'];
-
-    // Build an ordered array: categories appearing in desiredOrder first (in that order), then any others
-    const ordered = (
-        desiredOrder
-            .map((slug) => data.find((d) => d.slug === slug))
-            .filter(Boolean)
-    ).concat((data || []).filter((d) => !desiredOrder.includes(d.slug)));
+    // Use the order returned by getData (which is ordered by post count descending).
+    const ordered = data || [];
 
     return (
         <div className={styles.container}>
@@ -92,7 +85,9 @@ const CategoryList = async () => {
                                 className={styles.image}
                             />
                         )}
-                        {item.title}
+                        <span>{item.title}</span>
+                        {/* show post count when available for easy verification */}
+                        <span className={styles.count}>{item._count?.postCategories ?? 0}</span>
                     </Link>
                 ))}
             </div>
