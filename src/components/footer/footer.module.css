@@ -32,7 +32,8 @@
 
 .quoteBlock {
     flex: 1 1 auto;
-    max-width: 360px; /* reduced width per request */
+    max-width: 460px; /* restored width */
+    position: relative; /* containing block for absolute signature */
 }
 
 /* Ensure quote text behaves as a block inside the block */
@@ -40,13 +41,34 @@
     display: block;
     margin: 0;
     padding-right: 0;
-    max-width: 360px; /* prevent the quote from stretching full width */
+    max-width: 460px; /* prevent the quote from stretching full width */
 }
 
-/* Make sure on very small screens the quote takes available width */
-@media screen and (max-width: 420px) {
-    .quoteBlock, .quoteBlock .text {
+/* Place signature absolutely aligned to the right below the quote on wide screens */
+.signature {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    color: var(--strtextColor);
+    white-space: nowrap;
+    display: block;
+    text-align: right;
+
+    position: absolute;
+    right: 0;
+    top: 100%; /* place below the quote */
+    margin-top: 8px;
+}
+
+/* Small screens: signature flows normally below the quote and aligns left */
+@media screen and (max-width: 768px) {
+    .quoteBlock {
         max-width: 100%;
+    }
+
+    .signature {
+        position: static;
+        text-align: left;
+        margin-top: 12px;
     }
 }
 
