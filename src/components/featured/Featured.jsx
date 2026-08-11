@@ -70,7 +70,7 @@ const Featured = () => {
         const isNavigate = navType === "navigate";
         const hasVisited = sessionStorage.getItem(TERMINAL_VISITED_KEY) === 'true';
 
-        // If this is a full page load (typed URL / navigate) or a reload, play the animation from start
+        // If this is a full page load (typed URL or direct navigation) or a reload, play the animation from start
         if (isReload || isNavigate) {
             setTypedCount(0);
             setAnimationReady(true);
@@ -79,7 +79,7 @@ const Featured = () => {
         }
 
         // For client-side navigations, if the user has already seen the animation this session,
-        // show the completed text immediately instead of replaying. Otherwise, play it.
+        // show the completed text immediately instead of replaying. Otherwise, play it and mark visited.
         if (hasVisited) {
             setTypedCount(TOTAL_CHARACTERS);
             setAnimationReady(true);
@@ -87,7 +87,7 @@ const Featured = () => {
             sessionStorage.setItem(TERMINAL_VISITED_KEY, 'true');
             setAnimationReady(true);
         }
-    }, []);
+    }, [pathname]);
 
     useEffect(() => {
         if (!animationReady) return undefined;
