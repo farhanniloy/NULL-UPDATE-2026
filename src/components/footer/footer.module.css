@@ -1,5 +1,5 @@
 .container{
-    /* Combined layout: keep modern grid with responsive fallbacks */
+    /* Combined: use modern grid layout by default, keep readable spacing */
     display: grid;
     grid-template-columns: minmax(280px, 1.3fr) minmax(0, 1fr);
     gap: 36px;
@@ -23,11 +23,11 @@
 }
 
 .logo{
-    /* keep strong branding & readable fallback */
+    /* Use Arial as requested, keep sizing and weight from functionality-fixes */
     font-size: 35px;
     font-weight: 700;
     letter-spacing: -0.04em;
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     text-transform: lowercase;
     line-height: 1;
     display: inline-flex;
@@ -46,7 +46,7 @@
 }
 
 .text2 {
-    /* from updates branch: stronger emphasis variant */
+    /* stronger emphasis variant from updates */
     font-weight: 700;
 }
 
@@ -110,7 +110,7 @@
     flex-shrink: 0;
 }
 
-/* Responsive adjustments preserved from both branches */
+/* Responsive: include fallbacks from updates branch for smaller screens */
 @media screen and (max-width: 1024px) {
     .container {
         grid-template-columns: 1fr;
@@ -130,8 +130,7 @@
     }
 
     .links {
-        /* keep layout flexible on smaller screens */
-        grid-template-columns: repeat(1, minmax(0, 1fr));
+        grid-template-columns: 1fr;
         gap: 18px;
     }
 }
