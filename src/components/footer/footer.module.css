@@ -18,8 +18,8 @@
 .logo{
     margin: 20px 0px 20px 0px;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 48px;
-    font-weight: 800;
+    font-size: 35px; /* match navbar logo */
+    font-weight: 700;
     line-height: 1;
 }
 
@@ -27,6 +27,15 @@
     display: flex;
     align-items: flex-start;
     gap: 16px;
+    justify-content: space-between; /* signature on the right */
+}
+
+/* Ensure quote text behaves as a block inside the row */
+.quoteRow .text {
+    display: block;
+    flex: 1 1 auto;
+    justify-content: initial;
+    padding-right: 0;
 }
 
 .signature {
@@ -34,7 +43,23 @@
     font-size: 16px;
     color: var(--strtextColor);
     white-space: nowrap;
-    margin-top: 4px;
+    margin-top: 0;
+    margin-left: 16px;
+    align-self: flex-start;
+}
+
+/* Smaller screens: place signature below the quote with spacing */
+@media screen and (max-width: 768px) {
+    .quoteRow {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .signature {
+        margin-left: 0;
+        margin-top: 12px; /* space below the quote */
+        align-self: flex-start;
+    }
 }
 
 
