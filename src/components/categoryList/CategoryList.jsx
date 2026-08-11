@@ -86,8 +86,6 @@ const CategoryList = async () => {
                             />
                         )}
                         <span>{item.title}</span>
-                        {/* show post count when available for easy verification */}
-                        <span className={styles.count}>{item._count?.postCategories ?? 0}</span>
                     </Link>
                 ))}
             </div>
