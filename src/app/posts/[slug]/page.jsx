@@ -122,7 +122,7 @@ const SinglePage = async ({ params }) => {
                 </Link>
                 <div className={styles.textContainer}>
                     <span className={styles.date}>
-                        {new Date().toISOString().substring(0, 10)} · uploaded {new Date(data.createdAt).toISOString().substring(0, 10)}
+                        {new Date().toISOString().substring(0, 10)}
                     </span>
                     <h2 className={styles.title}>{data?.title}</h2>
 
@@ -170,6 +170,9 @@ const SinglePage = async ({ params }) => {
                         className={`${styles.description} ql-editor`}
                         dangerouslySetInnerHTML={{ __html: sanitizePostHtml(data?.desc) }}
                     />
+                    <div className={styles.uploadDateBottom}>
+                        uploaded {new Date(data.createdAt).toISOString().substring(0, 10)}
+                    </div>
                 </div>
                 <div className={styles.solid}></div>
                 <Comments postSlug={slug} />
