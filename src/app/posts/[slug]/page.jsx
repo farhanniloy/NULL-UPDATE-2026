@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import styles from "./singlePage.module.css";
 import Image from "next/image";
 import Link from 'next/link';
+import { Open_Sans } from 'next/font/google';
 import Comments from "@/components/comments/Comments";
 
 import prisma from "@/utils/connect";
@@ -10,6 +11,12 @@ import prisma from "@/utils/connect";
 import { getAuthSession } from '@/utils/auth';
 import AdminPostControls from '@/components/admin/AdminPostControls';
 import { sanitizePostHtml } from '@/utils/sanitizeHtml';
+
+const openSans = Open_Sans({
+    subsets: ['latin'],
+    weight: ['400', '500', '600'],
+    display: 'swap',
+});
 
 const getData = async (slug) => {
     try {
@@ -171,7 +178,7 @@ const SinglePage = async ({ params }) => {
             <div className={styles.content}>
                 <div className={styles.post}>
                     <div
-                        className={`${styles.description} ql-editor`}
+                        className={`${styles.description} ql-editor ${openSans.className}`}
                         dangerouslySetInnerHTML={{ __html: sanitizePostHtml(data?.desc) }}
                     />
                 </div>
