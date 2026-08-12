@@ -121,10 +121,16 @@ const SinglePage = async ({ params }) => {
                     </div>
                 </Link>
                 <div className={styles.textContainer}>
-                    <span className={styles.date}>
-                        {new Date().toISOString().substring(0, 10)}
-                    </span>
+                    <div className={styles.headingMeta}>
+                        <span className={styles.symbol}>∅∅∅</span>
+                        <span className={styles.date}>
+                            {new Date().toISOString().substring(0, 10)}
+                        </span>
+                    </div>
                     <h2 className={styles.title}>{data?.title}</h2>
+                    <div className={styles.uploadDateTitle}>
+                        uploaded {new Date(data.createdAt).toISOString().substring(0, 10)}
+                    </div>
 
                     <div className={styles.user}>
                         {data?.user?.image && (
@@ -170,9 +176,6 @@ const SinglePage = async ({ params }) => {
                         className={`${styles.description} ql-editor`}
                         dangerouslySetInnerHTML={{ __html: sanitizePostHtml(data?.desc) }}
                     />
-                    <div className={styles.uploadDateBottom}>
-                        uploaded {new Date(data.createdAt).toISOString().substring(0, 10)}
-                    </div>
                 </div>
                 <div className={styles.solid}></div>
                 <Comments postSlug={slug} />
