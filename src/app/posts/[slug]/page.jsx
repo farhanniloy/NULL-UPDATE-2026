@@ -125,7 +125,7 @@ const SinglePage = async ({ params }) => {
                         <span className={styles.symbol}>∅∅∅</span>
                         <strong className={styles.dot}>·</strong>
                         <span className={styles.uploadedDate}>
-                            uploaded {new Date(data.createdAt).toISOString().substring(0, 10)}
+                            {new Date(data.createdAt).toISOString().substring(0, 10)}
                         </span>
                     </div>
                     <h2 className={styles.title}>{data?.title}</h2>
