@@ -123,13 +123,13 @@ const SinglePage = async ({ params }) => {
                 <div className={styles.textContainer}>
                     <div className={styles.headingMeta}>
                         <span className={styles.symbol}>∅∅∅</span>
-                        <span className={styles.date}>
-                            {new Date().toISOString().substring(0, 10)}
-                        </span>
                     </div>
                     <h2 className={styles.title}>{data?.title}</h2>
-                    <div className={styles.uploadDateTitle}>
-                        uploaded {new Date(data.createdAt).toISOString().substring(0, 10)}
+                    <div className={styles.titleMeta}>
+                        <span className={styles.date}>{new Date().toISOString().substring(0, 10)}</span>
+                        <span className={styles.uploadDateTitle}>
+                            uploaded {new Date(data.createdAt).toISOString().substring(0, 10)}
+                        </span>
                     </div>
 
                     <div className={styles.user}>
