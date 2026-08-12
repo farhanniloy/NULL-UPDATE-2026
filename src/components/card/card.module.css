@@ -24,14 +24,13 @@
     line-height: 1.25;
     margin-bottom: 10px;
     color: var(--textColor);
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-heading);
 }
 
 .date {
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(14px, 1.4vw, 18px);
     color: var(--textColor2);
-    /* Remove bottom margin so date aligns with other meta items */
     margin: 0;
 }
 
@@ -46,7 +45,7 @@
     font-size: 16px;
     line-height: 1.7;
     color: var(--newTextColor);
-    font-family: 'Montserrat', Arial, sans-serif;
+    font-family: var(--font-body);
     letter-spacing: 0;
     font-weight: 400;
 }
@@ -81,7 +80,7 @@
 
 .blogpostContent {
     color: var(--newTextColor);
-    font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     font-size: 16px;
     line-height: 1.75;
     letter-spacing: 0;
@@ -89,7 +88,7 @@
 }
 
 .category {
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-mono);
     font-size: clamp(14px, 1.4vw, 18px);
     color: var(--textColor2);
     text-transform: none; /* show category exactly as provided */
@@ -98,7 +97,7 @@
 .authorLink { text-decoration: none; }
 
 .username {
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-mono);
     font-size: 18px;
     color: var(--textColor2);
 }

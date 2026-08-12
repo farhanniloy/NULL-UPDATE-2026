@@ -10,7 +10,7 @@
     align-items: baseline;
     gap: 10px;
     color: #f4f7e9;
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-mono);
     font-size: 15px;
     font-weight: 700;
     letter-spacing: .16em;

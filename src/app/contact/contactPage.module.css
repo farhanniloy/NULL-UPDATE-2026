@@ -4,7 +4,7 @@
   margin: 42px auto 90px;
   padding: 0 0 40px;
   color: #f5e9e9;
-  font-family: 'Fira Code', monospace;
+  font-family: var(--font-mono);
   overflow: hidden;
 }
 
@@ -86,7 +86,7 @@
   max-width: 640px;
   margin: 0;
   color: #fff0f0;
-  font-family: 'Fira Code', monospace;
+  font-family: var(--font-mono);
   font-size: clamp(36px, 6vw, 74px);
   line-height: 1.02;
   letter-spacing: -.07em;
@@ -103,7 +103,7 @@
   max-width: 620px;
   margin: 28px 0 0;
   color: #c99595;
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-body);
   font-size: 16px;
   line-height: 1.8;
 }
@@ -185,7 +185,7 @@
 .infoCard p {
   margin: 0;
   color: #bc8888;
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-body);
   line-height: 1.7;
 }
 
@@ -212,7 +212,9 @@
   outline: none;
   background: #1b0b0e;
   color: #ffe3e3;
-  font: 14px/1.6 'Fira Code', monospace;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .form input:focus,
@@ -239,7 +241,8 @@
   background: #a70f18;
   color: #fff0f0;
   cursor: pointer;
-  font: 12px 'Fira Code', monospace;
+  font-family: var(--font-mono);
+  font-size: 12px;
   letter-spacing: .04em;
 }
 

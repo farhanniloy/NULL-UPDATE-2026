@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  font-family: 'Fira Code', monospace;
+  font-family: var(--font-body);
 }
 
 /* Header with title and publish */
@@ -25,8 +25,8 @@
   font-size:28px;
   color:var(--textColor);
   font-weight:700;
-  font-family: 'Fira Code', monospace;
-  letter-spacing: 0.6px;
+  font-family: var(--font-heading);
+  letter-spacing: 0.04em;
 }
 
 .header::after{
@@ -34,9 +34,9 @@
   display:block;
   margin-top:6px;
   color:var(--softTextColor);
-  font-family:'Montserrat', sans-serif;
+  font-family: var(--font-body);
   font-size:13px;
-  letter-spacing:.2px;
+  letter-spacing:0.08em;
 }
 
 .headerRight{
@@ -76,7 +76,7 @@
   border:1px solid var(--surface-border);
   background:rgba(2, 16, 10, .55);
   color:var(--textColor);
-  font-family: 'Fira Code', monospace;
+  font-family: var(--font-body);
   outline:none;
   transition:border-color .2s, box-shadow .2s;
 }
@@ -95,7 +95,7 @@
   border:1px solid var(--surface-border);
   background:rgba(2, 16, 10, .55);
   color:var(--textColor);
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-body);
 }
 
 .slugField{
@@ -121,7 +121,7 @@
   border-radius:9px;
   background:rgba(2, 16, 10, .55);
   color:var(--textColor);
-  font-family:'Fira Code', monospace;
+  font-family: var(--font-mono);
   font-size:14px;
   outline:none;
 }
@@ -133,7 +133,7 @@
 
 .slugField span{
   color:var(--softTextColor);
-  font-family:'Montserrat', sans-serif;
+  font-family: var(--font-body);
   font-size:12px;
 }
 
@@ -170,7 +170,7 @@
   border-radius:9px;
   background:rgba(0,0,0,.3);
   color:var(--textColor);
-  font-family:'Fira Code', monospace;
+  font-family: var(--font-mono);
   font-size:14px;
   outline:none;
   box-sizing: border-box; /* ensure padding included in width */
@@ -385,7 +385,7 @@
   color:var(--textColor);
   background:transparent;
   line-height:1.6;
-  font-family:'Montserrat', sans-serif;
+  font-family: var(--font-body);
   font-size:18px;
 }
 
@@ -424,7 +424,7 @@
   border-radius:8px;
   background:rgba(0,0,0,.35);
   color:var(--textColor);
-  font-family:'Fira Code', monospace;
+  font-family: var(--font-mono);
   font-size:.85em;
   line-height:1.5;
   white-space:pre-wrap;
@@ -438,7 +438,7 @@
 .textArea.rsw-ce h6{
   margin:0 0 .7em;
   color:var(--textColor);
-  font-family:'Fira Code', monospace;
+  font-family: var(--font-mono);
   line-height:1.25;
 }
 
@@ -468,7 +468,7 @@
   padding:8px 16px 12px;
   border-top:1px solid rgba(255,255,255,.04);
   color:var(--softTextColor);
-  font-family:'Fira Code', monospace;
+  font-family: var(--font-mono);
   font-size:11px;
 }
 
@@ -485,7 +485,7 @@
   color:var(--textColor);
   background: transparent !important;
   line-height:1.6;
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-body);
   font-size:18px;
 }
 
@@ -532,7 +532,7 @@
   background:transparent;
   color:var(--textColor);
   cursor:pointer;
-  font-family:'Fira Code', monospace;
+  font-family: var(--font-mono);
 }
 
 .typeButton.active, .primary{

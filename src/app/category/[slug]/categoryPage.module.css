@@ -2,7 +2,7 @@
     width: min(1120px, calc(100% - 32px));
     margin: 34px auto 90px;
     color: #f4efe8;
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-mono);
 }
 
 .categoryHeader {

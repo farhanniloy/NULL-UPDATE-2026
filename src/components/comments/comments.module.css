@@ -120,7 +120,7 @@
 }
 
 .desc {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-body);
     font-size: smaller;
     font-weight: 300;
     color: var(--newTextColor)

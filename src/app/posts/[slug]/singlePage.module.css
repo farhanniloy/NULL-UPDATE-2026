@@ -121,11 +121,11 @@
     overflow: visible;
     padding: 28px 0;
     color: var(--newTextColor);
-    font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     font-size: 18px;
     font-weight: 400;
     line-height: 1.85;
-    letter-spacing: 0;
+    letter-spacing: 0.01em;
     text-align: left;
     white-space: pre-wrap;
     overflow-wrap: break-word;
@@ -137,7 +137,7 @@
 }
 
 .description :where(p, ol, ul, blockquote, a, strong, em) {
-    font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     font-weight: 400;
 }
 
@@ -153,8 +153,9 @@
 .description h5,
 .description h6 {
     color: var(--textColor);
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-heading);
     line-height: 1.25;
+    font-weight: 700;
 }
 
 .description h1 { font-size: 2em; }
@@ -233,7 +234,7 @@
 
 .description pre,
 .description code {
-    font-family: 'Fira Code', monospace;
+    font-family: var(--font-mono);
 }
 
 .description mark {

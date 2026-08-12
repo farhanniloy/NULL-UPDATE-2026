@@ -7,7 +7,7 @@
     padding-bottom: 35px;
     display: flex;
     margin: 60px 60px 0px 60px;
-    font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
 }
 .info {
     flex: 1;
@@ -17,7 +17,7 @@
 
 .logo{
     margin: 20px 0px 20px 0px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-heading);
     font-size: 35px; /* match navbar logo */
     font-weight: 700;
     line-height: 1;
@@ -52,7 +52,7 @@
 }
 
 .signature {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-body);
     font-size: 15px;
     color: var(--strtextColor);
     white-space: nowrap;
@@ -87,7 +87,7 @@
 
 
 .text, .text2 {
-    font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+    font-family: var(--font-ui);
     line-height: 1.45em;
     text-transform: lowercase;
     display: flex;
@@ -104,7 +104,7 @@
 }
 
 .links {
-    font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+    font-family: var(--font-ui);
     color: var(--textColor2);
     flex: 1;
     display: flex;
