@@ -1,7 +1,6 @@
 .title {
-    /* reduced top spacing so latest posts sit closer to previous section */
-    margin-top: 24px;
-    margin-bottom: 16px;
+    margin-top: 60px;
+    margin-bottom: 26px;
 }
 
 .container {
