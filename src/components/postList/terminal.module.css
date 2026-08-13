@@ -4,15 +4,23 @@
 
 .headerRow{
   display:grid;
-  /* tighten columns: slightly smaller owner & date columns and smaller gap */
-  grid-template-columns: 100px 90px 100px 100px 1fr;
-  gap:8px;
+  /* increase owner/date space and use a slightly larger gap for readability */
+  grid-template-columns: 100px 90px 120px 120px 1fr;
+  gap:10px;
   padding:8px 12px;
   color:var(--softTextColor);
   font-family: 'Fira Code', monospace;
   font-size:12px;
   border-bottom:1px solid var(--surface-border);
   margin-bottom:8px;
+}
+
+
+/* ensure the date column doesn't wrap into two lines */
+.date{
+  color: var(--softTextColor); 
+  font-family: 'Fira Code', monospace; 
+  white-space: nowrap;
 }
 
 .list{
@@ -23,9 +31,9 @@
 
 .row{
   display:grid;
-  /* match header: tightened owner/date columns and smaller gap */
-  grid-template-columns: 100px 90px 100px 100px 1fr;
-  gap:8px;
+  /* match header: increase owner/date space and use a slightly larger gap for readability */
+  grid-template-columns: 100px 90px 120px 120px 1fr;
+  gap:10px;
   align-items:center;
   padding:12px;
   border-radius:8px;
