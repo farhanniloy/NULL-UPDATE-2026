@@ -9,12 +9,26 @@
 }
 
 .header{
-  font-size:12px;
+  font-size:22px;
   color: var(--strtextColor);
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  margin-bottom:8px;
+  letter-spacing: .12em;
+  text-transform: none;
+  font-weight: 700;
+  margin-bottom:12px;
 }
+
+/* root link style */
+.rootLink{
+  background: transparent;
+  border: none;
+  color: var(--textColor);
+  padding: 2px 4px;
+  font-family: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.rootLink:hover{ opacity: 0.95 }
 
 /* Use IBM Plex Mono and site default text color */
 .tree{
@@ -88,20 +102,26 @@
 }
 
 .link{
-  color: rgba(240,249,240,0.98);
+  color: var(--textColor);
   text-decoration:none;
 }
 
 .text{
-  color: rgba(190,210,190,0.9);
+  color: var(--textColor);
 }
 
 .current .link, .current .text{
-  color: #A7FFCF; /* bright green highlight for current */
+  color: var(--strtextColor);
   font-weight:700;
 }
 
 @media screen and (max-width:640px){
   .wrapper{padding:8px}
   .tree{font-size:12px}
+}
+
+.error{
+  color: var(--softTextColor);
+  padding: 8px 4px;
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
 }

@@ -11,22 +11,21 @@ function TreeNode({ node, level = 0, highlightSlug }) {
   const hasChildren = node.children && node.children.length > 0;
   const isCurrent = node.slug === highlightSlug;
 
-  // special handler for the root (/root) node: call server to decide redirect or restricted
+  // click handler for /root: checks auth and redirects appropriately
   const handleRootClick = async (e) => {
-    e.preventDefault();
+    e?.preventDefault?.();
     try {
       const res = await fetch('/api/root-check');
-      if (res.status === 200) {
-        const j = await res.json();
-        if (j.allowed && j.redirect) {
+      if (res && res.ok) {
+        const j = await res.json().catch(() => null);
+        if (j && j.allowed && j.redirect) {
           window.location.href = j.redirect;
           return;
         }
       }
-      // otherwise navigate to a restricted page that returns 503
       window.location.href = '/restricted';
     } catch (err) {
-      console.error('root click failed', err);
+      console.error('root-check failed', err);
       window.location.href = '/restricted';
     }
   };
@@ -42,11 +41,9 @@ function TreeNode({ node, level = 0, highlightSlug }) {
           <span className={styles.empty} />
         )}
 
-        {/* special-case the root node so clicking it triggers the server-check */}
+        {/* render root as an interactive control that routes based on auth */}
         {node.name === '/root' ? (
-          <button onClick={handleRootClick} className={styles.link}>
-            {node.name}
-          </button>
+          <button onClick={handleRootClick} className={styles.rootLink} aria-label="root">{node.name}</button>
         ) : node.url ? (
           <Link href={node.url} className={styles.link}>
             {node.name}
@@ -75,33 +72,38 @@ function TreeNode({ node, level = 0, highlightSlug }) {
 }
 
 export default function SiteTree({ treeData, highlightSlug }) {
-  const handleRootClickTop = async (e) => {
-    e?.preventDefault?.();
-    try {
-      const res = await fetch('/api/root-check');
-      if (res.status === 200) {
-        const j = await res.json();
-        if (j.allowed && j.redirect) {
-          window.location.href = j.redirect;
-          return;
-        }
-      }
-      window.location.href = '/restricted';
-    } catch (err) {
-      console.error('root click failed', err);
-      window.location.href = '/restricted';
-    }
-  };
+  // defensive: if treeData is missing or malformed, render a safe fallback and log details
+  if (!treeData || typeof treeData !== 'object') {
+    console.warn('SiteTree: missing or invalid treeData', treeData);
+    return (
+      <div className={styles.wrapper} aria-label="site-tree">
+        <div className={styles.header}>tree</div>
+        <div className={styles.tree}>
+          <div className={styles.error}>Tree data unavailable</div>
+        </div>
+      </div>
+    );
+  }
 
-  return (
-    <div className={styles.wrapper} aria-label="site-tree">
-      <div className={styles.header}>Tree</div>
-      <div className={styles.rootBox}>
-        <button onClick={handleRootClickTop} className={styles.rootButton}>{'/root'}</button>
+  try {
+    return (
+      <div className={styles.wrapper} aria-label="site-tree">
+        <div className={styles.header}>tree</div>
+        <div className={styles.tree}>
+          <TreeNode node={treeData} level={0} highlightSlug={highlightSlug} />
+        </div>
       </div>
-      <div className={styles.tree}>
-        <TreeNode node={treeData} level={0} highlightSlug={highlightSlug} />
+    );
+  } catch (e) {
+    // Catch unexpected runtime render errors and show a safe fallback
+    console.error('SiteTree render error', e, { treeData, highlightSlug });
+    return (
+      <div className={styles.wrapper} aria-label="site-tree">
+        <div className={styles.header}>tree</div>
+        <div className={styles.tree}>
+          <div className={styles.error}>Error rendering tree</div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
