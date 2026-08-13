@@ -5,8 +5,8 @@
 .headerRow{
   display:grid;
   /* columns: perm | words | owner+date | name */
-  grid-template-columns: 100px 90px 220px 1fr;
-  gap:10px;
+  grid-template-columns: 100px 90px 260px 1fr;
+  gap:12px;
   padding:8px 12px;
   color:var(--softTextColor);
   font-family: 'Fira Code', monospace;
@@ -15,11 +15,12 @@
   margin-bottom:8px;
 }
 
-/* ensure the date doesn't wrap and owner/date display inline */
-.meta{ display:inline-flex; gap:10px; align-items:center; }
+/* give owner/date a comfortable breathing room while keeping them inline */
+.metaHeader,
+.meta{ display:inline-flex; align-items:center; gap:18px; white-space:nowrap; }
+.metaHeader{ min-width: 240px; }
 .date{ color: var(--softTextColor); font-family: 'Fira Code', monospace; white-space: nowrap; display:inline-block; }
 .dateLabel{ color: var(--softTextColor); font-family: 'Fira Code', monospace; }
-.meta{ display:inline-flex; gap:8px; align-items:center; flex-wrap:nowrap; }
 
 .list{
   display:flex;
@@ -30,8 +31,8 @@
 .row{
   display:grid;
   /* match header: perm | words | owner+date | name */
-  grid-template-columns: 100px 90px 220px 1fr;
-  gap:10px;
+  grid-template-columns: 100px 90px 260px 1fr;
+  gap:12px;
   align-items:center;
   padding:12px;
   border-radius:8px;
@@ -57,7 +58,8 @@
 
 @media (max-width:800px){
   /* mobile: reduce columns but keep owner+date together */
-  .headerRow, .row{ grid-template-columns: 80px 64px 120px 1fr; }
+  .headerRow, .row{ grid-template-columns: 80px 64px 170px 1fr; }
+  .metaHeader, .meta{ gap:10px; }
   .date{ display:inline-block }
 }
 
