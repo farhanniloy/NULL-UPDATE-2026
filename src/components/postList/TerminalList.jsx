@@ -81,7 +81,8 @@ const TerminalList = async ({ page = 1, cat, paginationPrefix = '' }) => {
             <div className={styles.headerRow} aria-hidden>
                 <span className={styles.perm}>mode</span>
                 <span className={styles.size}>words</span>
-                <span className={styles.metaHeader}><span className={styles.user}>owner</span> <span className={styles.dateLabel}>date</span></span>
+                <span className={styles.user}>owner</span>
+                <span className={styles.dateHeader}>date</span>
                 <span className={styles.name}>name</span>
             </div>
             <div className={styles.list}>
@@ -92,7 +93,8 @@ const TerminalList = async ({ page = 1, cat, paginationPrefix = '' }) => {
                         <div className={styles.row} key={item.id}>
                             <span className={styles.perm}>-rw-r--r--</span>
                             <span className={styles.size}>{pad(words, 6)}</span>
-                            <span className={styles.meta}><span className={styles.user}>{owner}</span><span className={styles.date}>{fmtDateInline(item.createdAt)}</span></span>
+                            <span className={styles.user}>{owner}</span>
+                            <span className={styles.dateValue}>{fmtDateInline(item.createdAt)}</span>
                             <span className={styles.name}>
                                 <Link href={`/posts/${encodeURIComponent(item.slug)}`} className={styles.link}>
                                     <span className={styles.fsSlash}>/</span>
