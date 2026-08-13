@@ -14,11 +14,11 @@
   margin-bottom:8px;
 }
 
-/* Terminal-like font stack: prefer Courier Prime / Iosevka / Fira Code then fall back to monospace */
+/* Use IBM Plex Mono and site default text color */
 .tree{
-  font-family: 'Courier Prime', 'Iosevka', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
   font-size: 14px;
-  color: rgba(230, 245, 235, 0.96);
+  color: var(--textColor);
 }
 
 .node{
@@ -98,6 +98,8 @@
   color: #A7FFCF; /* bright green highlight for current */
   font-weight:700;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap');
 
 @media screen and (max-width:640px){
   .wrapper{padding:8px}
