@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import SiteTree from "@/components/siteTree/SiteTree";
+import TerminalList from "@/components/postList/TerminalList";
 import styles from "./categoryPage.module.css";
 import prisma from "@/utils/connect";
 
@@ -65,18 +66,14 @@ const CategoryPage = async ({ params, searchParams }) => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.categoryHeader}>
-                <span className={styles.kicker}>{'// CATEGORY_CHANNEL'}</span>
-                <h1 className={styles.title}>{title}</h1>
-                <span className={styles.marker}>FILTER: ACTIVE / ACCESS: PUBLIC</span>
-            </div>
+            {/* category header removed as requested */}
 
             <div className={styles.treeWrapper}>
                 <SiteTree treeData={treeData} highlightSlug={slug} />
             </div>
 
-            {/* TerminalList removed per request; page now focuses on the tree */}
             <div className={styles.content}>
+                <TerminalList page={page} cat={slug} paginationPrefix={`/category/${encodeURIComponent(slug)}`} />
             </div>
         </div>
     );
