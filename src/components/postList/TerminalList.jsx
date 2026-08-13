@@ -8,7 +8,7 @@ import prisma from '@/utils/connect';
 
 const getData = async (page, cat) => {
     try {
-        const POST_PER_PAGE = 15;
+        const POST_PER_PAGE = 20;
         const query = {
             take: POST_PER_PAGE,
             skip: POST_PER_PAGE * (page - 1),
@@ -61,7 +61,7 @@ const pad = (s, len = 6) => String(s).padStart(len, ' ');
 
 const TerminalList = async ({ page = 1, cat, paginationPrefix = '' }) => {
     const { posts = [], count = 0 } = await getData(page, cat);
-    const POST_PER_PAGE = 15;
+    const POST_PER_PAGE = 20;
     const totalPages = Math.max(1, Math.ceil(count / POST_PER_PAGE));
     const hasPrev = POST_PER_PAGE * (page - 1) > 0;
     const hasNext = POST_PER_PAGE * (page - 1) + POST_PER_PAGE < count;
