@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap');
+
+.wrapper{
+  border-radius:10px;
+  padding:10px 12px;
+  background: linear-gradient(180deg, rgba(4,12,6,0.4), rgba(6,18,9,0.35));
+  border: 1px solid rgba(var(--grid-strong-line),0.06);
+  color: var(--strtextColor);
+}
+
+/* root link style */
+.rootLink{
+  background: transparent;
+  border: none;
+  color: var(--textColor);
+  padding: 2px 4px;
+  font-family: inherit;
+  font-size: inherit; /* match surrounding node size */
+  font-weight: 400;
+  cursor: pointer;
+  text-decoration: none; /* remove underline */
+}
+.rootLink:hover{ opacity: 0.95; text-decoration: none; }
+
+/* Use IBM Plex Mono and site default text color */
+.tree{
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  font-size: 14px;
+  color: var(--textColor);
+
+  /* expand the tree more before it becomes scrollable */
+  max-height: min(60vh, 720px);
+  overflow-y: auto;
+  padding-right: 8px; /* space for the scrollbar */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* custom scrollbar visuals */
+.tree::-webkit-scrollbar{ width: 10px; }
+.tree::-webkit-scrollbar-track{ background: transparent; }
+.tree::-webkit-scrollbar-thumb{ background: rgba(200,230,210,0.12); border-radius: 6px; border: 2px solid transparent; background-clip: padding-box; }
+.tree{ scrollbar-width: thin; scrollbar-color: rgba(200,230,210,0.12) transparent; } 
+
+.node{
+  display:block;
+  position:relative;
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 0 6px 6px;
+  position:relative;
+  /* slight text shadow to mimic the soft glow in the screenshots */
+  text-shadow: 0 1px 0 rgba(0,0,0,0.6);
+}
+
+/* stronger vertical spine for visual weight */
+.children{
+  margin-top:6px;
+  padding-left: 16px;
+  border-left: 2px solid rgba(200,230,210,0.12);
+}
+
+/* horizontal connector from the vertical spine to the node text (L-shaped connector) */
+.children .node .row::before{
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 50%;
+  width: 18px;
+  height: 1px;
+  background: rgba(200,230,210,0.12);
+  transform: translateY(-50%);
+}
+
+/* give the root's immediate children a longer connector to match screenshot */
+.tree > .node > .children > .node > .row::before{
+  left: -22px;
+  width: 22px;
+  background: rgba(200,230,210,0.16);
+}
+
+.toggleButton{
+  background: transparent;
+  border: none;
+  color: var(--strtextColor);
+  cursor: pointer;
+  width:18px;
+  height:18px;
+  padding:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.toggleIcon{
+  opacity:0.95;
+  color: rgba(200,230,210,0.9);
+}
+
+.empty{
+  display:inline-block;
+  width:18px;
+}
+
+.link{
+  color: var(--textColor);
+  text-decoration:none;
+}
+
+.text{
+  color: var(--textColor);
+}
+
+.current .link, .current .text{
+  color: var(--strtextColor);
+  font-weight:700;
+}
+
+@media screen and (max-width:640px){
+  .wrapper{padding:8px}
+  .tree{font-size:12px}
+}
+
+.error{
+  color: var(--softTextColor);
+  padding: 8px 4px;
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+}

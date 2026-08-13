@@ -3,69 +3,130 @@ import React from 'react'
 import styles from "./pagination.module.css";
 import {useRouter} from "next/navigation";
 
-const Pagination = ({ page, totalPages, hasPrev, hasNext, hrefPrefix = "" }) => {
+const Pagination = ({ page = 1, totalPages = 1, hasPrev = false, hasNext = false, hrefPrefix = "" }) => {
     const router = useRouter()
-    const getHref = (nextPage) => `${hrefPrefix}?page=${nextPage}`;
-    const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
-    const mobilePages = totalPages <= 5
-        ? pages
-        : page <= 3
-            ? [1, 2, 3, 4, "ellipsis-end", totalPages]
-            : page >= totalPages - 2
-                ? [1, "ellipsis-start", totalPages - 3, totalPages - 2, totalPages - 1, totalPages]
-                : [1, "ellipsis-start", page - 1, page, page + 1, "ellipsis-end", totalPages];
+    const getHref = (p) => `${hrefPrefix}?page=${p}`;
 
-    const renderPage = (pageNumber, key = pageNumber) => {
-        if (typeof pageNumber !== "number") {
+    // Build condensed page list with ellipses when needed
+    const buildPages = () => {
+        if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
+        const pages = [];
+        pages.push(1);
+        if (page > 4) pages.push('start-ellipsis');
+        const start = Math.max(2, Math.min(page - 1, totalPages - 4));
+        const end = Math.min(totalPages - 1, Math.max(page + 1, 5));
+        for (let i = start; i <= end; i++) pages.push(i);
+        if (page < totalPages - 3) pages.push('end-ellipsis');
+        pages.push(totalPages);
+        return pages;
+    };
+
+    const pages = buildPages();
+
+    const renderPage = (p, key) => {
+        if (typeof p !== 'number') {
             return (
-                <span key={key} className={styles.ellipsis} aria-hidden="true">
-                    ...
-                </span>
+                <span key={key} className={styles.ellipsis} aria-hidden="true">…</span>
             );
         }
-
+        const isActive = p === page;
         return (
             <button
                 key={key}
                 type="button"
-                className={`${styles.pageButton} ${pageNumber === page ? styles.active : ""}`}
-                aria-current={pageNumber === page ? "page" : undefined}
-                aria-label={`Go to page ${pageNumber}`}
-                onClick={() => router.push(getHref(pageNumber))}
+                className={`${styles.pageButton} ${isActive ? styles.active : ''}`}
+                aria-current={isActive ? 'page' : undefined}
+                aria-label={isActive ? `Current page, page ${p}` : `Go to page ${p}`}
+                onClick={() => router.push(getHref(p))}
             >
-                {pageNumber}
+                {p}
             </button>
         );
     };
 
+    // Mobile: show compact view with prev/next and current/total
     return (
         <nav className={styles.container} aria-label="Pagination">
-            <button
-                type="button"
-                disabled={!hasPrev}
-                className={styles.button}
-                onClick={() => router.push(getHref(page - 1))}
-            >
-                <span className={styles.desktopLabel}>Previous</span>
-                <span className={styles.mobileLabel}>Prev</span>
-            </button>
+            <div className={styles.leftControls}>
+                <button
+                    type="button"
+                    disabled={page <= 1}
+                    className={styles.iconButton}
+                    aria-label="First page"
+                    onClick={() => router.push(getHref(1))}
+                >
+                    «
+                </button>
+                <button
+                    type="button"
+                    disabled={page <= 1}
+                    className={styles.iconButton}
+                    aria-label="Previous page"
+                    onClick={() => router.push(getHref(Math.max(1, page - 1)))}
+                >
+                    ‹
+                </button>
+            </div>
+
             <div className={`${styles.pages} ${styles.desktopPages}`}>
-                {pages.map((pageNumber) => renderPage(pageNumber))}
+                {pages.map((p, i) => renderPage(p, `p-${i}`))}
             </div>
-            <div className={`${styles.pages} ${styles.mobilePages}`}>
-                {mobilePages.map((pageNumber, index) => renderPage(pageNumber, `${pageNumber}-${index}`))}
+
+            <div className={styles.summary} aria-hidden={false}>
+                <span className={styles.current}>{page}</span>
+                <span className={styles.sep}>/</span>
+                <span className={styles.total}>{totalPages}</span>
             </div>
-            <button
-                type="button"
-                disabled={!hasNext}
-                className={styles.button}
-                onClick={() => router.push(getHref(page + 1))}
-            >
-                <span className={styles.desktopLabel}>Next</span>
-                <span className={styles.mobileLabel}>Next</span>
-            </button>
+
+            <div className={styles.rightControls}>
+                <button
+                    type="button"
+                    disabled={page >= totalPages}
+                    className={styles.iconButton}
+                    aria-label="Next page"
+                    onClick={() => router.push(getHref(Math.min(totalPages, page + 1)))}
+                >
+                    ›
+                </button>
+                <button
+                    type="button"
+                    disabled={page >= totalPages}
+                    className={styles.iconButton}
+                    aria-label="Last page"
+                    onClick={() => router.push(getHref(totalPages))}
+                >
+                    »
+                </button>
+            </div>
+
+            {/* Mobile condensed controls */}
+            <div className={styles.mobileBar}>
+                <button
+                    type="button"
+                    disabled={page <= 1}
+                    className={styles.iconButton}
+                    aria-label="Previous page"
+                    onClick={() => router.push(getHref(Math.max(1, page - 1)))}
+                >
+                    ‹
+                </button>
+                <div className={styles.mobileLabelBar}>
+                    <span className={styles.mobileCurrent}>{page}</span>
+                    <span className={styles.mobileSlash}>/</span>
+                    <span className={styles.mobileTotal}>{totalPages}</span>
+                </div>
+                <button
+                    type="button"
+                    disabled={page >= totalPages}
+                    className={styles.iconButton}
+                    aria-label="Next page"
+                    onClick={() => router.push(getHref(Math.min(totalPages, page + 1)))}
+                >
+                    ›
+                </button>
+            </div>
         </nav>
-    )
-}
+    );
+};
 
 export default Pagination
