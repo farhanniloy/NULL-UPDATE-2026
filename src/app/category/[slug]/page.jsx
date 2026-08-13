@@ -30,7 +30,13 @@ const CategoryPage = async ({ params, searchParams }) => {
     // build a lightweight site-tree data structure: top -> categories -> current category -> posts
     const categories = await prisma.category.findMany({ select: { title: true, slug: true } });
     const postsForCat = await prisma.post.findMany({
-        where: { categories: { some: { slug } } },
+        where: {
+            OR: [
+                { catSlug: slug },
+                { categories: { some: { categorySlug: slug } } },
+            ],
+            approved: true,
+        },
         select: { title: true, slug: true },
         take: 30,
         orderBy: { createdAt: 'desc' },
