@@ -55,7 +55,29 @@ export const POST = async (req) => {
             if (count >= 5) {
                 return new NextResponse(JSON.stringify({ message: 'Comment rate limit reached (5 per day)' }), { status: 429 });
             }
-            const comment = await prisma.comment.create({ data: { desc: body.desc, postSlug: body.postSlug, userEmail: session.user.email, ipAddr: ip } });
+
+            // If the user doesn't have a profile image, assign a deterministic DiceBear avatar and store it on the comment
+            const styles = ["identicon","pixel-art","bottts","micah","adventurer"];
+            const stableHash = (s) => {
+                let h = 0;
+                for (let i = 0; i < s.length; i++) {
+                    h = ((h << 5) - h) + s.charCodeAt(i);
+                    h |= 0;
+                }
+                return Math.abs(h);
+            };
+            // Use modern DiceBear API (api.dicebear.com) with seed query param to avoid deprecated endpoint banner
+const makeAvatar = (seed, style) => `https://api.dicebear.com/6.x/${style}/svg?seed=${encodeURIComponent(seed)}`;
+
+            let avatarUrl = null;
+            // prefer user's profile image if available (on the client UI the user image is shown when present)
+            if (!session.user.image) {
+                const seed = session.user.email || session.user.id || JSON.stringify(session.user);
+                const style = styles[stableHash(seed) % styles.length];
+                avatarUrl = makeAvatar(seed, style);
+            }
+
+            const comment = await prisma.comment.create({ data: { desc: body.desc, postSlug: body.postSlug, userEmail: session.user.email, ipAddr: ip, ...(avatarUrl ? { avatar: avatarUrl } : {}) } });
             return new NextResponse(JSON.stringify(comment), { status: 200 });
         }
 
@@ -70,12 +92,48 @@ export const POST = async (req) => {
             return new NextResponse(JSON.stringify({ message: 'Comment rate limit reached for this IP (5 per day)' }), { status: 429 });
         }
 
-        // generate avatar URL using dicebear (no-download approach)
-        const seed = encodeURIComponent(name + '|' + Math.random().toString(36).slice(2, 8));
-        const avatar = `https://avatars.dicebear.com/api/identicon/${seed}.svg`;
+        // Use cookie-based anon seed so avatar stays stable across IP changes
+        const cookieHeader = req.headers.get('cookie') || '';
+        const getCookie = (name) => {
+            const pairs = cookieHeader.split(';').map(s => s.trim()).filter(Boolean);
+            for (const p of pairs) {
+                const [k, v] = p.split('=');
+                if (k === name) return decodeURIComponent(v || '');
+            }
+            return null;
+        };
+        let anonId = getCookie('anon_id');
+        let setAnonCookie = false;
+        if (!anonId) {
+            anonId = 'anon_' + Math.random().toString(36).slice(2, 10);
+            setAnonCookie = true;
+        }
+
+        // deterministic avatar assignment using DiceBear (seeded by name+anonId so it's stable per browser)
+        const styles = ["identicon","pixel-art","bottts","micah","adventurer"];
+        const stableHash = (s) => {
+            let h = 0;
+            for (let i = 0; i < s.length; i++) {
+                h = ((h << 5) - h) + s.charCodeAt(i);
+                h |= 0;
+            }
+            return Math.abs(h);
+        };
+        // Use modern DiceBear API (api.dicebear.com) with seed query param to avoid deprecated endpoint banner
+const makeAvatar = (seed, style) => `https://api.dicebear.com/6.x/${style}/svg?seed=${encodeURIComponent(seed)}`;
+
+        const seed = `${name}|${anonId}`;
+        const style = styles[stableHash(seed) % styles.length];
+        const avatar = makeAvatar(seed, style);
 
         const comment = await prisma.comment.create({ data: { desc: body.desc, postSlug: body.postSlug, name, avatar, ipAddr: ip } });
-        return new NextResponse(JSON.stringify(comment), { status: 200 });
+
+        const res = new NextResponse(JSON.stringify(comment), { status: 200 });
+        if (setAnonCookie) {
+            // set a persistent cookie for 1 year
+            res.headers.set('Set-Cookie', `anon_id=${encodeURIComponent(anonId)}; Path=/; Max-Age=31536000; SameSite=Lax`);
+        }
+        return res;
     } catch (err) {
         console.log(err);
         return new NextResponse(

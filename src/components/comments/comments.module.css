@@ -102,10 +102,44 @@
 
 .userInfo {
     display: flex;
+    align-items: flex-start; /* align to top so reply can sit next to the date line */
+    justify-content: space-between; /* username/date left, reply right */
+    gap: 12px; /* space between user meta and reply */
+}
+
+.userMeta {
+    display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 2px;
     font-size: small;
 }
+
+/* ensure reply sits aligned with the date line */
+.metaRow { display: flex; align-items: baseline; gap: 6px; }
+/* date styling */
+.metaRow .date {
+    font-size: 13px !important;
+    color: var(--textColor2) !important;
+    line-height: 1 !important;
+}
+/* Make reply a little bigger while keeping color and baseline alignment */
+.metaRow .replyButton {
+    font-size: 14px !important; /* slightly larger */
+    color: var(--textColor2) !important;
+    line-height: 1 !important;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 2px 6px; /* small clickable area */
+    margin-left: 6px; /* safe distance from date */
+    display: inline-block;
+    vertical-align: baseline;
+    border-radius: 4px;
+}
+.replyButton:hover { text-decoration: underline; }
+.replyButton:focus { outline: none; }
+.replyButton:hover { text-decoration: underline; }
+.replyButton:focus { outline: none; }
 
 .username {
     font-weight: bold;
@@ -144,4 +178,24 @@
 .divider {
    border: .1px solid var(--surface-border);
     margin: 60px 0 60px 0;
+}
+
+/* Reply UI */
+.replyingNote {
+    background: rgba(0,0,0,0.04);
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--textColor2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.cancelReply {
+    background: transparent;
+    border: 0;
+    color: var(--strtextColor);
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 12px;
 }

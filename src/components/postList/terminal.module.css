@@ -4,9 +4,9 @@
 
 .headerRow{
   display:grid;
-  /* columns: perm | words | owner+date | name */
-  grid-template-columns: 100px 90px 320px 1fr;
-  gap:18px;
+  /* columns: perm | words | owner | date | name */
+  grid-template-columns: 100px 90px 90px 140px 1fr;
+  gap:12px;
   padding:10px 12px;
   color:var(--softTextColor);
   font-family: 'Fira Code', monospace;
@@ -15,12 +15,7 @@
   margin-bottom:12px;
 }
 
-/* give owner/date a comfortable breathing room while keeping them on one line */
-.metaHeader,
-.meta{ display:inline-flex; align-items:center; gap:28px; white-space:nowrap; }
-.metaHeader{ min-width: 300px; }
-.date{ color: var(--softTextColor); font-family: 'Fira Code', monospace; white-space: nowrap; display:inline-block; }
-.dateLabel{ color: var(--softTextColor); font-family: 'Fira Code', monospace; }
+.dateHeader{ color: var(--softTextColor); font-family: 'Fira Code', monospace; }
 
 .list{
   display:flex;
@@ -30,9 +25,9 @@
 
 .row{
   display:grid;
-  /* match header: perm | words | owner+date | name */
-  grid-template-columns: 100px 90px 320px 1fr;
-  gap:18px;
+  /* match header: perm | words | owner | date | name */
+  grid-template-columns: 100px 90px 90px 140px 1fr;
+  gap:12px;
   align-items:center;
   padding:16px 12px;
   border-radius:8px;
@@ -47,7 +42,7 @@
 .perm{ color: #8fbf8f; font-family: 'Fira Code', monospace; font-size:12px }
 .size{ color: var(--textColor2); font-family: 'Fira Code', monospace; }
 .user{ color: #ffb86b; font-family: 'Fira Code', monospace; }
-.date{ color: var(--softTextColor); font-family: 'Fira Code', monospace; }
+.dateValue{ color: var(--softTextColor); font-family: 'Fira Code', monospace; white-space: nowrap; }
 
 .name{ color: var(--textColor); font-family: 'Fira Code', monospace; }
 
@@ -57,10 +52,8 @@
 .filename{ color: var(--textColor); text-decoration: underline; text-underline-offset:4px }
 
 @media (max-width:800px){
-  /* mobile: reduce columns but keep owner+date together */
-  .headerRow, .row{ grid-template-columns: 80px 64px 220px 1fr; }
-  .metaHeader, .meta{ gap:12px; }
-  .date{ display:inline-block }
+  /* mobile: reduce columns but keep owner and date as separate cells */
+  .headerRow, .row{ grid-template-columns: 80px 64px 80px 120px 1fr; }
 }
 
 @media (max-width:480px){

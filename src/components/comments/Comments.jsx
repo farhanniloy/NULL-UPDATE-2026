@@ -5,7 +5,7 @@ import styles from "./comments.module.css";
 import Image from "next/image";
 import useSWR from "swr";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const fetcher = async (url) => {
     const res = await fetch(url);
@@ -31,6 +31,8 @@ const Comments = ({ postSlug }) => {
     const [desc, setDesc] = useState("");
     const [name, setName] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const [replyingTo, setReplyingTo] = useState(null);
+    const inputRef = useRef(null);
 
     const handleSubmit = async () => {
         setSubmitting(true);
@@ -65,7 +67,9 @@ const Comments = ({ postSlug }) => {
             <h1 className={styles.title}>Comments</h1>
             {status === "authenticated" ? (
                 <div className={styles.write}>
+                    {replyingTo ? <div className={styles.replyingNote}>Replying to <strong>{replyingTo}</strong> • <button className={styles.cancelReply} onClick={() => { setReplyingTo(null); setDesc(''); }}>cancel</button></div> : null}
           <textarea
+              ref={inputRef}
               placeholder="write a comment..."
               className={styles.input}
               value={desc}
@@ -78,7 +82,9 @@ const Comments = ({ postSlug }) => {
             ) : (
                 <div className={styles.write}>
                     <input type="text" placeholder="Your name" className={styles.input} value={name} onChange={(e)=>setName(e.target.value)} />
+                    {replyingTo ? <div className={styles.replyingNote}>Replying to <strong>{replyingTo}</strong> • <button className={styles.cancelReply} onClick={() => { setReplyingTo(null); setDesc(''); }}>cancel</button></div> : null}
                     <textarea
+                        ref={inputRef}
                         placeholder="write a comment..."
                         className={styles.input}
                         value={desc}
@@ -107,6 +113,7 @@ const Comments = ({ postSlug }) => {
                                     <img src={item.avatar} alt="" width={50} height={50} className={styles.image} />
                                 ) : null}
                                 <div className={styles.userInfo}>
+                                    <div className={styles.userMeta}>
                                     {/* show username with @ and link to public profile when comment is by a known user */}
                                     {item.user ? (
                                       (() => {
@@ -118,16 +125,35 @@ const Comments = ({ postSlug }) => {
                                             <Link href={`/u/${encodeURIComponent(slug)}`} className={styles.authorLink}>
                                               <span className={styles.username}>{display}</span>
                                             </Link>
-                                            <span className={styles.date}>{new Date(item.createdAt).toISOString().substring(0, 10)}</span>
+                                            <div className={styles.metaRow}>
+                                              <span className={styles.date}>{new Date(item.createdAt).toISOString().substring(0, 10)}</span>
+                                              <button className={styles.replyButton} onClick={() => {
+                                                  let mention = item.name || (item.user ? (item.user.username || (item.user.email ? item.user.email.split('@')[0] : 'user')) : 'user');
+                                                  if (!mention.startsWith('@')) mention = `@${mention}`;
+                                                  setReplyingTo(mention);
+                                                  setDesc(`${mention} `);
+                                                  setTimeout(() => { try { inputRef.current?.focus(); } catch(e){}; try { inputRef.current?.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e){} }, 50);
+                                              }}>Reply</button>
+                                            </div>
                                           </>
                                         );
                                       })()
                                     ) : (
                                       <>
                                         <span className={styles.username}>{item.name || 'Guest'}</span>
-                                        <span className={styles.date}>{new Date(item.createdAt).toISOString().substring(0, 10)}</span>
+                                        <div className={styles.metaRow}>
+                                          <span className={styles.date}>{new Date(item.createdAt).toISOString().substring(0, 10)}</span>
+                                          <button className={styles.replyButton} onClick={() => {
+                                              let mention = item.name || (item.user ? (item.user.username || (item.user.email ? item.user.email.split('@')[0] : 'user')) : 'user');
+                                              if (!mention.startsWith('@')) mention = `@${mention}`;
+                                              setReplyingTo(mention);
+                                              setDesc(`${mention} `);
+                                              setTimeout(() => { try { inputRef.current?.focus(); } catch(e){}; try { inputRef.current?.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e){} }, 50);
+                                          }}>Reply</button>
+                                        </div>
                                       </>
                                     )}
+                                    </div>
                                 </div>
                             </div>
                             <p className={styles.desc}>{item.desc}</p>

@@ -81,10 +81,11 @@
 }
 
 .category:hover {
-    background: rgba(118, 123, 130, 0.20);
-    transform: translateX(2px);
-    color: #fdfdff;
-    letter-spacing: 0.1em;
+   /* subtler overlay: keep original hue but more transparent than initial 0.20 */
+   background: rgba(118, 123, 130, 0.12);
+   transform: translateX(2px);
+   color: #fdfdff;
+   letter-spacing: 0.1em;
 }
 
 .category:hover .icon {

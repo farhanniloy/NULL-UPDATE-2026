@@ -70,8 +70,6 @@ const CategoryPage = async ({ params, searchParams }) => {
 
     return (
         <div className={styles.container}>
-            {/* category header removed as requested */}
-
             <div className={styles.treeWrapper}>
                 <SiteTree treeData={treeData} highlightSlug={slug} />
             </div>
