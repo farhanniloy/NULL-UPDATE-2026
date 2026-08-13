@@ -133,6 +133,15 @@
     box-shadow: inset 0 0 0 1px rgba(94,255,160,0.12), 0 0 18px rgba(var(--grid-strong-line), .12);
 }
 
+/* tree wrapper for interactive site-map */
+.treeWrapper{
+    margin: 18px 0 22px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(var(--grid-strong-line), 0.06);
+    background: linear-gradient(180deg, rgba(2,8,6,0.48), rgba(4,12,8,0.38));
+}
+
 @media screen and (max-width: 640px) {
     .container {
         width: calc(100% - 20px);
@@ -145,4 +154,6 @@
     }
 
     .title{ font-size: 26px; }
+
+    .treeWrapper{ padding:10px; }
 }
