@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import styles from "./singlePage.module.css";
 import Image from "next/image";
 import Link from 'next/link';
+import { Open_Sans } from 'next/font/google';
 import Comments from "@/components/comments/Comments";
 
 import prisma from "@/utils/connect";
@@ -10,6 +11,12 @@ import prisma from "@/utils/connect";
 import { getAuthSession } from '@/utils/auth';
 import AdminPostControls from '@/components/admin/AdminPostControls';
 import { sanitizePostHtml } from '@/utils/sanitizeHtml';
+
+const openSans = Open_Sans({
+    subsets: ['latin'],
+    weight: ['400', '500', '600'],
+    display: 'swap',
+});
 
 const getData = async (slug) => {
     try {
@@ -121,9 +128,13 @@ const SinglePage = async ({ params }) => {
                     </div>
                 </Link>
                 <div className={styles.textContainer}>
-                    <span className={styles.date}>
-                        ∅∅∅
-                    </span>
+                    <div className={styles.headingMeta}>
+                        <span className={styles.symbol}>∅∅∅</span>
+                        <strong className={styles.dot}>·</strong>
+                        <span className={styles.uploadedDate}>
+                            {new Date(data.createdAt).toISOString().substring(0, 10)}
+                        </span>
+                    </div>
                     <h2 className={styles.title}>{data?.title}</h2>
 
                     <div className={styles.user}>
@@ -167,7 +178,7 @@ const SinglePage = async ({ params }) => {
             <div className={styles.content}>
                 <div className={styles.post}>
                     <div
-                        className={`${styles.description} ql-editor`}
+                        className={`${styles.description} ql-editor ${openSans.className}`}
                         dangerouslySetInnerHTML={{ __html: sanitizePostHtml(data?.desc) }}
                     />
                 </div>
