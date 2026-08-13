@@ -8,17 +8,6 @@
   color: var(--strtextColor);
 }
 
-.header{
-  font-size:22px;
-  color: var(--strtextColor);
-  letter-spacing: .12em;
-  text-transform: none;
-  /* ensure not bold */
-  font-weight: 400 !important;
-  font-style: normal;
-  margin-bottom:12px;
-}
-
 /* root link style */
 .rootLink{
   background: transparent;

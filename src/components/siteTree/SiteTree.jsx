@@ -77,12 +77,11 @@ export default function SiteTree({ treeData, highlightSlug }) {
     console.warn('SiteTree: missing or invalid treeData', treeData);
     return (
       <div className={styles.wrapper} aria-label="site-tree">
-        <div className={styles.header}>tree</div>
-        <div className={styles.tree}>
-          <div className={styles.error}>Tree data unavailable</div>
-        </div>
+      <div className={styles.tree}>
+        <div className={styles.error}>Tree data unavailable</div>
       </div>
-    );
+    </div>
+  );
   }
 
   try {
@@ -94,15 +93,14 @@ export default function SiteTree({ treeData, highlightSlug }) {
     </div>
   );
   } catch (e) {
-    // Catch unexpected runtime render errors and show a safe fallback
-    console.error('SiteTree render error', e, { treeData, highlightSlug });
-    return (
-      <div className={styles.wrapper} aria-label="site-tree">
-        <div className={styles.header}>tree</div>
-        <div className={styles.tree}>
-          <div className={styles.error}>Error rendering tree</div>
-        </div>
+  // Catch unexpected runtime render errors and show a safe fallback
+  console.error('SiteTree render error', e, { treeData, highlightSlug });
+  return (
+    <div className={styles.wrapper} aria-label="site-tree">
+      <div className={styles.tree}>
+        <div className={styles.error}>Error rendering tree</div>
       </div>
-    );
+    </div>
+  );
   }
 }
