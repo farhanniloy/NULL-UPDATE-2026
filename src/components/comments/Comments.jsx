@@ -113,42 +113,42 @@ const Comments = ({ postSlug }) => {
                                     <img src={item.avatar} alt="" width={50} height={50} className={styles.image} />
                                 ) : null}
                                 <div className={styles.userInfo}>
-                                            <button className={styles.replyButton} onClick={() => {
-                                                // determine mention name
-                                                let mention = item.name || (item.user ? (item.user.username || (item.user.email ? item.user.email.split('@')[0] : 'user')) : 'user');
-                                                if (!mention.startsWith('@')) mention = `@${mention}`;
-                                                setReplyingTo(mention);
-                                                setDesc(`${mention} `);
-                                                // focus the textarea
-                                                setTimeout(() => {
-                                                    try { inputRef.current?.focus(); } catch(e){}
-                                                    try { inputRef.current?.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e){}
-                                                }, 50);
-                                            }}>Reply</button>
+                                    <div className={styles.userMeta}>
+                                    {/* show username with @ and link to public profile when comment is by a known user */}
+                                    {item.user ? (
+                                      (() => {
+                                        const raw = item.user.username || (item.user.email ? item.user.email.split('@')[0] : 'user');
+                                        const display = raw.startsWith('@') ? raw : `@${raw}`;
+                                        const slug = raw.startsWith('@') ? raw.slice(1) : raw;
+                                        return (
+                                          <>
+                                            <Link href={`/u/${encodeURIComponent(slug)}`} className={styles.authorLink}>
+                                              <span className={styles.username}>{display}</span>
+                                            </Link>
+                                            <span className={styles.date}>{new Date(item.createdAt).toISOString().substring(0, 10)}</span>
+                                          </>
+                                        );
+                                      })()
+                                    ) : (
+                                      <>
+                                        <span className={styles.username}>{item.name || 'Guest'}</span>
+                                        <span className={styles.date}>{new Date(item.createdAt).toISOString().substring(0, 10)}</span>
+                                      </>
+                                    )}
+                                    </div>
 
-                                            <div className={styles.userMeta}>
-                                            {/* show username with @ and link to public profile when comment is by a known user */}
-                                            {item.user ? (
-                                              (() => {
-                                                const raw = item.user.username || (item.user.email ? item.user.email.split('@')[0] : 'user');
-                                                const display = raw.startsWith('@') ? raw : `@${raw}`;
-                                                const slug = raw.startsWith('@') ? raw.slice(1) : raw;
-                                                return (
-                                                  <>
-                                                    <Link href={`/u/${encodeURIComponent(slug)}`} className={styles.authorLink}>
-                                                      <span className={styles.username}>{display}</span>
-                                                    </Link>
-                                                    <span className={styles.date}>{new Date(item.createdAt).toISOString().substring(0, 10)}</span>
-                                                  </>
-                                                );
-                                              })()
-                                            ) : (
-                                              <>
-                                                <span className={styles.username}>{item.name || 'Guest'}</span>
-                                                <span className={styles.date}>{new Date(item.createdAt).toISOString().substring(0, 10)}</span>
-                                              </>
-                                            )}
-                                            </div>
+                                    <button className={styles.replyButton} onClick={() => {
+                                        // determine mention name
+                                        let mention = item.name || (item.user ? (item.user.username || (item.user.email ? item.user.email.split('@')[0] : 'user')) : 'user');
+                                        if (!mention.startsWith('@')) mention = `@${mention}`;
+                                        setReplyingTo(mention);
+                                        setDesc(`${mention} `);
+                                        // focus the textarea
+                                        setTimeout(() => {
+                                            try { inputRef.current?.focus(); } catch(e){}
+                                            try { inputRef.current?.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e){}
+                                        }, 50);
+                                    }}>Reply</button>
                                 </div>
                             </div>
                             <p className={styles.desc}>{item.desc}</p>

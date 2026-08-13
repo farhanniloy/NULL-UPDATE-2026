@@ -103,7 +103,8 @@
 .userInfo {
     display: flex;
     align-items: center;
-    gap: 12px; /* space between reply button and meta */
+    justify-content: space-between; /* username/date left, reply right */
+    gap: 12px; /* space between user meta and reply */
 }
 
 .userMeta {
