@@ -29,7 +29,26 @@ const CategoryPage = async ({ params, searchParams }) => {
 
     // build a lightweight site-tree data structure: top -> categories -> current category -> posts
     const categories = await prisma.category.findMany({ select: { title: true, slug: true } });
-    // Build path-style tree: / -> /home -> /home/<category>
+    // Fetch categories using the same ordering logic as the home page (order by post count desc)
+    let orderedCategories = [];
+    try {
+        try {
+            orderedCategories = await prisma.category.findMany({
+                select: { id: true, slug: true, title: true, _count: { select: { postCategories: true } } },
+                orderBy: { _count: { postCategories: 'desc' } },
+            });
+        } catch (dbOrderErr) {
+            // fallback: fetch and sort client-side
+            console.warn('DB ordering for tree failed, falling back to client-side sort', dbOrderErr?.message || dbOrderErr);
+            orderedCategories = await prisma.category.findMany({ select: { id: true, slug: true, title: true, _count: { select: { postCategories: true } } } });
+            orderedCategories.sort((a, b) => (b._count?.postCategories || 0) - (a._count?.postCategories || 0));
+        }
+    } catch (err) {
+        console.error('Error fetching ordered categories for tree', err);
+        orderedCategories = categories; // fallback to simple list
+    }
+
+    // Build path-style tree: /root -> /root/home -> /root/home/<category>
     const treeData = {
         name: '/root',
         url: '/',
@@ -37,13 +56,13 @@ const CategoryPage = async ({ params, searchParams }) => {
             {
                 name: '/root/home',
                 url: '/',
-                children: categories.map((c) => ({ name: `/root/home/${c.slug}`, slug: c.slug, url: `/category/${encodeURIComponent(c.slug)}` })),
+                children: orderedCategories.map((c) => ({ name: `/root/home/${c.slug}`, slug: c.slug, url: `/category/${encodeURIComponent(c.slug)}` })),
             },
         ],
     };
 
     // Only show the tree up to the category node (no posts beneath it)
-    treeData.children[0].children = categories.map((c) => ({
+    treeData.children[0].children = orderedCategories.map((c) => ({
         name: `/root/home/${c.slug}`,
         slug: c.slug,
         url: `/category/${encodeURIComponent(c.slug)}`,

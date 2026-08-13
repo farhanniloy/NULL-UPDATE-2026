@@ -88,12 +88,11 @@ export default function SiteTree({ treeData, highlightSlug }) {
   try {
     return (
       <div className={styles.wrapper} aria-label="site-tree">
-        <div className={styles.header}>tree</div>
-        <div className={styles.tree}>
-          <TreeNode node={treeData} level={0} highlightSlug={highlightSlug} />
-        </div>
+      <div className={styles.tree}>
+        <TreeNode node={treeData} level={0} highlightSlug={highlightSlug} />
       </div>
-    );
+    </div>
+  );
   } catch (e) {
     // Catch unexpected runtime render errors and show a safe fallback
     console.error('SiteTree render error', e, { treeData, highlightSlug });
