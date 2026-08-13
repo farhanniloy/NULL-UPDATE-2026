@@ -5,20 +5,20 @@
 .headerRow{
   display:grid;
   /* columns: perm | words | owner+date | name */
-  grid-template-columns: 100px 90px 260px 1fr;
-  gap:12px;
-  padding:8px 12px;
+  grid-template-columns: 100px 90px 280px 1fr;
+  gap:16px;
+  padding:10px 12px;
   color:var(--softTextColor);
   font-family: 'Fira Code', monospace;
   font-size:12px;
   border-bottom:1px solid var(--surface-border);
-  margin-bottom:8px;
+  margin-bottom:12px;
 }
 
 /* give owner/date a comfortable breathing room while keeping them inline */
 .metaHeader,
-.meta{ display:inline-flex; align-items:center; gap:18px; white-space:nowrap; }
-.metaHeader{ min-width: 240px; }
+.meta{ display:inline-flex; align-items:center; gap:20px; white-space:nowrap; }
+.metaHeader{ min-width: 260px; }
 .date{ color: var(--softTextColor); font-family: 'Fira Code', monospace; white-space: nowrap; display:inline-block; }
 .dateLabel{ color: var(--softTextColor); font-family: 'Fira Code', monospace; }
 
@@ -31,10 +31,10 @@
 .row{
   display:grid;
   /* match header: perm | words | owner+date | name */
-  grid-template-columns: 100px 90px 260px 1fr;
-  gap:12px;
+  grid-template-columns: 100px 90px 280px 1fr;
+  gap:16px;
   align-items:center;
-  padding:12px;
+  padding:16px 12px;
   border-radius:8px;
   transition: background .12s ease, transform .12s ease;
 }
@@ -58,8 +58,8 @@
 
 @media (max-width:800px){
   /* mobile: reduce columns but keep owner+date together */
-  .headerRow, .row{ grid-template-columns: 80px 64px 170px 1fr; }
-  .metaHeader, .meta{ gap:10px; }
+  .headerRow, .row{ grid-template-columns: 80px 64px 200px 1fr; }
+  .metaHeader, .meta{ gap:12px; }
   .date{ display:inline-block }
 }
 
