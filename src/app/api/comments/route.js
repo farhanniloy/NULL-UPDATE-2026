@@ -55,7 +55,28 @@ export const POST = async (req) => {
             if (count >= 5) {
                 return new NextResponse(JSON.stringify({ message: 'Comment rate limit reached (5 per day)' }), { status: 429 });
             }
-            const comment = await prisma.comment.create({ data: { desc: body.desc, postSlug: body.postSlug, userEmail: session.user.email, ipAddr: ip } });
+
+            // If the user doesn't have a profile image, assign a deterministic DiceBear avatar and store it on the comment
+            const styles = ["identicon","pixel-art","bottts","micah","adventurer"];
+            const stableHash = (s) => {
+                let h = 0;
+                for (let i = 0; i < s.length; i++) {
+                    h = ((h << 5) - h) + s.charCodeAt(i);
+                    h |= 0;
+                }
+                return Math.abs(h);
+            };
+            const makeAvatar = (seed, style) => `https://avatars.dicebear.com/api/${style}/${encodeURIComponent(seed)}.svg`;
+
+            let avatarUrl = null;
+            // prefer user's profile image if available (on the client UI the user image is shown when present)
+            if (!session.user.image) {
+                const seed = session.user.email || session.user.id || JSON.stringify(session.user);
+                const style = styles[stableHash(seed) % styles.length];
+                avatarUrl = makeAvatar(seed, style);
+            }
+
+            const comment = await prisma.comment.create({ data: { desc: body.desc, postSlug: body.postSlug, userEmail: session.user.email, ipAddr: ip, ...(avatarUrl ? { avatar: avatarUrl } : {}) } });
             return new NextResponse(JSON.stringify(comment), { status: 200 });
         }
 
@@ -70,9 +91,21 @@ export const POST = async (req) => {
             return new NextResponse(JSON.stringify({ message: 'Comment rate limit reached for this IP (5 per day)' }), { status: 429 });
         }
 
-        // generate avatar URL using dicebear (no-download approach)
-        const seed = encodeURIComponent(name + '|' + Math.random().toString(36).slice(2, 8));
-        const avatar = `https://avatars.dicebear.com/api/identicon/${seed}.svg`;
+        // deterministic avatar assignment using DiceBear (seeded by name+ip so it's stable per person)
+        const styles = ["identicon","pixel-art","bottts","micah","adventurer"];
+        const stableHash = (s) => {
+            let h = 0;
+            for (let i = 0; i < s.length; i++) {
+                h = ((h << 5) - h) + s.charCodeAt(i);
+                h |= 0;
+            }
+            return Math.abs(h);
+        };
+        const makeAvatar = (seed, style) => `https://avatars.dicebear.com/api/${style}/${encodeURIComponent(seed)}.svg`;
+
+        const seed = `${name}|${ip}`;
+        const style = styles[stableHash(seed) % styles.length];
+        const avatar = makeAvatar(seed, style);
 
         const comment = await prisma.comment.create({ data: { desc: body.desc, postSlug: body.postSlug, name, avatar, ipAddr: ip } });
         return new NextResponse(JSON.stringify(comment), { status: 200 });
