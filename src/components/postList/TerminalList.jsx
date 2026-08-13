@@ -25,7 +25,8 @@ const getData = async (page, cat) => {
         };
 
         const [posts, count] = await prisma.$transaction([
-            prisma.post.findMany({ ...query, include: { categories: true } }),
+            // include user so we can show owner and include desc to compute word count
+            prisma.post.findMany({ ...query, include: { categories: true, user: { select: { name: true, username: true, email: true } } } }),
             prisma.post.count({ where: query.where }),
         ]);
 
@@ -36,10 +37,23 @@ const getData = async (page, cat) => {
     }
 };
 
+function stripHtml(html = '') {
+    return html.replace(/<[^>]*>/g, ' ');
+}
+
+function wordCount(text = '') {
+    const cleaned = stripHtml(text || '');
+    const m = cleaned.trim().match(/[\S]+/g);
+    return m ? m.length : 0;
+}
+
 const fmtDate = (iso) => {
     try {
         const d = new Date(iso);
-        return d.toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+        const day = d.getDate();
+        const month = d.toLocaleString('en-GB', { month: 'short' });
+        const year = d.getFullYear();
+        return `${day} ${month}, ${year}`;
     } catch (e) { return ''; }
 };
 
@@ -56,26 +70,30 @@ const TerminalList = async ({ page = 1, cat, paginationPrefix = '' }) => {
         <div className={styles.container}>
             <div className={styles.headerRow} aria-hidden>
                 <span className={styles.perm}>mode</span>
-                <span className={styles.size}>size</span>
+                <span className={styles.size}>words</span>
                 <span className={styles.user}>owner</span>
                 <span className={styles.date}>date</span>
                 <span className={styles.name}>name</span>
             </div>
             <div className={styles.list}>
-                {posts.map((item) => (
-                    <div className={styles.row} key={item.id}>
-                        <span className={styles.perm}>-rw-r--r--</span>
-                        <span className={styles.size}>{pad(item.views ?? 0, 6)}</span>
-                        <span className={styles.user}>farhan</span>
-                        <span className={styles.date}>{fmtDate(item.createdAt)}</span>
-                        <span className={styles.name}>
-                            <Link href={`/posts/${encodeURIComponent(item.slug)}`} className={styles.link}>
-                                <span className={styles.fsSlash}>/</span>
-                                <span className={styles.filename}>{item.title}</span>
-                            </Link>
-                        </span>
-                    </div>
-                ))}
+                {posts.map((item) => {
+                    const words = wordCount(item.desc || item.summary || '');
+                    const owner = item.user?.username || item.user?.name || item.userEmail || 'unknown';
+                    return (
+                        <div className={styles.row} key={item.id}>
+                            <span className={styles.perm}>-rw-r--r--</span>
+                            <span className={styles.size}>{pad(words, 6)}</span>
+                            <span className={styles.user}>{owner}</span>
+                            <span className={styles.date}>{fmtDate(item.createdAt)}</span>
+                            <span className={styles.name}>
+                                <Link href={`/posts/${encodeURIComponent(item.slug)}`} className={styles.link}>
+                                    <span className={styles.fsSlash}>/</span>
+                                    <span className={styles.filename}>{item.title}</span>
+                                </Link>
+                            </span>
+                        </div>
+                    );
+                })}
             </div>
 
             <Pagination page={page} totalPages={totalPages} hasPrev={hasPrev} hasNext={hasNext} hrefPrefix={paginationPrefix} />

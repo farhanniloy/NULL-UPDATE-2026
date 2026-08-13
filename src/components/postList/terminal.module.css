@@ -4,7 +4,7 @@
 
 .headerRow{
   display:grid;
-  grid-template-columns: 120px 80px 80px 160px 1fr;
+  grid-template-columns: 100px 90px 140px 120px 1fr;
   gap:12px;
   padding:8px 12px;
   color:var(--softTextColor);
@@ -22,7 +22,7 @@
 
 .row{
   display:grid;
-  grid-template-columns: 120px 80px 80px 160px 1fr;
+  grid-template-columns: 100px 90px 140px 120px 1fr;
   gap:12px;
   align-items:center;
   padding:12px;
