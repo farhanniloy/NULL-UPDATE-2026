@@ -67,7 +67,7 @@ export const POST = async (req) => {
                 return Math.abs(h);
             };
             // Use modern DiceBear API (api.dicebear.com) with seed query param to avoid deprecated endpoint banner
-const makeAvatar = (seed, style) => `https://api.dicebear.com/6.x/${style}.svg?seed=${encodeURIComponent(seed)}`;
+const makeAvatar = (seed, style) => `https://api.dicebear.com/6.x/${style}/svg?seed=${encodeURIComponent(seed)}`;
 
             let avatarUrl = null;
             // prefer user's profile image if available (on the client UI the user image is shown when present)
@@ -120,7 +120,7 @@ const makeAvatar = (seed, style) => `https://api.dicebear.com/6.x/${style}.svg?s
             return Math.abs(h);
         };
         // Use modern DiceBear API (api.dicebear.com) with seed query param to avoid deprecated endpoint banner
-const makeAvatar = (seed, style) => `https://api.dicebear.com/6.x/${style}.svg?seed=${encodeURIComponent(seed)}`;
+const makeAvatar = (seed, style) => `https://api.dicebear.com/6.x/${style}/svg?seed=${encodeURIComponent(seed)}`;
 
         const seed = `${name}|${anonId}`;
         const style = styles[stableHash(seed) % styles.length];
