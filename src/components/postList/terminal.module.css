@@ -4,8 +4,9 @@
 
 .headerRow{
   display:grid;
-  grid-template-columns: 100px 90px 140px 120px 1fr;
-  gap:12px;
+  /* tighten columns: slightly smaller owner & date columns and smaller gap */
+  grid-template-columns: 100px 90px 100px 100px 1fr;
+  gap:8px;
   padding:8px 12px;
   color:var(--softTextColor);
   font-family: 'Fira Code', monospace;
@@ -22,8 +23,9 @@
 
 .row{
   display:grid;
-  grid-template-columns: 100px 90px 140px 120px 1fr;
-  gap:12px;
+  /* match header: tightened owner/date columns and smaller gap */
+  grid-template-columns: 100px 90px 100px 100px 1fr;
+  gap:8px;
   align-items:center;
   padding:12px;
   border-radius:8px;
