@@ -102,11 +102,16 @@
 
 .userInfo {
     display: flex;
+    align-items: center;
+    gap: 12px; /* space between reply button and meta */
+}
+
+.userMeta {
+    display: flex;
     flex-direction: column;
     gap: 5px;
     font-size: small;
 }
-
 .username {
     font-weight: bold;
     margin: 0;
