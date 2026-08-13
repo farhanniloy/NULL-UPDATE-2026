@@ -25,8 +25,20 @@ const getData = async (page, cat) => {
         };
 
         const [posts, count] = await prisma.$transaction([
-            // include user so we can show owner and include desc to compute word count
-            prisma.post.findMany({ ...query, include: { categories: true, user: { select: { name: true, username: true, email: true } } } }),
+            // select only necessary fields to avoid unnecessary joins (categories not used in list UI)
+            prisma.post.findMany({
+              ...query,
+              select: {
+                id: true,
+                slug: true,
+                title: true,
+                desc: true,
+                summary: true,
+                createdAt: true,
+                userEmail: true,
+                user: { select: { name: true, username: true, email: true } },
+              }
+            }),
             prisma.post.count({ where: query.where }),
         ]);
 

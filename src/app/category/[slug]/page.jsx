@@ -28,24 +28,27 @@ const CategoryPage = async ({ params, searchParams }) => {
     const title = category?.title || slug.replace(/-/g, " ");
 
     // build a lightweight site-tree data structure: top -> categories -> current category -> posts
-    const categories = await prisma.category.findMany({ select: { title: true, slug: true } });
-    // Fetch categories using the same ordering logic as the home page (order by post count desc)
+    // Fetch categories using DB ordering where possible. Use a short-lived cache to avoid repeated DB hits.
     let orderedCategories = [];
     try {
-        try {
-            orderedCategories = await prisma.category.findMany({
-                select: { id: true, slug: true, title: true, _count: { select: { postCategories: true } } },
-                orderBy: { _count: { postCategories: 'desc' } },
-            });
-        } catch (dbOrderErr) {
-            // fallback: fetch and sort client-side
-            console.warn('DB ordering for tree failed, falling back to client-side sort', dbOrderErr?.message || dbOrderErr);
-            orderedCategories = await prisma.category.findMany({ select: { id: true, slug: true, title: true, _count: { select: { postCategories: true } } } });
-            orderedCategories.sort((a, b) => (b._count?.postCategories || 0) - (a._count?.postCategories || 0));
-        }
+        const fetcher = async () => {
+            try {
+                return await prisma.category.findMany({
+                    select: { id: true, slug: true, title: true, _count: { select: { postCategories: true } } },
+                    orderBy: { _count: { postCategories: 'desc' } },
+                });
+            } catch (dbOrderErr) {
+                console.warn('DB ordering for tree failed, falling back to client-side sort', dbOrderErr?.message || dbOrderErr);
+                const list = await prisma.category.findMany({ select: { id: true, slug: true, title: true, _count: { select: { postCategories: true } } } });
+                list.sort((a, b) => (b._count?.postCategories || 0) - (a._count?.postCategories || 0));
+                return list;
+            }
+        };
+        const siteCache = await import('@/utils/siteCache');
+        orderedCategories = await siteCache.getCachedCategories('orderedCategories', 300, fetcher);
     } catch (err) {
         console.error('Error fetching ordered categories for tree', err);
-        orderedCategories = categories; // fallback to simple list
+        orderedCategories = [];
     }
 
     // Build path-style tree: /root -> /root/home -> /root/home/<category>
