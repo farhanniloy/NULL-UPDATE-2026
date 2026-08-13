@@ -143,7 +143,7 @@
 }
 
 .content {
-    padding: 24px 4px 0; /* add top padding so terminal header is spaced from tree */
+    padding: 24px 4px 56px; /* add top padding so terminal header is spaced from tree and bottom padding so pagination sits comfortably above footer */
 }
 
 @media screen and (max-width: 640px) {

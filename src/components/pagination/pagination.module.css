@@ -5,7 +5,8 @@
     justify-content:center;
     gap:12px;
     width:100%;
-    margin:36px 0;
+    /* use a slightly larger vertical rhythm to respect site negative space */
+    margin:48px 0;
 }
 
 .leftControls, .rightControls{
@@ -92,7 +93,8 @@
 .desktopPages{ display:flex; }
 
 @media (max-width:640px){
-    .container{ margin:24px 0; }
+    /* slightly tighter vertical rhythm on mobile */
+    .container{ margin:32px 0; }
     .pages.desktopPages{ display:none; }
     .mobileBar{ display:flex; }
     .summary{ display:none; }
