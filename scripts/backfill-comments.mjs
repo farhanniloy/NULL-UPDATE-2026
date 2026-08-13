@@ -11,7 +11,8 @@ const stableHash = (s) => {
 };
 
 const styles = ["identicon","pixel-art","bottts","micah","adventurer"];
-const makeAvatar = (seed, style) => `https://avatars.dicebear.com/api/${style}/${encodeURIComponent(seed)}.svg`;
+// Use modern DiceBear API (api.dicebear.com)
+const makeAvatar = (seed, style) => `https://api.dicebear.com/6.x/${style}.svg?seed=${encodeURIComponent(seed)}`;
 
 console.log('Starting backfill of comment avatars...');
 

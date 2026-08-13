@@ -115,20 +115,21 @@
 }
 
 /* ensure reply sits aligned with the date line */
-.metaRow { display: flex; align-items: center; gap: 8px; }
+.metaRow { display: flex; align-items: baseline; gap: 6px; }
 /* Keep date and reply visually identical */
 .metaRow .date, .metaRow .replyButton {
-    font-size: 13px; /* explicit size to avoid browser keyword differences */
-    color: var(--textColor2);
-    line-height: 1.2;
-    vertical-align: middle;
+    font-size: 13px !important; /* explicit size to avoid browser keyword differences */
+    color: var(--textColor2) !important;
+    line-height: 1 !important;
 }
 .replyButton {
     background: transparent;
     border: 0;
     cursor: pointer;
     padding: 0;
-    margin-left: 8px; /* safe distance from date */
+    margin-left: 6px; /* safe distance from date */
+    display: inline-block;
+    vertical-align: baseline;
 }
 .replyButton:hover { text-decoration: underline; }
 .replyButton:focus { outline: none; }
