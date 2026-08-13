@@ -1,6 +1,5 @@
 export const dynamic = "force-dynamic";
 
-import TerminalList from "@/components/postList/TerminalList";
 import SiteTree from "@/components/siteTree/SiteTree";
 import styles from "./categoryPage.module.css";
 import prisma from "@/utils/connect";
@@ -42,22 +41,24 @@ const CategoryPage = async ({ params, searchParams }) => {
         orderBy: { createdAt: 'desc' },
     });
 
+    // Build path-style tree: / -> /home -> /home/<category>
     const treeData = {
-        name: 'Home',
+        name: '/',
         url: '/',
         children: [
             {
-                name: 'Categories',
-                children: categories.map((c) => ({ name: c.title, slug: c.slug, url: `/category/${encodeURIComponent(c.slug)}` })),
+                name: '/home',
+                url: '/home',
+                children: categories.map((c) => ({ name: `/home/${c.slug}`, slug: c.slug, url: `/category/${encodeURIComponent(c.slug)}` })),
             },
         ],
     };
 
-    // attach posts under the current category node so the tree shows the path to this page
+    // attach posts under the current category node using the /home/<category>/<post> format
     treeData.children[0].children = categories.map((c) => {
-        const node = { name: c.title, slug: c.slug, url: `/category/${encodeURIComponent(c.slug)}` };
+        const node = { name: `/home/${c.slug}`, slug: c.slug, url: `/category/${encodeURIComponent(c.slug)}` };
         if (c.slug === slug) {
-            node.children = postsForCat.map((p) => ({ name: p.title, slug: p.slug, url: `/posts/${encodeURIComponent(p.slug)}` }));
+            node.children = postsForCat.map((p) => ({ name: `/home/${c.slug}/${p.slug}`, slug: p.slug, url: `/posts/${encodeURIComponent(p.slug)}` }));
         }
         return node;
     });
@@ -74,8 +75,8 @@ const CategoryPage = async ({ params, searchParams }) => {
                 <SiteTree treeData={treeData} highlightSlug={slug} />
             </div>
 
+            {/* TerminalList removed per request; page now focuses on the tree */}
             <div className={styles.content}>
-                <TerminalList page={page} cat={slug} paginationPrefix={`/category/${encodeURIComponent(slug)}`} />
             </div>
         </div>
     );

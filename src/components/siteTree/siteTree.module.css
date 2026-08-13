@@ -21,13 +21,34 @@
 
 .node{
   display:block;
+  position:relative;
 }
 
 .row{
   display:flex;
   align-items:center;
   gap:8px;
-  padding:4px 0;
+  padding:6px 0 6px 6px;
+  position:relative;
+}
+
+/* vertical line for children container */
+.children{
+  margin-top:6px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(var(--grid-strong-line),0.06);
+}
+
+/* horizontal connector from the vertical line to the node text */
+.children .node .row::before{
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  width: 12px;
+  height: 1px;
+  background: rgba(var(--grid-strong-line),0.06);
+  transform: translateY(-50%);
 }
 
 .toggleButton{
@@ -64,10 +85,6 @@
 .current .link, .current .text{
   color: #8BFFB3; /* bright green highlight for current */
   font-weight:600;
-}
-
-.children{
-  margin-top:6px;
 }
 
 @media screen and (max-width:640px){

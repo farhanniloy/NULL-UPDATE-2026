@@ -44,7 +44,7 @@ function TreeNode({ node, level = 0, highlightSlug }) {
 export default function SiteTree({ treeData, highlightSlug }) {
   return (
     <div className={styles.wrapper} aria-label="site-tree">
-      <div className={styles.header}>Site map</div>
+      <div className={styles.header}>Tree</div>
       <div className={styles.tree}>
         <TreeNode node={treeData} level={0} highlightSlug={highlightSlug} />
       </div>
