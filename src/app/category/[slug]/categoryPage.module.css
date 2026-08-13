@@ -75,8 +75,9 @@
 }
 
 .content :global(article:hover) {
-    border-color: rgba(var(--grid-strong-line), 0.2);
-    box-shadow: 8px 8px 0 rgba(0,0,0,0.6), 0 0 20px rgba(var(--grid-strong-line), 0.06);
+    /* Remove the outer glow on hover — keep the subtle offset shadow */
+    border-color: rgba(var(--grid-strong-line), 0.12);
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.6);
 }
 
 .content :global(article h2) {
