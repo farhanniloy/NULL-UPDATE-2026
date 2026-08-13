@@ -116,21 +116,28 @@
 
 /* ensure reply sits aligned with the date line */
 .metaRow { display: flex; align-items: baseline; gap: 6px; }
-/* Keep date and reply visually identical */
-.metaRow .date, .metaRow .replyButton {
-    font-size: 13px !important; /* explicit size to avoid browser keyword differences */
+/* date styling */
+.metaRow .date {
+    font-size: 13px !important;
     color: var(--textColor2) !important;
     line-height: 1 !important;
 }
-.replyButton {
+/* Make reply a little bigger while keeping color and baseline alignment */
+.metaRow .replyButton {
+    font-size: 14px !important; /* slightly larger */
+    color: var(--textColor2) !important;
+    line-height: 1 !important;
     background: transparent;
     border: 0;
     cursor: pointer;
-    padding: 0;
+    padding: 2px 6px; /* small clickable area */
     margin-left: 6px; /* safe distance from date */
     display: inline-block;
     vertical-align: baseline;
+    border-radius: 4px;
 }
+.replyButton:hover { text-decoration: underline; }
+.replyButton:focus { outline: none; }
 .replyButton:hover { text-decoration: underline; }
 .replyButton:focus { outline: none; }
 
