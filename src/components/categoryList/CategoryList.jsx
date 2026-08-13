@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import React from "react";
 import styles from "./categoryList.module.css";
 import Link from "next/link";
-import Image from "next/image";
+import { FaFolder } from "react-icons/fa";
 import prisma from "@/utils/connect";
 
 const defaultCategories = [
@@ -76,15 +76,9 @@ const CategoryList = async () => {
                         className={`${styles.category} ${styles[item.slug]}`}
                         key={item.id ?? item._id ?? item.slug}
                     >
-                        {item.img && (
-                            <Image
-                                src={item.img}
-                                alt=""
-                                width={32}
-                                height={32}
-                                className={styles.image}
-                            />
-                        )}
+                        <span className={styles.icon} aria-hidden="true">
+                            <FaFolder />
+                        </span>
                         <span>{item.title}</span>
                     </Link>
                 ))}
