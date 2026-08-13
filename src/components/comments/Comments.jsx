@@ -125,30 +125,35 @@ const Comments = ({ postSlug }) => {
                                             <Link href={`/u/${encodeURIComponent(slug)}`} className={styles.authorLink}>
                                               <span className={styles.username}>{display}</span>
                                             </Link>
-                                            <span className={styles.date}>{new Date(item.createdAt).toISOString().substring(0, 10)}</span>
+                                            <div className={styles.metaRow}>
+                                              <span className={styles.date}>{new Date(item.createdAt).toISOString().substring(0, 10)}</span>
+                                              <button className={styles.replyButton} onClick={() => {
+                                                  let mention = item.name || (item.user ? (item.user.username || (item.user.email ? item.user.email.split('@')[0] : 'user')) : 'user');
+                                                  if (!mention.startsWith('@')) mention = `@${mention}`;
+                                                  setReplyingTo(mention);
+                                                  setDesc(`${mention} `);
+                                                  setTimeout(() => { try { inputRef.current?.focus(); } catch(e){}; try { inputRef.current?.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e){} }, 50);
+                                              }}>Reply</button>
+                                            </div>
                                           </>
                                         );
                                       })()
                                     ) : (
                                       <>
                                         <span className={styles.username}>{item.name || 'Guest'}</span>
-                                        <span className={styles.date}>{new Date(item.createdAt).toISOString().substring(0, 10)}</span>
+                                        <div className={styles.metaRow}>
+                                          <span className={styles.date}>{new Date(item.createdAt).toISOString().substring(0, 10)}</span>
+                                          <button className={styles.replyButton} onClick={() => {
+                                              let mention = item.name || (item.user ? (item.user.username || (item.user.email ? item.user.email.split('@')[0] : 'user')) : 'user');
+                                              if (!mention.startsWith('@')) mention = `@${mention}`;
+                                              setReplyingTo(mention);
+                                              setDesc(`${mention} `);
+                                              setTimeout(() => { try { inputRef.current?.focus(); } catch(e){}; try { inputRef.current?.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e){} }, 50);
+                                          }}>Reply</button>
+                                        </div>
                                       </>
                                     )}
                                     </div>
-
-                                    <button className={styles.replyButton} onClick={() => {
-                                        // determine mention name
-                                        let mention = item.name || (item.user ? (item.user.username || (item.user.email ? item.user.email.split('@')[0] : 'user')) : 'user');
-                                        if (!mention.startsWith('@')) mention = `@${mention}`;
-                                        setReplyingTo(mention);
-                                        setDesc(`${mention} `);
-                                        // focus the textarea
-                                        setTimeout(() => {
-                                            try { inputRef.current?.focus(); } catch(e){}
-                                            try { inputRef.current?.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e){}
-                                        }, 50);
-                                    }}>Reply</button>
                                 </div>
                             </div>
                             <p className={styles.desc}>{item.desc}</p>

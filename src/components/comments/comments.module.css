@@ -115,12 +115,16 @@
 }
 
 /* ensure reply sits aligned with the date line */
+.metaRow{ display:flex; align-items:center; gap:12px }
 .replyButton {
-    align-self: flex-end; /* place the button at the end (next to date) */
-    margin-left: 12px;
-    padding: 6px 10px;
+    background: transparent;
+    border: 0;
+    color: var(--strtextColor);
+    cursor: pointer;
     font-size: 13px;
+    padding: 6px 8px;
 }
+.replyButton:hover{ text-decoration:underline }
 
 .username {
     font-weight: bold;
