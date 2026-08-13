@@ -238,6 +238,38 @@ a {
     pointer-events: none;
 }
 
+/* Responsive helpers (global) */
+/* Ensure media elements are responsive */
+img, picture, svg, video, iframe {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Prevent layout break on long words, URLs or code */
+body, p, li, span, a, .container {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+/* Make pre/code blocks horizontally scrollable on small screens */
+pre, code, .code-block {
+    max-width: 100%;
+    overflow: auto;
+}
+
+/* Improve touch targets for tappable elements globally (buttons/links) */
+button, a[role="button"], .iconButton, .pageButton, .replyButton {
+    min-height: 40px;
+    min-width: 40px;
+}
+
+/* Reduce global font sizes slightly on very small screens for layout breathing */
+@media (max-width: 360px) {
+    :root { font-size: 14px; }
+}
+
+
 /* When nav is open, make sure animated background doesn't intercept touches */
 body.nav-open .complexBackground {
     pointer-events: none !important;

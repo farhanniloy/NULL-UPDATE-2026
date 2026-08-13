@@ -101,6 +101,8 @@
 @media screen and (max-width: 1024px) {
     .container {
         padding: 0 18px;
+        height: auto; /* allow taller navbar on mobile */
+        min-height: 64px;
     }
 
     .navLinks { display: none; }
