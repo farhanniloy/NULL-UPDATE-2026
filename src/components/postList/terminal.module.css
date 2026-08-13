@@ -17,7 +17,7 @@
 
 /* give owner/date a comfortable breathing room while keeping them on one line */
 .metaHeader,
-.meta{ display:inline-flex; align-items:center; gap:18px; white-space:nowrap; }
+.meta{ display:inline-flex; align-items:center; gap:28px; white-space:nowrap; }
 .metaHeader{ min-width: 300px; }
 .date{ color: var(--softTextColor); font-family: 'Fira Code', monospace; white-space: nowrap; display:inline-block; }
 .dateLabel{ color: var(--softTextColor); font-family: 'Fira Code', monospace; }
