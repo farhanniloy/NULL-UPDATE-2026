@@ -70,14 +70,6 @@ const CategoryPage = async ({ params, searchParams }) => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.categoryHeader}>
-                <div className={styles.categoryHeaderInner}>
-                    <span className={styles.kicker}>Archive • Category</span>
-                    <h1 className={styles.title}>{title}</h1>
-                    <span className={styles.marker}>{slug.replace(/-/g, ' ')}</span>
-                </div>
-            </div>
-
             <div className={styles.treeWrapper}>
                 <SiteTree treeData={treeData} highlightSlug={slug} />
             </div>
