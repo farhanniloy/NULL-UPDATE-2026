@@ -115,14 +115,16 @@
 }
 
 /* ensure reply sits aligned with the date line */
-.metaRow{ display:flex; align-items:center; gap:12px }
+.metaRow{ display:flex; align-items:center; gap:8px }
 .replyButton {
     background: transparent;
     border: 0;
-    color: var(--strtextColor);
+    color: var(--textColor2); /* same color as date */
     cursor: pointer;
-    font-size: 13px;
-    padding: 6px 8px;
+    font-size: smaller; /* match .date */
+    padding: 0;
+    margin-left: 8px; /* safe distance from date */
+    line-height: 1;
 }
 .replyButton:hover{ text-decoration:underline }
 
@@ -166,15 +168,6 @@
 }
 
 /* Reply UI */
-.replyButton {
-    margin-left: 12px;
-    background: transparent;
-    border: 0;
-    color: var(--strtextColor);
-    cursor: pointer;
-    font-size: 13px;
-}
-.replyButton:hover { text-decoration: underline; }
 .replyingNote {
     background: rgba(0,0,0,0.04);
     padding: 8px 10px;
