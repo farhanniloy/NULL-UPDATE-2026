@@ -1,140 +1,100 @@
-.pagination a{
-    color: var(--textColor);
-    padding: 8px 16px;
-    text-decoration: none;
-    transition: background-color .3s;
-    border: 1px solid var(--surface-border);
-    margin: 0 5px 70px;
-
-}
-
-.pagination{
-    margin: 40px 0 80px;
-}
-
-.pagination a.active {
-    background-color: var(--strtextColor);
-    color: var(--bg);
-    border: 1px solid rgba(76, 255, 118, 0.35);
-}
-
-.button {
-    color: #ffdfe1;
-    background-color: #5f1119;
-    padding: 8px 16px;
-    text-decoration: none;
-    transition: background-color .3s;
-    border: 1px solid #a3222d;
-    margin: 0;
-    cursor: pointer;
-    flex: 0 0 auto;
-    white-space: nowrap;
-}
-
-.button:hover:not(:disabled) {
-    background-color: #4d1118;
-    border-color: #792027;
-    color: #e8c5c5;
-}
-
+/* New pagination styles — compact, accessible */
 .container{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 24px;
-    width: 100%;
-    margin: 40px 0 80px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    width:100%;
+    margin:36px 0;
 }
 
-.pages {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-    min-width: 0;
+.leftControls, .rightControls{
+    display:flex;
+    gap:8px;
+    align-items:center;
 }
 
-.mobilePages,
-.mobileLabel {
-    display: none;
+.iconButton{
+    background:transparent;
+    color:var(--textColor);
+    border:1px solid var(--surface-border);
+    padding:6px 8px;
+    border-radius:6px;
+    cursor:pointer;
+    min-width:34px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
 }
 
-.pageButton {
-    color: #ffdfe1;
-    background-color: #260b0f;
-    border: 1px solid #6f1a24;
-    padding: 8px 12px;
-    cursor: pointer;
-    flex: 0 0 auto;
+.iconButton:disabled{
+    opacity:.45;
+    cursor:not-allowed;
 }
 
-.pageButton:hover,
-.pageButton.active {
-    color: #e8c5c5;
-    background-color: #4d1118;
-    border-color: #792027;
+.pages{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
 }
 
-.pagi {
-    cursor: pointer;
-
-}
-.pagi1 {
-    cursor: pointer;
-}
-
-
-.button:disabled {
-    cursor: not-allowed;
-    opacity: .42;
-    background-color: #260b0f;
-    border-color: #4d171e;
+.pageButton{
+    background:transparent;
+    color:var(--textColor);
+    border:1px solid var(--surface-border);
+    padding:6px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    min-width:36px;
 }
 
-.ellipsis {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 20px;
-    color: var(--textColor);
+.pageButton:hover{
+    background:rgba(255,255,255,0.02);
 }
 
-@media screen and (max-width: 640px) {
-    .container {
-        gap: 4px;
-        margin: 32px 0 56px;
-    }
+.pageButton.active{
+    background:var(--strtextColor);
+    color:var(--bg);
+    border-color:rgba(76,255,118,0.12);
+    font-weight:700;
+}
 
-    .desktopPages,
-    .desktopLabel {
-        display: none;
-    }
+.ellipsis{
+    color:var(--textColor);
+    padding:0 6px;
+}
 
-    .mobilePages,
-    .mobileLabel {
-        display: flex;
-    }
+.summary{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    color:var(--softTextColor);
+    font-family:'Fira Code', monospace;
+}
+.summary .current{
+    font-weight:700;
+    color:var(--textColor);
+}
 
-    .mobilePages {
-        flex: 1 1 auto;
-        gap: 3px;
-        flex-wrap: nowrap;
-        justify-content: center;
-    }
+/* Mobile condensed bar */
+.mobileBar{
+    display:none;
+    align-items:center;
+    gap:12px;
+}
+.mobileLabelBar{ display:flex; align-items:center; gap:4px; }
+.mobileCurrent{ font-weight:700; color:var(--textColor); }
+.mobileTotal{ color:var(--softTextColor); }
 
-    .button {
-        padding: 7px 6px;
-        font-size: 12px;
-    }
+/* Desktop-specific visibility */
+.desktopPages{ display:flex; }
 
-    .pageButton {
-        width: 26px;
-        padding: 7px 0;
-        font-size: 12px;
-    }
-
-    .ellipsis {
-        min-width: 10px;
-        font-size: 12px;
-    }
+@media (max-width:640px){
+    .container{ margin:24px 0; }
+    .pages.desktopPages{ display:none; }
+    .mobileBar{ display:flex; }
+    .summary{ display:none; }
+    .pageButton{ min-width:28px; padding:6px 6px; }
 }
