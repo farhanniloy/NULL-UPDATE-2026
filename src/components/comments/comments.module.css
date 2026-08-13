@@ -115,18 +115,23 @@
 }
 
 /* ensure reply sits aligned with the date line */
-.metaRow{ display:flex; align-items:center; gap:8px }
+.metaRow { display: flex; align-items: center; gap: 8px; }
+/* Keep date and reply visually identical */
+.metaRow .date, .metaRow .replyButton {
+    font-size: 13px; /* explicit size to avoid browser keyword differences */
+    color: var(--textColor2);
+    line-height: 1.2;
+    vertical-align: middle;
+}
 .replyButton {
     background: transparent;
     border: 0;
-    color: var(--textColor2); /* same color as date */
     cursor: pointer;
-    font-size: smaller; /* match .date */
     padding: 0;
     margin-left: 8px; /* safe distance from date */
-    line-height: 1;
 }
-.replyButton:hover{ text-decoration:underline }
+.replyButton:hover { text-decoration: underline; }
+.replyButton:focus { outline: none; }
 
 .username {
     font-weight: bold;
