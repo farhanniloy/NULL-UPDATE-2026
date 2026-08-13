@@ -91,7 +91,24 @@ export const POST = async (req) => {
             return new NextResponse(JSON.stringify({ message: 'Comment rate limit reached for this IP (5 per day)' }), { status: 429 });
         }
 
-        // deterministic avatar assignment using DiceBear (seeded by name+ip so it's stable per person)
+        // Use cookie-based anon seed so avatar stays stable across IP changes
+        const cookieHeader = req.headers.get('cookie') || '';
+        const getCookie = (name) => {
+            const pairs = cookieHeader.split(';').map(s => s.trim()).filter(Boolean);
+            for (const p of pairs) {
+                const [k, v] = p.split('=');
+                if (k === name) return decodeURIComponent(v || '');
+            }
+            return null;
+        };
+        let anonId = getCookie('anon_id');
+        let setAnonCookie = false;
+        if (!anonId) {
+            anonId = 'anon_' + Math.random().toString(36).slice(2, 10);
+            setAnonCookie = true;
+        }
+
+        // deterministic avatar assignment using DiceBear (seeded by name+anonId so it's stable per browser)
         const styles = ["identicon","pixel-art","bottts","micah","adventurer"];
         const stableHash = (s) => {
             let h = 0;
@@ -103,12 +120,18 @@ export const POST = async (req) => {
         };
         const makeAvatar = (seed, style) => `https://avatars.dicebear.com/api/${style}/${encodeURIComponent(seed)}.svg`;
 
-        const seed = `${name}|${ip}`;
+        const seed = `${name}|${anonId}`;
         const style = styles[stableHash(seed) % styles.length];
         const avatar = makeAvatar(seed, style);
 
         const comment = await prisma.comment.create({ data: { desc: body.desc, postSlug: body.postSlug, name, avatar, ipAddr: ip } });
-        return new NextResponse(JSON.stringify(comment), { status: 200 });
+
+        const res = new NextResponse(JSON.stringify(comment), { status: 200 });
+        if (setAnonCookie) {
+            // set a persistent cookie for 1 year
+            res.headers.set('Set-Cookie', `anon_id=${encodeURIComponent(anonId)}; Path=/; Max-Age=31536000; SameSite=Lax`);
+        }
+        return res;
     } catch (err) {
         console.log(err);
         return new NextResponse(
