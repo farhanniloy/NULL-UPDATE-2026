@@ -75,9 +75,30 @@ function TreeNode({ node, level = 0, highlightSlug }) {
 }
 
 export default function SiteTree({ treeData, highlightSlug }) {
+  const handleRootClickTop = async (e) => {
+    e?.preventDefault?.();
+    try {
+      const res = await fetch('/api/root-check');
+      if (res.status === 200) {
+        const j = await res.json();
+        if (j.allowed && j.redirect) {
+          window.location.href = j.redirect;
+          return;
+        }
+      }
+      window.location.href = '/restricted';
+    } catch (err) {
+      console.error('root click failed', err);
+      window.location.href = '/restricted';
+    }
+  };
+
   return (
     <div className={styles.wrapper} aria-label="site-tree">
       <div className={styles.header}>Tree</div>
+      <div className={styles.rootBox}>
+        <button onClick={handleRootClickTop} className={styles.rootButton}>{'/root'}</button>
+      </div>
       <div className={styles.tree}>
         <TreeNode node={treeData} level={0} highlightSlug={highlightSlug} />
       </div>

@@ -35,16 +35,16 @@ const CategoryPage = async ({ params, searchParams }) => {
         url: '/',
         children: [
             {
-                name: '/home',
-                url: '/home',
-                children: categories.map((c) => ({ name: `/home/${c.slug}`, slug: c.slug, url: `/category/${encodeURIComponent(c.slug)}` })),
+                name: '/root/home',
+                url: '/',
+                children: categories.map((c) => ({ name: `/root/home/${c.slug}`, slug: c.slug, url: `/category/${encodeURIComponent(c.slug)}` })),
             },
         ],
     };
 
     // Only show the tree up to the category node (no posts beneath it)
     treeData.children[0].children = categories.map((c) => ({
-        name: `/home/${c.slug}`,
+        name: `/root/home/${c.slug}`,
         slug: c.slug,
         url: `/category/${encodeURIComponent(c.slug)}`,
     }));
