@@ -2,6 +2,7 @@ import { getAuthSession } from "@/utils/auth";
 import prisma from "@/utils/connect";
 import { NextResponse } from "next/server";
 import { ensureCsrf } from "@/utils/csrf";
+import { makeAvatar, stableHash, styles } from "@/utils/avatars";
 
 // GET ALL COMMENTS OF A POST
 export const GET = async (req) => {
@@ -57,24 +58,12 @@ export const POST = async (req) => {
             }
 
             // If the user doesn't have a profile image, assign a deterministic DiceBear avatar and store it on the comment
-            const styles = ["identicon","pixel-art","bottts","micah","adventurer"];
-            const stableHash = (s) => {
-                let h = 0;
-                for (let i = 0; i < s.length; i++) {
-                    h = ((h << 5) - h) + s.charCodeAt(i);
-                    h |= 0;
-                }
-                return Math.abs(h);
-            };
-            // Use modern DiceBear API (api.dicebear.com) with seed query param to avoid deprecated endpoint banner
-const makeAvatar = (seed, style) => `https://api.dicebear.com/6.x/${style}/svg?seed=${encodeURIComponent(seed)}`;
 
             let avatarUrl = null;
             // prefer user's profile image if available (on the client UI the user image is shown when present)
             if (!session.user.image) {
                 const seed = session.user.email || session.user.id || JSON.stringify(session.user);
-                const style = styles[stableHash(seed) % styles.length];
-                avatarUrl = makeAvatar(seed, style);
+                avatarUrl = makeAvatar(seed);
             }
 
             const comment = await prisma.comment.create({ data: { desc: body.desc, postSlug: body.postSlug, userEmail: session.user.email, ipAddr: ip, ...(avatarUrl ? { avatar: avatarUrl } : {}) } });
@@ -110,21 +99,8 @@ const makeAvatar = (seed, style) => `https://api.dicebear.com/6.x/${style}/svg?s
         }
 
         // deterministic avatar assignment using DiceBear (seeded by name+anonId so it's stable per browser)
-        const styles = ["identicon","pixel-art","bottts","micah","adventurer"];
-        const stableHash = (s) => {
-            let h = 0;
-            for (let i = 0; i < s.length; i++) {
-                h = ((h << 5) - h) + s.charCodeAt(i);
-                h |= 0;
-            }
-            return Math.abs(h);
-        };
-        // Use modern DiceBear API (api.dicebear.com) with seed query param to avoid deprecated endpoint banner
-const makeAvatar = (seed, style) => `https://api.dicebear.com/6.x/${style}/svg?seed=${encodeURIComponent(seed)}`;
-
         const seed = `${name}|${anonId}`;
-        const style = styles[stableHash(seed) % styles.length];
-        const avatar = makeAvatar(seed, style);
+        const avatar = makeAvatar(seed);
 
         const comment = await prisma.comment.create({ data: { desc: body.desc, postSlug: body.postSlug, name, avatar, ipAddr: ip } });
 

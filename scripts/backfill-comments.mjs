@@ -1,18 +1,6 @@
 import prisma from '../src/utils/connect.js';
 
-// Deterministic hash function used for avatar style selection
-const stableHash = (s) => {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) {
-    h = ((h << 5) - h) + s.charCodeAt(i);
-    h |= 0;
-  }
-  return Math.abs(h);
-};
-
-const styles = ["identicon","pixel-art","bottts","micah","adventurer"];
-// Use modern DiceBear API (api.dicebear.com)
-const makeAvatar = (seed, style) => `https://api.dicebear.com/6.x/${style}/svg?seed=${encodeURIComponent(seed)}`;
+import { makeAvatar } from '../src/utils/avatars.js';
 
 console.log('Starting backfill of comment avatars...');
 
