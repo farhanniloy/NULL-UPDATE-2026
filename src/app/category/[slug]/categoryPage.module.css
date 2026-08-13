@@ -9,54 +9,69 @@
     position: relative;
     overflow: hidden;
     margin-bottom: 28px;
-    padding: clamp(20px, 5vw, 44px);
-    border: 1px solid var(--surface-border);
-    background: linear-gradient(135deg, rgba(3,12,8,0.72), rgba(6,18,11,0.82));
-    box-shadow: 0 0 0 1px rgba(var(--grid-strong-line), 0.03) inset, 8px 8px 0 rgba(0,0,0,0.6);
-    border-radius: 12px;
+    padding: clamp(28px, 6vw, 64px);
+    border-radius: 18px;
+    border: 1px solid rgba(var(--grid-strong-line), 0.08);
+    background: linear-gradient(180deg, rgba(2,10,6,0.75), rgba(5,18,10,0.85));
+    box-shadow: 0 6px 0 rgba(0,0,0,0.6);
 }
 
+/* subtle grid overlay to match site aesthetic */
 .categoryHeader::before {
     content: '';
     position: absolute;
     inset: 0;
-    background:
-        radial-gradient(circle at 12% 10%, rgba(var(--grid-strong-line),0.08), transparent 28%),
-        linear-gradient(90deg, transparent 0%, rgba(var(--grid-line), 0.03) 50%, transparent 100%);
+    background-image:
+        linear-gradient(rgba(var(--grid-line),0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(var(--grid-line),0.03) 1px, transparent 1px);
+    background-size: 28px 28px, 28px 28px;
+    opacity: 0.85;
     pointer-events: none;
 }
 
 .categoryHeader::after {
-    content: "archive // category";
+    content: "ARCHIVE // CATEGORY";
     position: absolute;
-    right: 18px;
-    bottom: 12px;
-    color: rgba(196,255,216,0.36);
-    font-size: 11px;
-    letter-spacing: .18em;
+    right: 22px;
+    bottom: 18px;
+    color: rgba(var(--grid-strong-line), 0.18);
+    font-size: 12px;
+    letter-spacing: .22em;
     text-transform: uppercase;
 }
 
 .kicker {
     color: var(--strtextColor);
-    font-size: 11px;
-    letter-spacing: .16em;
+    font-size: 13px;
+    letter-spacing: .18em;
     text-transform: uppercase;
+    display:block;
 }
 
 .title {
-    margin: 12px 0 10px;
-    color: var(--textColor2);
-    font-size: clamp(32px, 6.2vw, 64px);
-    line-height: 1;
-    letter-spacing: -.03em;
+    margin: 10px 0 8px;
+    color: var(--strtextColor);
+    font-size: clamp(42px, 8.4vw, 86px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    font-family: 'Fira Code', monospace;
+    font-weight: 700;
     text-transform: none;
-    text-shadow: 0 0 18px rgba(var(--grid-strong-line), 0.06);
+    filter: drop-shadow(0 8px 12px rgba(var(--grid-strong-line), 0.04));
 }
 
 .marker {
     color: var(--softTextColor);
-    font-size: 11px;
+    font-size: 13px;
+    margin-top: 8px;
+    display:block;
+    text-transform: lowercase;
+}
+
+/* small decorative outline */
+.categoryHeaderInner {
+    position:relative;
+    z-index:2;
 }
 
 .content {
