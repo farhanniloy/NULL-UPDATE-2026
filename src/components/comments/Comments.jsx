@@ -149,19 +149,6 @@ const Comments = ({ postSlug }) => {
                                               </>
                                             )}
                                             </div>
-                                    <button className={styles.replyButton} onClick={() => {
-                                        // determine mention name
-                                        let mention = item.name || (item.user ? (item.user.username || (item.user.email ? item.user.email.split('@')[0] : 'user')) : 'user');
-                                        if (!mention.startsWith('@')) mention = `@${mention}`;
-                                        setReplyingTo(mention);
-                                        setDesc(`${mention} `);
-                                        // focus the textarea
-                                        setTimeout(() => {
-                                            try { inputRef.current?.focus(); } catch(e){}
-                                            // scroll to input
-                                            try { inputRef.current?.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e){}
-                                        }, 50);
-                                    }}>Reply</button>
                                 </div>
                             </div>
                             <p className={styles.desc}>{item.desc}</p>
