@@ -29,19 +29,6 @@ const CategoryPage = async ({ params, searchParams }) => {
 
     // build a lightweight site-tree data structure: top -> categories -> current category -> posts
     const categories = await prisma.category.findMany({ select: { title: true, slug: true } });
-    const postsForCat = await prisma.post.findMany({
-        where: {
-            OR: [
-                { catSlug: slug },
-                { categories: { some: { categorySlug: slug } } },
-            ],
-            approved: true,
-        },
-        select: { title: true, slug: true },
-        take: 30,
-        orderBy: { createdAt: 'desc' },
-    });
-
     // Build path-style tree: / -> /home -> /home/<category>
     const treeData = {
         name: '/',
@@ -55,14 +42,12 @@ const CategoryPage = async ({ params, searchParams }) => {
         ],
     };
 
-    // attach posts under the current category node using the /home/<category>/<post> format
-    treeData.children[0].children = categories.map((c) => {
-        const node = { name: `/home/${c.slug}`, slug: c.slug, url: `/category/${encodeURIComponent(c.slug)}` };
-        if (c.slug === slug) {
-            node.children = postsForCat.map((p) => ({ name: `/home/${c.slug}/${p.slug}`, slug: p.slug, url: `/posts/${encodeURIComponent(p.slug)}` }));
-        }
-        return node;
-    });
+    // Only show the tree up to the category node (no posts beneath it)
+    treeData.children[0].children = categories.map((c) => ({
+        name: `/home/${c.slug}`,
+        slug: c.slug,
+        url: `/category/${encodeURIComponent(c.slug)}`,
+    }));
 
     return (
         <div className={styles.container}>

@@ -14,9 +14,11 @@
   margin-bottom:8px;
 }
 
+/* Terminal-like font stack: prefer Courier Prime / Iosevka / Fira Code then fall back to monospace */
 .tree{
-  font-family: 'Fira Code', monospace;
-  font-size: 13px;
+  font-family: 'Courier Prime', 'Iosevka', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  font-size: 14px;
+  color: rgba(230, 245, 235, 0.96);
 }
 
 .node{
@@ -30,25 +32,34 @@
   gap:8px;
   padding:6px 0 6px 6px;
   position:relative;
+  /* slight text shadow to mimic the soft glow in the screenshots */
+  text-shadow: 0 1px 0 rgba(0,0,0,0.6);
 }
 
-/* vertical line for children container */
+/* stronger vertical spine for visual weight */
 .children{
   margin-top:6px;
-  padding-left: 12px;
-  border-left: 1px solid rgba(var(--grid-strong-line),0.06);
+  padding-left: 16px;
+  border-left: 2px solid rgba(200,230,210,0.12);
 }
 
-/* horizontal connector from the vertical line to the node text */
+/* horizontal connector from the vertical spine to the node text (L-shaped connector) */
 .children .node .row::before{
   content: '';
   position: absolute;
-  left: -12px;
+  left: -18px;
   top: 50%;
-  width: 12px;
+  width: 18px;
   height: 1px;
-  background: rgba(var(--grid-strong-line),0.06);
+  background: rgba(200,230,210,0.12);
   transform: translateY(-50%);
+}
+
+/* give the root's immediate children a longer connector to match screenshot */
+.tree > .node > .children > .node > .row::before{
+  left: -22px;
+  width: 22px;
+  background: rgba(200,230,210,0.16);
 }
 
 .toggleButton{
@@ -65,7 +76,8 @@
 }
 
 .toggleIcon{
-  opacity:0.85;
+  opacity:0.95;
+  color: rgba(200,230,210,0.9);
 }
 
 .empty{
@@ -74,17 +86,17 @@
 }
 
 .link{
-  color: var(--textColor);
+  color: rgba(240,249,240,0.98);
   text-decoration:none;
 }
 
 .text{
-  color: var(--softTextColor);
+  color: rgba(190,210,190,0.9);
 }
 
 .current .link, .current .text{
-  color: #8BFFB3; /* bright green highlight for current */
-  font-weight:600;
+  color: #A7FFCF; /* bright green highlight for current */
+  font-weight:700;
 }
 
 @media screen and (max-width:640px){
