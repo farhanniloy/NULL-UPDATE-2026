@@ -1,5 +1,6 @@
 import { getAuthSession } from "@/utils/auth";
 import prisma from "@/utils/connect";
+import cache from "@/utils/cache";
 import { NextResponse } from "next/server";
 import { ensureCsrf } from "@/utils/csrf";
 import { makeAvatar } from "@/utils/avatars";
@@ -12,6 +13,13 @@ export const GET = async (req) => {
     const postSlug = searchParams.get("postSlug");
 
     try {
+        // Short-lived cache to reduce DB reads on popular posts. TTL is conservative (30s) to preserve recency.
+        const cacheKey = `comments:post:${postSlug || 'all'}`;
+        const cached = await cache.get(cacheKey);
+        if (cached) {
+            return new NextResponse(JSON.stringify(cached), { status: 200 });
+        }
+
         const comments = await prisma.comment.findMany({
             where: {
                 ...(postSlug && { postSlug }),
@@ -21,7 +29,11 @@ export const GET = async (req) => {
                     select: { id: true, name: true, username: true, email: true, image: true },
                 },
             },
+            orderBy: { createdAt: 'asc' },
         });
+
+        // cache result for short TTL
+        await cache.set(cacheKey, comments, 30);
 
         return new NextResponse(JSON.stringify(comments), { status: 200 });
     } catch (err) {
