@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import CardList from "@/components/cardList/CardList";
+import TerminalList from "@/components/postList/TerminalList";
 import styles from "./categoryPage.module.css";
 import prisma from "@/utils/connect";
 
@@ -34,7 +34,7 @@ const CategoryPage = async ({ params, searchParams }) => {
                 <span className={styles.marker}>FILTER: ACTIVE / ACCESS: PUBLIC</span>
             </div>
             <div className={styles.content}>
-                <CardList page={page} cat={slug} paginationPrefix={`/category/${encodeURIComponent(slug)}`} />
+                <TerminalList page={page} cat={slug} paginationPrefix={`/category/${encodeURIComponent(slug)}`} />
             </div>
         </div>
     );
