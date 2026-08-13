@@ -81,8 +81,8 @@
 }
 
 .category:hover {
-   /* lighter semi-transparent dark overlay on hover */
-   background: rgba(0, 0, 0, 0.18);
+   /* subtler overlay: keep original hue but more transparent than initial 0.20 */
+   background: rgba(118, 123, 130, 0.12);
    transform: translateX(2px);
    color: #fdfdff;
    letter-spacing: 0.1em;
