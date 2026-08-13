@@ -2,7 +2,8 @@ import { getAuthSession } from "@/utils/auth";
 import prisma from "@/utils/connect";
 import { NextResponse } from "next/server";
 import { ensureCsrf } from "@/utils/csrf";
-import { makeAvatar, stableHash, styles } from "@/utils/avatars";
+import { makeAvatar } from "@/utils/avatars";
+import rateLimit, { incrDayKey, limitedByDay } from "@/utils/rateLimit";
 
 // GET ALL COMMENTS OF A POST
 export const GET = async (req) => {
@@ -52,9 +53,21 @@ export const POST = async (req) => {
         end.setUTCHours(23,59,59,999);
 
         if (session && session.user && session.user.email) {
-            const count = await prisma.comment.count({ where: { userEmail: session.user.email, createdAt: { gte: start, lte: end } } });
-            if (count >= 5) {
+            // Prefer using the in-memory rate limiter first (fast). If it returns null, fallback to DB count.
+            const dateKey = new Date().toISOString().slice(0,10);
+            const rlKey = `comments:user:${dateKey}:${session.user.email}`;
+            const allowed = await limitedByDay(rlKey, 5);
+            if (allowed === false) {
+              return new NextResponse(JSON.stringify({ message: 'Comment rate limit reached (5 per day)' }), { status: 429 });
+            }
+            if (allowed === null) {
+              // store unavailable — fallback to DB count
+              const count = await prisma.comment.count({ where: { userEmail: session.user.email, createdAt: { gte: start, lte: end } } });
+              if (count >= 5) {
                 return new NextResponse(JSON.stringify({ message: 'Comment rate limit reached (5 per day)' }), { status: 429 });
+              }
+              // also increment the in-process key so future calls can be fast
+              await incrDayKey(rlKey, 1);
             }
 
             // If the user doesn't have a profile image, assign a deterministic DiceBear avatar and store it on the comment
@@ -75,12 +88,6 @@ export const POST = async (req) => {
         if (!name) return new NextResponse(JSON.stringify({ message: 'Name required for anonymous comments' }), { status: 400 });
         if (!body.desc || !body.postSlug) return new NextResponse(JSON.stringify({ message: 'Missing fields' }), { status: 400 });
 
-        // count anonymous comments today by ip
-        const anonCount = await prisma.comment.count({ where: { ipAddr: ip, createdAt: { gte: start, lte: end } } });
-        if (anonCount >= 5) {
-            return new NextResponse(JSON.stringify({ message: 'Comment rate limit reached for this IP (5 per day)' }), { status: 429 });
-        }
-
         // Use cookie-based anon seed so avatar stays stable across IP changes
         const cookieHeader = req.headers.get('cookie') || '';
         const getCookie = (name) => {
@@ -96,6 +103,22 @@ export const POST = async (req) => {
         if (!anonId) {
             anonId = 'anon_' + Math.random().toString(36).slice(2, 10);
             setAnonCookie = true;
+        }
+
+        // Rate-limit anonymous commenters: prefer anonId (cookie) and fall back to IP
+        const dateKey = new Date().toISOString().slice(0,10);
+        const anonKeyBase = anonId ? `comments:anon:${dateKey}:${anonId}` : `comments:ip:${dateKey}:${ip}`;
+        const allowedAnon = await limitedByDay(anonKeyBase, 5);
+        if (allowedAnon === false) {
+          return new NextResponse(JSON.stringify({ message: 'Comment rate limit reached for this visitor (5 per day)' }), { status: 429 });
+        }
+        if (allowedAnon === null) {
+          // store unavailable — fallback to DB count by ip
+          const anonCount = await prisma.comment.count({ where: { ipAddr: ip, createdAt: { gte: start, lte: end } } });
+          if (anonCount >= 5) {
+            return new NextResponse(JSON.stringify({ message: 'Comment rate limit reached for this IP (5 per day)' }), { status: 429 });
+          }
+          await incrDayKey(anonKeyBase, 1);
         }
 
         // deterministic avatar assignment using DiceBear (seeded by name+anonId so it's stable per browser)
