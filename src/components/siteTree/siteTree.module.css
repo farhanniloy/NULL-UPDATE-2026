@@ -37,11 +37,12 @@
   font-size: 14px;
   color: var(--textColor);
 
-  /* make the tree scrollable once it grows beyond ~6-7 lines */
-  max-height: min(56vh, 420px);
+  /* make the tree scrollable after ~6-7 visible rows */
+  max-height: 240px; /* approx height for 6-7 rows including padding */
   overflow-y: auto;
   padding-right: 8px; /* space for the scrollbar */
   -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
 
 /* custom scrollbar visuals */
