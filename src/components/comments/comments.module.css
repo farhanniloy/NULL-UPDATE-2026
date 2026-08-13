@@ -102,7 +102,7 @@
 
 .userInfo {
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* align to top so reply can sit next to the date line */
     justify-content: space-between; /* username/date left, reply right */
     gap: 12px; /* space between user meta and reply */
 }
@@ -110,9 +110,18 @@
 .userMeta {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 2px;
     font-size: small;
 }
+
+/* ensure reply sits aligned with the date line */
+.replyButton {
+    align-self: flex-end; /* place the button at the end (next to date) */
+    margin-left: 12px;
+    padding: 6px 10px;
+    font-size: 13px;
+}
+
 .username {
     font-weight: bold;
     margin: 0;
