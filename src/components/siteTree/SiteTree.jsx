@@ -58,9 +58,16 @@ function TreeNode({ node, level = 0, highlightSlug }) {
 
       {hasChildren && open && (
         <div className={styles.children}>
-          {node.children.map((c, i) => (
-            <TreeNode key={(c.slug || c.name) + '-' + i} node={c} level={level + 1} highlightSlug={highlightSlug} />
-          ))}
+          {(() => {
+            try {
+              return node.children.map((c, i) => (
+                <TreeNode key={(c.slug || c.name) + '-' + i} node={c} level={level + 1} highlightSlug={highlightSlug} />
+              ));
+            } catch (e) {
+              console.error('Error rendering tree children', e);
+              return <div className={styles.error}>Error loading tree</div>;
+            }
+          })()}
         </div>
       )}
     </div>

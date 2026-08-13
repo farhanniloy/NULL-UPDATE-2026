@@ -31,7 +31,7 @@ const CategoryPage = async ({ params, searchParams }) => {
     const categories = await prisma.category.findMany({ select: { title: true, slug: true } });
     // Build path-style tree: / -> /home -> /home/<category>
     const treeData = {
-        name: '/',
+        name: '/root',
         url: '/',
         children: [
             {
