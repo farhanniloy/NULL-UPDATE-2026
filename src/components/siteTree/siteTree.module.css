@@ -13,7 +13,7 @@
   color: var(--strtextColor);
   letter-spacing: .12em;
   text-transform: none;
-  font-weight: 700;
+  font-weight: 400; /* not bold */
   margin-bottom:12px;
 }
 
