@@ -76,10 +76,11 @@ const CategoryList = async () => {
                         className={`${styles.category} ${styles[item.slug]}`}
                         key={item.id ?? item._id ?? item.slug}
                     >
-                        <span className={styles.icon} aria-hidden="true">
-                            <FaFolder />
+                        <span className={styles.icon} aria-hidden="true" title={`/${item.slug}`}>
+                            <span className={styles.fsSlash}>/</span>
+                            <FaFolder className={styles.folderIcon} />
                         </span>
-                        <span>{item.title}</span>
+                        <span className={styles.titleText}>{item.title}</span>
                     </Link>
                 ))}
             </div>

@@ -106,10 +106,23 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     line-height: 1;
-    color: #7db7ff;
-    opacity: 1;
+    gap:6px;
+}
+
+/* filesystem slash like /home/user */
+.fsSlash{
+    font-family: 'Fira Code', monospace;
+    color: var(--strtextColor);
+    font-size: 0.95rem;
+    line-height:1;
+}
+
+.folderIcon{
+    color: var(--textColor2);
+    width: 1em;
+    height: 1em;
 }
 
 .icon svg {
@@ -119,6 +132,9 @@
     fill: currentColor;
 }
 
+.titleText{
+    color: var(--textColor);
+}
 @media screen and (max-width: 768px) {
     .categories {
         max-height: calc(5 * 30px + 4 * 6px);
