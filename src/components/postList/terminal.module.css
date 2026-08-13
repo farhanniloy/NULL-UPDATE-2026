@@ -17,8 +17,9 @@
 
 /* ensure the date doesn't wrap and owner/date display inline */
 .meta{ display:inline-flex; gap:10px; align-items:center; }
-.date{ color: var(--softTextColor); font-family: 'Fira Code', monospace; white-space: nowrap; }
+.date{ color: var(--softTextColor); font-family: 'Fira Code', monospace; white-space: nowrap; display:inline-block; }
 .dateLabel{ color: var(--softTextColor); font-family: 'Fira Code', monospace; }
+.meta{ display:inline-flex; gap:8px; align-items:center; flex-wrap:nowrap; }
 
 .list{
   display:flex;

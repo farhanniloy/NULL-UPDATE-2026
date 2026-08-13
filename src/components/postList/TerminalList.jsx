@@ -57,6 +57,16 @@ const fmtDate = (iso) => {
     } catch (e) { return ''; }
 };
 
+const fmtDateInline = (iso) => {
+    try {
+        const d = new Date(iso);
+        const day = d.getDate();
+        const month = d.toLocaleString('en-GB', { month: 'short' });
+        const year = d.getFullYear();
+        return `${day} ${month}, ${year}`;
+    } catch (e) { return ''; }
+};
+
 const pad = (s, len = 6) => String(s).padStart(len, ' ');
 
 const TerminalList = async ({ page = 1, cat, paginationPrefix = '' }) => {
@@ -82,7 +92,7 @@ const TerminalList = async ({ page = 1, cat, paginationPrefix = '' }) => {
                         <div className={styles.row} key={item.id}>
                             <span className={styles.perm}>-rw-r--r--</span>
                             <span className={styles.size}>{pad(words, 6)}</span>
-                            <span className={styles.meta}><span className={styles.user}>{owner}</span><span className={styles.date}>{fmtDate(item.createdAt)}</span></span>
+                            <span className={styles.meta}><span className={styles.user}>{owner}</span><span className={styles.date}>{fmtDateInline(item.createdAt)}</span></span>
                             <span className={styles.name}>
                                 <Link href={`/posts/${encodeURIComponent(item.slug)}`} className={styles.link}>
                                     <span className={styles.fsSlash}>/</span>

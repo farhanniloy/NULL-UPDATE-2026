@@ -135,11 +135,15 @@
 
 /* tree wrapper for interactive site-map */
 .treeWrapper{
-    margin: 18px 0 22px;
+    margin: 36px 0 48px; /* increased spacing between tree and terminal list */
     padding: 12px;
     border-radius: 10px;
     border: 1px solid rgba(var(--grid-strong-line), 0.06);
     background: linear-gradient(180deg, rgba(2,8,6,0.48), rgba(4,12,8,0.38));
+}
+
+.content {
+    padding: 24px 4px 0; /* add top padding so terminal header is spaced from tree */
 }
 
 @media screen and (max-width: 640px) {
