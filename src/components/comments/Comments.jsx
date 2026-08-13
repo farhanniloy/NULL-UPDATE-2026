@@ -5,7 +5,7 @@ import styles from "./comments.module.css";
 import Image from "next/image";
 import useSWR from "swr";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const fetcher = async (url) => {
     const res = await fetch(url);
@@ -31,6 +31,8 @@ const Comments = ({ postSlug }) => {
     const [desc, setDesc] = useState("");
     const [name, setName] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const [replyingTo, setReplyingTo] = useState(null);
+    const inputRef = useRef(null);
 
     const handleSubmit = async () => {
         setSubmitting(true);
@@ -65,7 +67,9 @@ const Comments = ({ postSlug }) => {
             <h1 className={styles.title}>Comments</h1>
             {status === "authenticated" ? (
                 <div className={styles.write}>
+                    {replyingTo ? <div className={styles.replyingNote}>Replying to <strong>{replyingTo}</strong> • <button className={styles.cancelReply} onClick={() => { setReplyingTo(null); setDesc(''); }}>cancel</button></div> : null}
           <textarea
+              ref={inputRef}
               placeholder="write a comment..."
               className={styles.input}
               value={desc}
@@ -78,7 +82,9 @@ const Comments = ({ postSlug }) => {
             ) : (
                 <div className={styles.write}>
                     <input type="text" placeholder="Your name" className={styles.input} value={name} onChange={(e)=>setName(e.target.value)} />
+                    {replyingTo ? <div className={styles.replyingNote}>Replying to <strong>{replyingTo}</strong> • <button className={styles.cancelReply} onClick={() => { setReplyingTo(null); setDesc(''); }}>cancel</button></div> : null}
                     <textarea
+                        ref={inputRef}
                         placeholder="write a comment..."
                         className={styles.input}
                         value={desc}
@@ -108,7 +114,7 @@ const Comments = ({ postSlug }) => {
                                 ) : null}
                                 <div className={styles.userInfo}>
                                     {/* show username with @ and link to public profile when comment is by a known user */}
-                                    {item.user ? (
+                                            {item.user ? (
                                       (() => {
                                         const raw = item.user.username || (item.user.email ? item.user.email.split('@')[0] : 'user');
                                         const display = raw.startsWith('@') ? raw : `@${raw}`;
@@ -128,6 +134,19 @@ const Comments = ({ postSlug }) => {
                                         <span className={styles.date}>{new Date(item.createdAt).toISOString().substring(0, 10)}</span>
                                       </>
                                     )}
+                                    <button className={styles.replyButton} onClick={() => {
+                                        // determine mention name
+                                        let mention = item.name || (item.user ? (item.user.username || (item.user.email ? item.user.email.split('@')[0] : 'user')) : 'user');
+                                        if (!mention.startsWith('@')) mention = `@${mention}`;
+                                        setReplyingTo(mention);
+                                        setDesc(`${mention} `);
+                                        // focus the textarea
+                                        setTimeout(() => {
+                                            try { inputRef.current?.focus(); } catch(e){}
+                                            // scroll to input
+                                            try { inputRef.current?.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e){}
+                                        }, 50);
+                                    }}>Reply</button>
                                 </div>
                             </div>
                             <p className={styles.desc}>{item.desc}</p>
