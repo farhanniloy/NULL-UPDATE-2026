@@ -7,7 +7,7 @@ export const ThemeContext = createContext(); // Corrected context name
 export const ThemeContextProvider = ({ children }) => {
     // Keep the first render identical on the server and client, then restore
     // the saved preference once the browser is available.
-    const [theme, setTheme] = useState("light");
+    const [theme, setTheme] = useState("dark");
     const [hydrated, setHydrated] = useState(false);
 
     const toggle = () => {
@@ -18,6 +18,8 @@ export const ThemeContextProvider = ({ children }) => {
         const storedTheme = localStorage.getItem("theme");
         if (storedTheme === "light" || storedTheme === "dark") {
             setTheme(storedTheme);
+        } else {
+            setTheme("dark");
         }
         setHydrated(true);
     }, []);

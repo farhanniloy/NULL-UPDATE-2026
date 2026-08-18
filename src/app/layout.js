@@ -7,7 +7,6 @@ import ThemeProvider from "@/providers/ThemeProvider";
 import Copyright from "@/components/copyright/Copyright";
 import AuthProvider from "@/providers/AuthProvider";
 import ComplexBackground from "@/components/complexBackground/ComplexBackground";
-import styles from "@/components/footer/footer.module.css";
 import React from "react";
 
 const inter = Inter({ subsets: ['latin'] })
