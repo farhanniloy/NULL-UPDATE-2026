@@ -244,11 +244,6 @@ body.nav-open .complexBackground {
     opacity: 0.35; /* dim background slightly when menu open */
 }
 
-.wrapper,
-.contentWrapper {
-    position: relative;
-}
-
 @keyframes gridFlow {
     0% {
         background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
@@ -268,6 +263,11 @@ body.nav-open .complexBackground {
     100% {
         background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
     }
+}
+
+.wrapper,
+.contentWrapper {
+    position: relative;
 }
 
 .wrapper {
